@@ -1,2 +1,2 @@
-# Colera
-Colera
+# Frontier Strain 
+Frontier Strain
