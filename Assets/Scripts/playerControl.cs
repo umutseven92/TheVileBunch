@@ -29,6 +29,14 @@ public class playerControl : MonoBehaviour
 
     private Animator animator;
 
+    enum ControlScheme
+    {
+        Controller,
+        Keyboard
+    }
+
+    private ControlScheme control;
+
     // Use this for initialization
     void Awake()
     {
@@ -165,6 +173,20 @@ public class playerControl : MonoBehaviour
         {
             shotTransform.GetComponent<Rigidbody2D>().velocity = new Vector2(-bulletSpeed, 0);
 
+        }
+    }
+
+    void SetControlScheme(string controlScheme)
+    {
+        if (controlScheme.Equals("keyboard"))
+        {
+            control = ControlScheme.Keyboard;
+            Debug.Log("Keyboard");
+        }
+        else if (controlScheme.Equals("controller"))
+        {
+            control = ControlScheme.Controller;
+            Debug.Log("Controller");
         }
     }
 
