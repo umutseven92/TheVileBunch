@@ -118,8 +118,8 @@ RectTransform:
   m_RootOrder: 0
   m_AnchorMin: {x: .5, y: .5}
   m_AnchorMax: {x: .5, y: .5}
-  m_AnchoredPosition: {x: -213.100006, y: 175}
-  m_SizeDelta: {x: 52.2000008, y: 16.2999992}
+  m_AnchoredPosition: {x: .000183109994, y: 110}
+  m_SizeDelta: {x: 1047, y: 168}
   m_Pivot: {x: .5, y: .5}
 --- !u!114 &411943996
 MonoBehaviour:
@@ -136,7 +136,7 @@ MonoBehaviour:
   m_Color: {r: .404411793, g: .115971021, b: .115971021, a: 1}
   m_FontData:
     m_Font: {fileID: 12800000, guid: b0810b6f7d92c7d46a2df3b1b20f2d0e, type: 3}
-    m_FontSize: 180
+    m_FontSize: 150
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 10
@@ -146,9 +146,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: 'COLERA
-
-'
+  m_Text: FRONTIER STRAIN
 --- !u!222 &411943997
 CanvasRenderer:
   m_ObjectHideFlags: 0
