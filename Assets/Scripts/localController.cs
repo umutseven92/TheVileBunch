@@ -1,14 +1,23 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class localController : MonoBehaviour
 {
+    private List<playerSelect.Player> players;
     public Transform player;
 
     // Use this for initialization
     void Start()
     {
-        CreatePlayers(loadOnClick.playerCount);
+        GameObject speaker = GameObject.Find("Speaker");
+        if (speaker.GetComponent<AudioSource>() != null)
+        {
+            speaker.GetComponent<AudioSource>().Stop();
+        }
+
+        players = playerSelect.playerList;
+        CreatePlayers(players.Count);
     }
 
     void CreatePlayers(int playerCount)
@@ -23,7 +32,6 @@ public class localController : MonoBehaviour
             case 2:
                 Instantiate(player, new Vector3(-4.65f, 3.22f, 0), Quaternion.identity);
                 Instantiate(player, new Vector3(4.15f, 3.45f, 0), Quaternion.identity);
-
                 break;
             case 3:
                 Instantiate(player, new Vector3(-4.65f, 3.22f, 0), Quaternion.identity);

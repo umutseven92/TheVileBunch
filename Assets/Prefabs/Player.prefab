@@ -130,7 +130,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: .5
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -227,7 +227,7 @@ MonoBehaviour:
   groundCheck: {fileID: 474538}
   groundCheck2: {fileID: 436820}
   bullet: {fileID: 456820, guid: 63fe6d9b80059a248b8c801944bb1866, type: 2}
-  gunShot: {fileID: 0}
+  gunShot: {fileID: 8300000, guid: 82543674d324cd449aaf9328d7647a71, type: 3}
 --- !u!114 &11452722
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -329,6 +329,14 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: m_audioClip
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: gunShot
+      value: 
+      objectReference: {fileID: 8300000, guid: 82543674d324cd449aaf9328d7647a71, type: 3}
+    - target: {fileID: 0}
+      propertyPath: m_Volume
+      value: .5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

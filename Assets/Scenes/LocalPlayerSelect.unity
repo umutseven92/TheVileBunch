@@ -391,7 +391,7 @@ MonoBehaviour:
   m_HorizontalAxis: kHorizontal
   m_VerticalAxis: kVertical
   m_SubmitButton: kSubmit
-  m_CancelButton: Cancel
+  m_CancelButton: kCancel
   m_InputActionsPerSecond: 10
   m_RepeatDelay: .5
   m_AllowActivationOnMobileDevice: 0
@@ -671,6 +671,8 @@ MonoBehaviour:
   p2Text: {fileID: 1125742114}
   p3Text: {fileID: 2098563764}
   p4Text: {fileID: 1330171222}
+  allClasses: []
+  selectedClasses: []
 --- !u!4 &817648267
 Transform:
   m_ObjectHideFlags: 0
@@ -1011,7 +1013,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: .5
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -1410,7 +1412,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 2
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0

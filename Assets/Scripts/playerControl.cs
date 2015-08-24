@@ -39,7 +39,16 @@ public class playerControl : MonoBehaviour
         rb2d = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         audio = GetComponent<AudioSource>();
-        control = "j1";
+
+        if (playerSelect.playerCount == 0)
+        {
+            control = "j1";
+        }
+        else
+        {
+            control = playerSelect.playerList[playerSelect.playerCount - 1].Control;
+            playerSelect.playerCount--;
+        }
     }
 
     // Update is called once per frame
@@ -191,6 +200,11 @@ public class playerControl : MonoBehaviour
             inFrontOfLadder = false;
             up = false;
         }
+    }
+
+    void Test(int num)
+    {
+        Debug.Log(num);
     }
 
 }
