@@ -13,6 +13,9 @@ public class playerControl : MonoBehaviour
     [HideInInspector]
     public bool run = false;
 
+    [HideInInspector]
+    public string control;
+
     public float moveForce = 365f;
     public float MAX_SPEED = 5f;
     public float jumpForce = 10f;
@@ -29,19 +32,13 @@ public class playerControl : MonoBehaviour
 
     private Animator animator;
 
-    enum ControlScheme
-    {
-        Controller,
-        Keyboard
-    }
-
-    private ControlScheme control;
-
     // Use this for initialization
     void Awake()
     {
         rb2d = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
+
+        control = "j1";
     }
 
     // Update is called once per frame
@@ -55,17 +52,17 @@ public class playerControl : MonoBehaviour
             Respawn();
         }
 
-        if (Input.GetButtonDown("Jump") && ((grounded || grounded2) || inFrontOfLadder))
+        if (Input.GetButtonDown(control + "Jump") && ((grounded || grounded2) || inFrontOfLadder))
         {
             jump = true;
         }
 
-        if (Input.GetButtonDown("Fire1"))
+        if (Input.GetButtonDown(control + "Fire"))
         {
             Shoot();
         }
 
-        if (Input.GetAxis("Vertical") > 0.3f)
+        if (Input.GetAxis(control + "Vertical") > 0.3f)
         {
             up = true;
         }
@@ -78,13 +75,13 @@ public class playerControl : MonoBehaviour
 
     private void FixedUpdate()
     {
-        float h = Input.GetAxis("Horizontal");
+        float h = Input.GetAxis(control + "Horizontal");
 
-        float v = Input.GetAxis("Vertical");
+        float v = Input.GetAxis(control + "Vertical");
 
         if (h == 0)
         {
-            animator.SetInteger("anim",0);
+            animator.SetInteger("anim", 0);
         }
 
         if (inFrontOfLadder)
@@ -173,20 +170,6 @@ public class playerControl : MonoBehaviour
         {
             shotTransform.GetComponent<Rigidbody2D>().velocity = new Vector2(-bulletSpeed, 0);
 
-        }
-    }
-
-    void SetControlScheme(string controlScheme)
-    {
-        if (controlScheme.Equals("keyboard"))
-        {
-            control = ControlScheme.Keyboard;
-            Debug.Log("Keyboard");
-        }
-        else if (controlScheme.Equals("controller"))
-        {
-            control = ControlScheme.Controller;
-            Debug.Log("Controller");
         }
     }
 
