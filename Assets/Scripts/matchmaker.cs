@@ -5,7 +5,10 @@ public class matchmaker : Photon.PunBehaviour {
 
 	// Use this for initialization
 	void Start ()
-	{
+    {
+        GameObject speaker = GameObject.Find("Speaker");
+        speaker.GetComponent<AudioSource>().Stop();
+
         Debug.Log("Connection to master..");
 	    PhotonNetwork.ConnectUsingSettings("0.1");
 	}

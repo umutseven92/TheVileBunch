@@ -7,6 +7,10 @@ using UnityEngine.UI;
 public class playerSelect : MonoBehaviour
 {
 
+    public AudioSource source;
+    public AudioClip clip;
+
+    public Button play;
     public Text p1Text;
     public Text p2Text;
     public Text p3Text;
@@ -19,6 +23,7 @@ public class playerSelect : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        play.enabled = false;
         playerCount = 0;
     }
 
@@ -40,6 +45,7 @@ public class playerSelect : MonoBehaviour
             };
             playerList.Add(p);
             SetPlayerText();
+            source.PlayOneShot(clip);
         }
         else if (Input.GetButton("j1Submit"))
         {
@@ -56,6 +62,7 @@ public class playerSelect : MonoBehaviour
             playerList.Add(p);
 
             SetPlayerText();
+            source.PlayOneShot(clip);
 
         }
         else if (Input.GetButton("j2Submit"))
@@ -73,6 +80,8 @@ public class playerSelect : MonoBehaviour
             playerList.Add(p);
 
             SetPlayerText();
+            source.PlayOneShot(clip);
+
         }
         else if (Input.GetButton("j3Submit"))
         {
@@ -89,6 +98,8 @@ public class playerSelect : MonoBehaviour
             playerList.Add(p);
 
             SetPlayerText();
+            source.PlayOneShot(clip);
+
         }
         else if (Input.GetButton("j4Submit"))
         {
@@ -105,11 +116,23 @@ public class playerSelect : MonoBehaviour
             playerList.Add(p);
 
             SetPlayerText();
+            source.PlayOneShot(clip);
+
         }
 
+        if (playerCount >= 2)
+        {
+            play.enabled = true;
+            play.GetComponentInChildren<CanvasRenderer>().SetAlpha(1);
+            play.GetComponentInChildren<Text>().color = Color.black;
+        }
+        else
+        {
+            play.enabled = false;
+            play.GetComponentInChildren<CanvasRenderer>().SetAlpha(0);
+            play.GetComponentInChildren<Text>().color = Color.clear;
+        }
     }
-
-
 
     private void SetPlayerText()
     {

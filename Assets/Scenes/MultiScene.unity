@@ -548,6 +548,10 @@ Prefab:
       propertyPath: instantiationId
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 11414428, guid: 4456e3fb88ab8f149aaaf96cbab5e546, type: 2}
+      propertyPath: gunShot
+      value: 
+      objectReference: {fileID: 8300000, guid: 82543674d324cd449aaf9328d7647a71, type: 3}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 4456e3fb88ab8f149aaaf96cbab5e546, type: 2}
   m_IsPrefabParent: 0

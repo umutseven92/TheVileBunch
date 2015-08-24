@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class loadOnClick : MonoBehaviour
 {
@@ -14,6 +15,12 @@ public class loadOnClick : MonoBehaviour
     public void SetPlayerCount(int _playerCount)
     {
         playerCount = _playerCount;
+    }
+
+    public void ResetPlayers()
+    {
+        playerSelect.playerCount = 0;
+        playerSelect.playerList = new List<playerSelect.Player>();
     }
 
     public void QuitGame()

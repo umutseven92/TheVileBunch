@@ -23,13 +23,14 @@ public class playerControl : MonoBehaviour
     public Transform groundCheck;
     public Transform groundCheck2;
     public Transform bullet;
+    public AudioClip gunShot;
 
     private bool grounded = false;
     private bool grounded2 = false;
     private bool inFrontOfLadder = false;
     private bool up = false;
     private Rigidbody2D rb2d;
-
+    private AudioSource audio;
     private Animator animator;
 
     // Use this for initialization
@@ -37,7 +38,7 @@ public class playerControl : MonoBehaviour
     {
         rb2d = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
-
+        audio = GetComponent<AudioSource>();
         control = "j1";
     }
 
@@ -171,6 +172,8 @@ public class playerControl : MonoBehaviour
             shotTransform.GetComponent<Rigidbody2D>().velocity = new Vector2(-bulletSpeed, 0);
 
         }
+        audio.PlayOneShot(gunShot);
+
     }
 
     void OnTriggerEnter2D(Collider2D other)
