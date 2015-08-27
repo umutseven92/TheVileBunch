@@ -15,17 +15,9 @@ public class BulletScript : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if (first)
+        if (!other.name.Equals("ropeAttached"))
         {
-            first = false;
-
-        }
-        else
-        {
-            if (!other.name.Equals("ropeAttached"))
-            {
-                Destroy(gameObject);
-            }
+            Destroy(gameObject);
         }
     }
 }

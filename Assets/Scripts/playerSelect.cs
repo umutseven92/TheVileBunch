@@ -21,13 +21,7 @@ public class playerSelect : MonoBehaviour
 
     public static List<Player> playerList = new List<Player>();
 
-    public List<string> allClasses = new List<string>();
-    public List<string> selectedClasses = new List<string>();
-
-    private bool p1Selected = false;
-    private bool p2Selected = false;
-    private bool p3Selected = false;
-    private bool p4Selected = false;
+    private string[] classes = new[] {"The Cowboy", "The Dancer", "The Doctor", "The Prospector"};
 
     private string firstPlace;
     private string secondPlace;
@@ -52,7 +46,8 @@ public class playerSelect : MonoBehaviour
         Player p = new Player
         {
             Control = control,
-            Num = playerCount
+            Num = playerCount,
+            Class = classes[playerCount - 1]
         };
         playerList.Add(p);
         SetPlayerText(control);
@@ -70,11 +65,11 @@ public class playerSelect : MonoBehaviour
         {
             SelectPlayer("j1");
         }
-        if (Input.GetButton("j2Submit"))
+        if (Input.GetButton("j2Submit") || Input.GetAxis("kVertical") >= 0.5f)
         {
             SelectPlayer("j2");
         }
-        if (Input.GetButton("j3Submit"))
+        if (Input.GetButton("j3Submit") || Input.GetAxis("kVertical") <= -0.5f)
         {
             SelectPlayer("j3");
         }
@@ -156,19 +151,19 @@ public class playerSelect : MonoBehaviour
         switch (playerCount)
         {
             case 1:
-                p1Text.text = "The Cowboy";
+                p1Text.text = classes[playerCount-1];
                 firstPlace = control;
                 break;
             case 2:
-                p2Text.text = "The Dancer";
+                p1Text.text = classes[playerCount-1];
                 secondPlace = control;
                 break;
             case 3:
-                p3Text.text = "The Doctor";
+                p1Text.text = classes[playerCount-1];
                 thirdPlace = control;
                 break;
             case 4:
-                p4Text.text = "The Prospector";
+                p1Text.text = classes[playerCount-1];
                 fourthPlace = control;
                 break;
 

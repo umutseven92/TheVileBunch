@@ -4,6 +4,9 @@ using System.Collections.Generic;
 
 public class localController : MonoBehaviour
 {
+    [HideInInspector] public static string gameMode = "offline";
+    [HideInInspector] public static List<playerSelect.Player> AlivePlayers; 
+
     private List<playerSelect.Player> players;
     public Transform player;
 
@@ -17,6 +20,7 @@ public class localController : MonoBehaviour
         }
 
         players = playerSelect.playerList;
+        AlivePlayers = players;
         CreatePlayers(players.Count);
     }
 
@@ -49,5 +53,14 @@ public class localController : MonoBehaviour
                 break;
         }
 
+    }
+
+    void Update()
+    {
+        if (AlivePlayers.Count == 1)
+        {
+            // Game Over
+
+        }
     }
 }

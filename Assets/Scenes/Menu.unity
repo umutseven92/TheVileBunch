@@ -705,7 +705,7 @@ AudioSource:
   m_Volume: .600000024
   m_Pitch: 1
   Loop: 0
-  Mute: 0
+  Mute: 1
   Priority: 128
   DopplerLevel: 1
   MinDistance: 6.95888376

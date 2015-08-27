@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class playerControl : MonoBehaviour
 {
@@ -23,8 +24,13 @@ public class playerControl : MonoBehaviour
     public Transform groundCheck;
     public Transform groundCheck2;
     public Transform bullet;
+    public Transform healthBar;
+    public Transform explosion;
     public AudioClip gunShot;
+    public int health = 3;
+    public int ammo = 3;
 
+    private double counter = 0.000d;
     private bool grounded = false;
     private bool grounded2 = false;
     private bool inFrontOfLadder = false;
@@ -32,6 +38,15 @@ public class playerControl : MonoBehaviour
     private Rigidbody2D rb2d;
     private AudioSource audio;
     private Animator animator;
+    private SpriteRenderer healthBarRender;
+    private bool dead = false;
+
+    private Sprite health1;
+    private Sprite health2;
+    private Sprite health3;
+
+    private string playerClass;
+    private int playerNum;
 
     // Use this for initialization
     void Awake()
@@ -40,6 +55,13 @@ public class playerControl : MonoBehaviour
         animator = GetComponent<Animator>();
         audio = GetComponent<AudioSource>();
 
+        health1 = Resources.Load<Sprite>("threehealth");
+        health2 = Resources.Load<Sprite>("quarterhealth");
+        health3 = Resources.Load<Sprite>("nohealth");
+
+        healthBarRender = healthBar.GetComponent<SpriteRenderer>();
+        healthBarRender.enabled = false;
+
         if (playerSelect.playerCount == 0)
         {
             control = "j1";
@@ -47,6 +69,8 @@ public class playerControl : MonoBehaviour
         else
         {
             control = playerSelect.playerList[playerSelect.playerCount - 1].Control;
+            playerClass = playerSelect.playerList[playerSelect.playerCount - 1].Class;
+            playerNum = playerSelect.playerList[playerSelect.playerCount - 1].Num;
             playerSelect.playerCount--;
         }
     }
@@ -81,6 +105,23 @@ public class playerControl : MonoBehaviour
             up = false;
         }
 
+        CheckHealthBar();
+
+    }
+
+
+    private void CheckHealthBar()
+    {
+        if (healthBarRender.enabled)
+        {
+            counter += 1 * Time.deltaTime;
+
+            if (counter >= 2.000d)
+            {
+                healthBarRender.enabled = false;
+                counter = 0.000d;
+            }
+        }
     }
 
     private void FixedUpdate()
@@ -159,6 +200,8 @@ public class playerControl : MonoBehaviour
         theScale.x *= -1;
 
         transform.localScale = theScale;
+
+
     }
 
     void Respawn()
@@ -170,19 +213,18 @@ public class playerControl : MonoBehaviour
     {
         var shotTransform = Instantiate(bullet) as Transform;
 
-        shotTransform.position = transform.position;
-
         if (facingRight)
         {
+            shotTransform.position = new Vector3(transform.position.x + 0.5f, transform.position.y, transform.position.z);
             shotTransform.GetComponent<Rigidbody2D>().velocity = new Vector2(bulletSpeed, 0);
         }
         else
         {
+            shotTransform.position = new Vector3(transform.position.x - 0.5f, transform.position.y, transform.position.z);
             shotTransform.GetComponent<Rigidbody2D>().velocity = new Vector2(-bulletSpeed, 0);
 
         }
         audio.PlayOneShot(gunShot);
-
     }
 
     void OnTriggerEnter2D(Collider2D other)
@@ -190,6 +232,31 @@ public class playerControl : MonoBehaviour
         if (other.name.Equals("ropeAttached") && up)
         {
             inFrontOfLadder = true;
+        }
+
+        if (other.name.Equals("Bullet(Clone)"))
+        {
+            health--;
+            if (health == 0)
+            {
+                // Death
+                dead = true;
+                localController.AlivePlayers.Remove(localController.AlivePlayers.Find(p => p.Num == playerNum));
+                Instantiate(explosion, transform.position, transform.rotation);
+                Destroy(gameObject);
+            }
+
+            switch (health)
+            {
+                case 2:
+                    healthBarRender.sprite = health1;
+                    healthBarRender.enabled = true;
+                    break;
+                case 1:
+                    healthBarRender.sprite = health2;
+                    healthBarRender.enabled = true;
+                    break;
+            }
         }
     }
 
@@ -200,11 +267,6 @@ public class playerControl : MonoBehaviour
             inFrontOfLadder = false;
             up = false;
         }
-    }
-
-    void Test(int num)
-    {
-        Debug.Log(num);
     }
 
 }
