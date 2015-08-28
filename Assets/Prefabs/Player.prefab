@@ -75,7 +75,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 136448}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -.280000001, y: -.589999974, z: 0}
+  m_LocalPosition: {x: -.189999998, y: -.529999971, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 441362}
@@ -102,8 +102,8 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 150026}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: .25, y: -.589999974, z: 0}
-  m_LocalScale: {x: 0, y: 1, z: 1}
+  m_LocalPosition: {x: .119999997, y: -.529999971, z: 0}
+  m_LocalScale: {x: 0, y: 0, z: 1}
   m_Children: []
   m_Father: {fileID: 441362}
   m_RootOrder: 0
@@ -245,21 +245,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9db31784e54d8143aebcc9ff5197043, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  facingRight: 1
-  jump: 0
-  run: 0
-  control: 
-  moveForce: 350
-  MAX_SPEED: 4
-  jumpForce: 850
-  bulletSpeed: 20
-  groundCheck: {fileID: 474538}
-  groundCheck2: {fileID: 436820}
-  bullet: {fileID: 456820, guid: 63fe6d9b80059a248b8c801944bb1866, type: 2}
-  healthBar: {fileID: 476608}
-  explosion: {fileID: 457782, guid: aae430be8c9c11347a4f22f5ddab16c3, type: 2}
-  gunShot: {fileID: 8300000, guid: 82543674d324cd449aaf9328d7647a71, type: 3}
-  health: 3
+  FacingRight: 1
+  Jump: 0
+  Run: 0
+  Control: 
+  MoveForce: 365
+  MaxSpeed: 5
+  JumpForce: 17
+  BulletSpeed: 20
+  GroundCheck: {fileID: 474538}
+  GroundCheck2: {fileID: 436820}
+  Bullet: {fileID: 456820, guid: 63fe6d9b80059a248b8c801944bb1866, type: 2}
+  HealthBar: {fileID: 476608}
+  Explosion: {fileID: 457782, guid: aae430be8c9c11347a4f22f5ddab16c3, type: 2}
+  GunShot: {fileID: 8300000, guid: 82543674d324cd449aaf9328d7647a71, type: 3}
+  Health: 3
+  Ammo: 3
 --- !u!114 &11452722
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -408,6 +409,42 @@ Prefab:
       propertyPath: explosion
       value: 
       objectReference: {fileID: 457782, guid: aae430be8c9c11347a4f22f5ddab16c3, type: 2}
+    - target: {fileID: 0}
+      propertyPath: GroundCheck
+      value: 
+      objectReference: {fileID: 474538}
+    - target: {fileID: 0}
+      propertyPath: GroundCheck2
+      value: 
+      objectReference: {fileID: 436820}
+    - target: {fileID: 0}
+      propertyPath: Bullet
+      value: 
+      objectReference: {fileID: 456820, guid: 63fe6d9b80059a248b8c801944bb1866, type: 2}
+    - target: {fileID: 0}
+      propertyPath: HealthBar
+      value: 
+      objectReference: {fileID: 476608}
+    - target: {fileID: 0}
+      propertyPath: Explosion
+      value: 
+      objectReference: {fileID: 457782, guid: aae430be8c9c11347a4f22f5ddab16c3, type: 2}
+    - target: {fileID: 0}
+      propertyPath: GunShot
+      value: 
+      objectReference: {fileID: 8300000, guid: 82543674d324cd449aaf9328d7647a71, type: 3}
+    - target: {fileID: 0}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: rb2D
+      value: 
+      objectReference: {fileID: 5009434}
+    - target: {fileID: 0}
+      propertyPath: JumpForce
+      value: 17
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 170880}

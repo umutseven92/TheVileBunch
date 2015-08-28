@@ -664,15 +664,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7bd03512195b2fa4d925785867197d92, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  source: {fileID: 1224712234}
-  clip: {fileID: 8300000, guid: 82543674d324cd449aaf9328d7647a71, type: 3}
-  play: {fileID: 1728248595}
-  p1Text: {fileID: 451940538}
-  p2Text: {fileID: 1125742114}
-  p3Text: {fileID: 2098563764}
-  p4Text: {fileID: 1330171222}
-  allClasses: []
-  selectedClasses: []
+  Source: {fileID: 1224712234}
+  Clip: {fileID: 8300000, guid: 82543674d324cd449aaf9328d7647a71, type: 3}
+  Play: {fileID: 1728248595}
+  P1Text: {fileID: 451940538}
+  P2Text: {fileID: 1125742114}
+  P3Text: {fileID: 2098563764}
+  P4Text: {fileID: 1330171222}
 --- !u!4 &817648267
 Transform:
   m_ObjectHideFlags: 0

@@ -7,51 +7,44 @@ using UnityEngine.UI;
 
 public class playerSelect : MonoBehaviour
 {
+    public AudioSource Source;
+    public AudioClip Clip;
+    public Button Play;
+    public Text P1Text;
+    public Text P2Text;
+    public Text P3Text;
+    public Text P4Text;
 
-    public AudioSource source;
-    public AudioClip clip;
+    public static List<Player> PlayerList = new List<Player>();
 
-    public Button play;
-    public Text p1Text;
-    public Text p2Text;
-    public Text p3Text;
-    public Text p4Text;
+    private readonly string[] _classes = new[] {"The Cowboy", "The Dancer", "The Doctor", "The Prospector"};
 
-    public static int playerCount = 0;
-
-    public static List<Player> playerList = new List<Player>();
-
-    private string[] classes = new[] {"The Cowboy", "The Dancer", "The Doctor", "The Prospector"};
-
-    private string firstPlace;
-    private string secondPlace;
-    private string thirdPlace;
-    private string fourthPlace;
+    private string _firstPlace;
+    private string _secondPlace;
+    private string _thirdPlace;
+    private string _fourthPlace;
 
     // Use this for initialization
     void Start()
     {
-        play.enabled = false;
-        playerCount = 0;
+        Play.enabled = false;
     }
 
     private void SelectPlayer(string control)
     {
-        if (playerCount >= 4 || playerList.Any(player => player.Control == control))
+        if (PlayerList.Count >= 4 || PlayerList.Any(player => player.Control == control))
         {
             return;
         }
 
-        playerCount++;
         Player p = new Player
         {
             Control = control,
-            Num = playerCount,
-            Class = classes[playerCount - 1]
+            Class = _classes[PlayerList.Count]
         };
-        playerList.Add(p);
+        PlayerList.Add(p);
         SetPlayerText(control);
-        source.PlayOneShot(clip);
+        Source.PlayOneShot(Clip);
     }
 
     // Update is called once per frame
@@ -104,75 +97,75 @@ public class playerSelect : MonoBehaviour
 
     private void RemovePlayer(string control)
     {
-        if (playerList.All(player => player.Control != control))
+        if (PlayerList.All(player => player.Control != control))
         {
             return;
         }
-        playerList.Remove(playerList.First(p => p.Control == control));
-        playerCount--;
+        PlayerList.Remove(PlayerList.First(p => p.Control == control));
 
-        if (control == firstPlace)
+        if (control == _firstPlace)
         {
-            p1Text.text = "Press Start";
+            P1Text.text = "Press Start";
         }
-        else if (control == secondPlace)
+        else if (control == _secondPlace)
         {
-            p2Text.text = "Press Start";
+            P2Text.text = "Press Start";
         }
-        else if (control == thirdPlace)
+        else if (control == _thirdPlace)
         {
-            p3Text.text = "Press Start";
+            P3Text.text = "Press Start";
         }
-        else if (control == fourthPlace)
+        else if (control == _fourthPlace)
         {
-            p4Text.text = "Press Start";
+            P4Text.text = "Press Start";
         }
 
     }
 
     private void UpdatePlayButton()
     {
-        if (playerCount >= 2)
+        if (PlayerList.Count>= 2)
         {
-            play.enabled = true;
-            play.GetComponentInChildren<CanvasRenderer>().SetAlpha(1);
-            play.GetComponentInChildren<Text>().color = Color.black;
+            Play.enabled = true;
+            Play.GetComponentInChildren<CanvasRenderer>().SetAlpha(1);
+            Play.GetComponentInChildren<Text>().color = Color.black;
         }
         else
         {
-            play.enabled = false;
-            play.GetComponentInChildren<CanvasRenderer>().SetAlpha(0);
-            play.GetComponentInChildren<Text>().color = Color.clear;
+            Play.enabled = false;
+            Play.GetComponentInChildren<CanvasRenderer>().SetAlpha(0);
+            Play.GetComponentInChildren<Text>().color = Color.clear;
         }
     }
 
     private void SetPlayerText(string control)
     {
-        switch (playerCount)
+        switch (PlayerList.Count)
         {
             case 1:
-                p1Text.text = classes[playerCount-1];
-                firstPlace = control;
+                P1Text.text = _classes[PlayerList.Count-1];
+                _firstPlace = control;
                 break;
             case 2:
-                p1Text.text = classes[playerCount-1];
-                secondPlace = control;
+                P2Text.text = _classes[PlayerList.Count-1];
+                _secondPlace = control;
                 break;
             case 3:
-                p1Text.text = classes[playerCount-1];
-                thirdPlace = control;
+                P3Text.text = _classes[PlayerList.Count-1];
+                _thirdPlace = control;
                 break;
             case 4:
-                p1Text.text = classes[playerCount-1];
-                fourthPlace = control;
+                P4Text.text = _classes[PlayerList.Count-1];
+                _fourthPlace = control;
                 break;
-
+            default:
+                Debug.LogError("Player count not between 1 and 5!");
+                break;
         }
     }
 
     public class Player
     {
-        public int Num { get; set; }
         public string Control { get; set; }
         public string Class { get; set; }
     }

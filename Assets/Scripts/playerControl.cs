@@ -6,266 +6,280 @@ using System.Collections.Generic;
 public class playerControl : MonoBehaviour
 {
     [HideInInspector]
-    public bool facingRight = true;
+    public bool FacingRight = true;
 
     [HideInInspector]
-    public bool jump = false;
+    public bool Jump = false;
 
     [HideInInspector]
-    public bool run = false;
+    public bool Run = false;
 
     [HideInInspector]
-    public string control;
+    public string Control;
 
-    public float moveForce = 365f;
-    public float MAX_SPEED = 5f;
-    public float jumpForce = 10f;
-    public float bulletSpeed = 20f;
-    public Transform groundCheck;
-    public Transform groundCheck2;
-    public Transform bullet;
-    public Transform healthBar;
-    public Transform explosion;
-    public AudioClip gunShot;
-    public int health = 3;
-    public int ammo = 3;
+    public float MoveForce = 365f;
+    public float MaxSpeed = 5f;
+    public float JumpForce = 10f;
+    public float BulletSpeed = 20f;
+    public Transform GroundCheck;
+    public Transform GroundCheck2;
+    public Transform Bullet;
+    public Transform HealthBar;
+    public Transform Explosion;
+    public AudioClip GunShot;
+    public int Health = 3;
+    public int Ammo = 3;
 
-    private double counter = 0.000d;
-    private bool grounded = false;
-    private bool grounded2 = false;
-    private bool inFrontOfLadder = false;
-    private bool up = false;
-    private Rigidbody2D rb2d;
-    private AudioSource audio;
-    private Animator animator;
-    private SpriteRenderer healthBarRender;
-    private bool dead = false;
+    private double _counter = 0.000d;
+    private bool _grounded = false;
+    private bool _grounded2 = false;
+    private bool _inFrontOfLadder = false;
+    private bool _up = false;
+    private Rigidbody2D _rb2D;
+    private AudioSource _audio;
+    private Animator _animator;
+    private SpriteRenderer _healthBarRender;
+    private bool _dead = false;
 
-    private Sprite health1;
-    private Sprite health2;
-    private Sprite health3;
+    private Sprite _health1;
+    private Sprite _health2;
 
-    private string playerClass;
-    private int playerNum;
+    private Sprite _health1Reverse;
+    private Sprite _health2Reverse;
+
+    public string _playerClass;
+    private List<playerSelect.Player> _localPlayers;
 
     // Use this for initialization
     void Awake()
     {
-        rb2d = GetComponent<Rigidbody2D>();
-        animator = GetComponent<Animator>();
-        audio = GetComponent<AudioSource>();
+        _rb2D = GetComponent<Rigidbody2D>();
+        _animator = GetComponent<Animator>();
+        _audio = GetComponent<AudioSource>();
 
-        health1 = Resources.Load<Sprite>("threehealth");
-        health2 = Resources.Load<Sprite>("quarterhealth");
-        health3 = Resources.Load<Sprite>("nohealth");
+        _health1 = Resources.Load<Sprite>("threehealth");
+        _health2 = Resources.Load<Sprite>("quarterhealth");
 
-        healthBarRender = healthBar.GetComponent<SpriteRenderer>();
-        healthBarRender.enabled = false;
+        _health1Reverse = Resources.Load<Sprite>("threehealthReverse");
+        _health2Reverse = Resources.Load<Sprite>("quarterhealthReverse");
 
-        if (playerSelect.playerCount == 0)
-        {
-            control = "j1";
-        }
-        else
-        {
-            control = playerSelect.playerList[playerSelect.playerCount - 1].Control;
-            playerClass = playerSelect.playerList[playerSelect.playerCount - 1].Class;
-            playerNum = playerSelect.playerList[playerSelect.playerCount - 1].Num;
-            playerSelect.playerCount--;
-        }
+        _healthBarRender = HealthBar.GetComponent<SpriteRenderer>();
+
+        _localPlayers = playerSelect.PlayerList;
     }
 
     // Update is called once per frame
     void Update()
     {
-        grounded = Physics2D.Linecast(transform.position, groundCheck.position, 1 << LayerMask.NameToLayer("Ground"));
-        grounded2 = Physics2D.Linecast(transform.position, groundCheck2.position, 1 << LayerMask.NameToLayer("Ground"));
+        _grounded = Physics2D.Linecast(transform.position, GroundCheck.position, 1 << LayerMask.NameToLayer("Ground"));
+        _grounded2 = Physics2D.Linecast(transform.position, GroundCheck2.position, 1 << LayerMask.NameToLayer("Ground"));
 
-        if (Input.GetKeyDown(KeyCode.R))
+
+        if (Input.GetButtonDown(Control + "Jump") && ((_grounded || _grounded2) || _inFrontOfLadder))
         {
-            Respawn();
+            Jump = true;
         }
 
-        if (Input.GetButtonDown(control + "Jump") && ((grounded || grounded2) || inFrontOfLadder))
-        {
-            jump = true;
-        }
-
-        if (Input.GetButtonDown(control + "Fire"))
+        if (Input.GetButtonDown(Control + "Fire"))
         {
             Shoot();
         }
 
-        if (Input.GetAxis(control + "Vertical") > 0.3f)
-        {
-            up = true;
-        }
-        else
-        {
-            up = false;
-        }
+        _up = Input.GetAxis(Control + "Vertical") > 0.3f;
 
         CheckHealthBar();
-
     }
 
 
     private void CheckHealthBar()
     {
-        if (healthBarRender.enabled)
+        if (_healthBarRender.enabled)
         {
-            counter += 1 * Time.deltaTime;
+            _counter += 1 * Time.deltaTime;
 
-            if (counter >= 2.000d)
+            if (_counter >= 2.000d)
             {
-                healthBarRender.enabled = false;
-                counter = 0.000d;
+                _healthBarRender.enabled = false;
+                _counter = 0.000d;
             }
         }
     }
 
     private void FixedUpdate()
     {
-        float h = Input.GetAxis(control + "Horizontal");
+        float h = Input.GetAxis(Control + "Horizontal");
 
-        float v = Input.GetAxis(control + "Vertical");
+        float v = Input.GetAxis(Control + "Vertical");
 
         if (h == 0)
         {
-            animator.SetInteger("anim", 0);
+            _animator.SetInteger("anim", 0);
         }
 
-        if (inFrontOfLadder)
+        if (_inFrontOfLadder)
         {
-            rb2d.gravityScale = 0;
-            rb2d.velocity = Vector3.zero;
+            _rb2D.gravityScale = 0;
+            _rb2D.velocity = Vector3.zero;
 
 
-            if (v * rb2d.velocity.y < MAX_SPEED)
+            if (v * _rb2D.velocity.y < MaxSpeed)
             {
-                rb2d.AddForce(Vector2.up * v * moveForce);
+                _rb2D.AddForce(Vector2.up * v * MoveForce);
             }
 
-            if (Mathf.Abs(rb2d.velocity.y) > MAX_SPEED)
+            if (Mathf.Abs(_rb2D.velocity.y) > MaxSpeed)
             {
-                rb2d.velocity = new Vector2(rb2d.velocity.x, Mathf.Sign(rb2d.velocity.y) * MAX_SPEED);
+                _rb2D.velocity = new Vector2(_rb2D.velocity.x, Mathf.Sign(_rb2D.velocity.y) * MaxSpeed);
             }
 
         }
         else
         {
-            rb2d.gravityScale = 4;
+            _rb2D.gravityScale = 4;
 
-            if (h * rb2d.velocity.x < MAX_SPEED)
+            if (h * _rb2D.velocity.x < MaxSpeed)
             {
-                rb2d.AddForce(Vector2.right * h * moveForce);
+                _rb2D.AddForce(Vector2.right * h * MoveForce);
             }
 
-            if (Mathf.Abs(rb2d.velocity.x) > MAX_SPEED)
+            if (Mathf.Abs(_rb2D.velocity.x) > MaxSpeed)
             {
-                rb2d.velocity = new Vector2(Mathf.Sign(rb2d.velocity.x) * MAX_SPEED, rb2d.velocity.y);
+                _rb2D.velocity = new Vector2(Mathf.Sign(_rb2D.velocity.x) * MaxSpeed, _rb2D.velocity.y);
             }
 
             if (h != 0)
             {
-                animator.SetInteger("anim", 1);
+                _animator.SetInteger("anim", 1);
             }
         }
 
-        if (h > 0 && !facingRight)
+        if (h > 0 && !FacingRight)
         {
             Flip();
         }
-        else if (h < 0 && facingRight)
+        else if (h < 0 && FacingRight)
         {
             Flip();
         }
 
-        if (jump)
+        if (Jump)
         {
-            if (inFrontOfLadder)
+            if (_inFrontOfLadder)
             {
-                inFrontOfLadder = false;
+                _inFrontOfLadder = false;
             }
-            rb2d.AddForce(new Vector2(0, jumpForce));
-            jump = false;
+
+            // JUMP
+            _rb2D.AddForce(new Vector2(0, JumpForce),ForceMode2D.Impulse);
+            Jump = false;
 
         }
     }
 
     void Flip()
     {
-        facingRight = !facingRight;
+        if (FacingRight)
+        {
+            switch (Health)
+            {
+                case 2:
+                    _healthBarRender.sprite = _health1Reverse;
+                    break;
+                case 1:
+                    _healthBarRender.sprite = _health2Reverse;
+                    break;
+            }
+        }
+        else
+        {
+            switch (Health)
+            {
+                case 2:
+                    _healthBarRender.sprite = _health1;
+                    break;
+                case 1:
+                    _healthBarRender.sprite = _health2;
+                    break;
+            }
+        }
+
+        FacingRight = !FacingRight;
+
         Vector3 theScale = transform.localScale;
         theScale.x *= -1;
 
         transform.localScale = theScale;
 
-
-    }
-
-    void Respawn()
-    {
-        transform.position = new Vector3(-5, 3, transform.position.z);
     }
 
     void Shoot()
     {
-        var shotTransform = Instantiate(bullet) as Transform;
+        var shotTransform = Instantiate(Bullet) as Transform;
 
-        if (facingRight)
+        if (FacingRight)
         {
             shotTransform.position = new Vector3(transform.position.x + 0.5f, transform.position.y, transform.position.z);
-            shotTransform.GetComponent<Rigidbody2D>().velocity = new Vector2(bulletSpeed, 0);
+            shotTransform.GetComponent<Rigidbody2D>().velocity = new Vector2(BulletSpeed, 0);
         }
         else
         {
             shotTransform.position = new Vector3(transform.position.x - 0.5f, transform.position.y, transform.position.z);
-            shotTransform.GetComponent<Rigidbody2D>().velocity = new Vector2(-bulletSpeed, 0);
+            shotTransform.GetComponent<Rigidbody2D>().velocity = new Vector2(-BulletSpeed, 0);
 
         }
-        audio.PlayOneShot(gunShot);
+        _audio.PlayOneShot(GunShot);
     }
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.name.Equals("ropeAttached") && up)
+
+        if (other.name.Equals("ropeAttached") && _up)
         {
-            inFrontOfLadder = true;
+            _inFrontOfLadder = true;
         }
 
         if (other.name.Equals("Bullet(Clone)"))
         {
-            health--;
-            if (health == 0)
-            {
-                // Death
-                dead = true;
-                localController.AlivePlayers.Remove(localController.AlivePlayers.Find(p => p.Num == playerNum));
-                Instantiate(explosion, transform.position, transform.rotation);
-                Destroy(gameObject);
-            }
-
-            switch (health)
+            Health--;
+            switch (Health)
             {
                 case 2:
-                    healthBarRender.sprite = health1;
-                    healthBarRender.enabled = true;
+                    _healthBarRender.sprite = _health1;
+                    _healthBarRender.enabled = true;
                     break;
                 case 1:
-                    healthBarRender.sprite = health2;
-                    healthBarRender.enabled = true;
+                    _healthBarRender.sprite = _health2;
+                    _healthBarRender.enabled = true;
+                    break;
+                case 0:
+                    _dead = true;
+                    Instantiate(Explosion, transform.position, transform.rotation);
+                    Destroy(gameObject);
+                    break;
+                default:
+                    Debug.LogError("Health not between 1 and 4!");
                     break;
             }
         }
+    }
+
+    void PlayerNumber(int number)
+    {
+        SetPlayerInfo(number);
+    }
+
+    void SetPlayerInfo(int num)
+    {
+        Control = _localPlayers[num - 1].Control;
+        _playerClass = _localPlayers[num - 1].Class;
     }
 
     void OnTriggerExit2D(Collider2D other)
     {
         if (other.name.Equals("ropeAttached"))
         {
-            inFrontOfLadder = false;
-            up = false;
+            _inFrontOfLadder = false;
+            _up = false;
         }
     }
 
