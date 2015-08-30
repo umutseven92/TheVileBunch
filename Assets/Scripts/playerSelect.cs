@@ -58,11 +58,11 @@ public class playerSelect : MonoBehaviour
         {
             SelectPlayer("j1");
         }
-        if (Input.GetButton("j2Submit") || Input.GetAxis("kVertical") >= 0.5f)
+        if (Input.GetButton("j2Submit"))
         {
             SelectPlayer("j2");
         }
-        if (Input.GetButton("j3Submit") || Input.GetAxis("kVertical") <= -0.5f)
+        if (Input.GetButton("j3Submit") )
         {
             SelectPlayer("j3");
         }
@@ -127,14 +127,12 @@ public class playerSelect : MonoBehaviour
         if (PlayerList.Count>= 2)
         {
             Play.enabled = true;
-            Play.GetComponentInChildren<CanvasRenderer>().SetAlpha(1);
-            Play.GetComponentInChildren<Text>().color = Color.black;
+            Play.Select();
         }
         else
         {
             Play.enabled = false;
-            Play.GetComponentInChildren<CanvasRenderer>().SetAlpha(0);
-            Play.GetComponentInChildren<Text>().color = Color.clear;
+            
         }
     }
 

@@ -26,6 +26,8 @@ public class playerControl : MonoBehaviour
     public Transform Bullet;
     public Transform HealthBar;
     public Transform Explosion;
+    public Transform BloodSplatter;
+    public Transform DeadPlayer;
     public AudioClip GunShot;
     public int Health = 3;
     public int Ammo = 3;
@@ -47,8 +49,16 @@ public class playerControl : MonoBehaviour
     private Sprite _health1Reverse;
     private Sprite _health2Reverse;
 
+    [HideInInspector]
     public string _playerClass;
+
     private List<playerSelect.Player> _localPlayers;
+
+    private double healthBarMs = 2.000d;
+    private bool paused = false;
+    private int playerNum = 0;
+
+    private bool first = true;
 
     // Use this for initialization
     void Awake()
@@ -68,19 +78,29 @@ public class playerControl : MonoBehaviour
         _localPlayers = playerSelect.PlayerList;
     }
 
+
     // Update is called once per frame
     void Update()
     {
+        if (first)
+        {
+            if (playerNum == 2 || playerNum == 4)
+            {
+                Flip();
+            }
+            first = false;
+        }
+
         _grounded = Physics2D.Linecast(transform.position, GroundCheck.position, 1 << LayerMask.NameToLayer("Ground"));
         _grounded2 = Physics2D.Linecast(transform.position, GroundCheck2.position, 1 << LayerMask.NameToLayer("Ground"));
 
 
-        if (Input.GetButtonDown(Control + "Jump") && ((_grounded || _grounded2) || _inFrontOfLadder))
+        if (Input.GetButtonDown(Control + "Jump") && ((_grounded || _grounded2) || _inFrontOfLadder) && !paused)
         {
             Jump = true;
         }
 
-        if (Input.GetButtonDown(Control + "Fire"))
+        if (Input.GetButtonDown(Control + "Fire") && !paused && Ammo > 0)
         {
             Shoot();
         }
@@ -97,7 +117,7 @@ public class playerControl : MonoBehaviour
         {
             _counter += 1 * Time.deltaTime;
 
-            if (_counter >= 2.000d)
+            if (_counter >= healthBarMs)
             {
                 _healthBarRender.enabled = false;
                 _counter = 0.000d;
@@ -118,46 +138,54 @@ public class playerControl : MonoBehaviour
 
         if (_inFrontOfLadder)
         {
-            _rb2D.gravityScale = 0;
-            _rb2D.velocity = Vector3.zero;
-
-
-            if (v * _rb2D.velocity.y < MaxSpeed)
+            if (!paused)
             {
-                _rb2D.AddForce(Vector2.up * v * MoveForce);
-            }
+                _rb2D.gravityScale = 0;
+                _rb2D.velocity = Vector3.zero;
 
-            if (Mathf.Abs(_rb2D.velocity.y) > MaxSpeed)
-            {
-                _rb2D.velocity = new Vector2(_rb2D.velocity.x, Mathf.Sign(_rb2D.velocity.y) * MaxSpeed);
+
+                if (v * _rb2D.velocity.y < MaxSpeed)
+                {
+                    _rb2D.AddForce(Vector2.up * v * MoveForce);
+                }
+
+                if (Mathf.Abs(_rb2D.velocity.y) > MaxSpeed)
+                {
+                    _rb2D.velocity = new Vector2(_rb2D.velocity.x, Mathf.Sign(_rb2D.velocity.y) * MaxSpeed);
+                }
+
             }
 
         }
         else
         {
-            _rb2D.gravityScale = 4;
-
-            if (h * _rb2D.velocity.x < MaxSpeed)
+            if (!paused)
             {
-                _rb2D.AddForce(Vector2.right * h * MoveForce);
-            }
+                _rb2D.gravityScale = 4;
 
-            if (Mathf.Abs(_rb2D.velocity.x) > MaxSpeed)
-            {
-                _rb2D.velocity = new Vector2(Mathf.Sign(_rb2D.velocity.x) * MaxSpeed, _rb2D.velocity.y);
-            }
+                if (h * _rb2D.velocity.x < MaxSpeed)
+                {
+                    _rb2D.AddForce(Vector2.right * h * MoveForce);
+                }
 
-            if (h != 0)
-            {
-                _animator.SetInteger("anim", 1);
+                if (Mathf.Abs(_rb2D.velocity.x) > MaxSpeed)
+                {
+                    _rb2D.velocity = new Vector2(Mathf.Sign(_rb2D.velocity.x) * MaxSpeed, _rb2D.velocity.y);
+                }
+
+                if (h != 0)
+                {
+                    _animator.SetInteger("anim", 1);
+                }
+
             }
         }
 
-        if (h > 0 && !FacingRight)
+        if (h > 0 && !FacingRight && !paused)
         {
             Flip();
         }
-        else if (h < 0 && FacingRight)
+        else if (h < 0 && FacingRight && !paused)
         {
             Flip();
         }
@@ -170,7 +198,7 @@ public class playerControl : MonoBehaviour
             }
 
             // JUMP
-            _rb2D.AddForce(new Vector2(0, JumpForce),ForceMode2D.Impulse);
+            _rb2D.AddForce(new Vector2(0, JumpForce), ForceMode2D.Impulse);
             Jump = false;
 
         }
@@ -228,6 +256,7 @@ public class playerControl : MonoBehaviour
 
         }
         _audio.PlayOneShot(GunShot);
+        Ammo--;
     }
 
     void OnTriggerEnter2D(Collider2D other)
@@ -252,8 +281,21 @@ public class playerControl : MonoBehaviour
                     _healthBarRender.enabled = true;
                     break;
                 case 0:
+                    // DEATH
                     _dead = true;
-                    Instantiate(Explosion, transform.position, transform.rotation);
+                    //Instantiate(Explosion, transform.position, transform.rotation);
+                    Instantiate(BloodSplatter, transform.position, transform.rotation);
+                    GameObject deadPlayer = Instantiate(DeadPlayer.gameObject, transform.position, transform.rotation) as GameObject;
+
+                    if (other.transform.position.x < this.transform.position.x)
+                    {
+                        deadPlayer.SendMessage("Die", "left");
+                    }
+                    else
+                    {
+                        deadPlayer.SendMessage("Die", "right");
+                    }
+
                     Destroy(gameObject);
                     break;
                 default:
@@ -270,6 +312,7 @@ public class playerControl : MonoBehaviour
 
     void SetPlayerInfo(int num)
     {
+        playerNum = num;
         Control = _localPlayers[num - 1].Control;
         _playerClass = _localPlayers[num - 1].Class;
     }
@@ -283,4 +326,13 @@ public class playerControl : MonoBehaviour
         }
     }
 
+    void Pause()
+    {
+        paused = true;
+    }
+
+    void UnPause()
+    {
+        paused = false;
+    }
 }

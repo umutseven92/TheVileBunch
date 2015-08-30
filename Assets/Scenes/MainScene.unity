@@ -406,7 +406,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22437152, guid: 0d3f98343404f874b9748f7ed003c767, type: 2}
       propertyPath: m_RootOrder
-      value: 8
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 22437152, guid: 0d3f98343404f874b9748f7ed003c767, type: 2}
       propertyPath: m_AnchoredPosition.x
@@ -474,7 +474,7 @@ MonoBehaviour:
   m_Script: {fileID: 708705254, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
 --- !u!114 &392384757 stripped
 MonoBehaviour:
-  m_PrefabParentObject: {fileID: 11454734, guid: 0d3f98343404f874b9748f7ed003c767,
+  m_PrefabParentObject: {fileID: 11457382, guid: 0d3f98343404f874b9748f7ed003c767,
     type: 2}
   m_PrefabInternal: {fileID: 392384753}
   m_Script: {fileID: 708705254, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}

@@ -159,11 +159,11 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
-  m_Volume: .5
+  m_Volume: .649999976
   m_Pitch: 1
   Loop: 0
   Mute: 0
-  Priority: 128
+  Priority: 65
   DopplerLevel: 1
   MinDistance: 1
   MaxDistance: 500
@@ -258,9 +258,12 @@ MonoBehaviour:
   Bullet: {fileID: 456820, guid: 63fe6d9b80059a248b8c801944bb1866, type: 2}
   HealthBar: {fileID: 476608}
   Explosion: {fileID: 457782, guid: aae430be8c9c11347a4f22f5ddab16c3, type: 2}
+  BloodSplatter: {fileID: 461058, guid: 56619b1abbf8cc0408a86f944e489a5b, type: 2}
+  DeadPlayer: {fileID: 477012, guid: d83ce1a25973b4d44aec557843b8c283, type: 2}
   GunShot: {fileID: 8300000, guid: 82543674d324cd449aaf9328d7647a71, type: 3}
   Health: 3
   Ammo: 3
+  _playerClass: 
 --- !u!114 &11452722
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -395,7 +398,7 @@ Prefab:
       objectReference: {fileID: 8300000, guid: 82543674d324cd449aaf9328d7647a71, type: 3}
     - target: {fileID: 0}
       propertyPath: m_Volume
-      value: .5
+      value: .649999976
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: healthBar
@@ -444,6 +447,26 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: JumpForce
       value: 17
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_Interpolate
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_Mass
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: DeadPlayer
+      value: 
+      objectReference: {fileID: 477012, guid: d83ce1a25973b4d44aec557843b8c283, type: 2}
+    - target: {fileID: 0}
+      propertyPath: BloodSplatter
+      value: 
+      objectReference: {fileID: 461058, guid: 56619b1abbf8cc0408a86f944e489a5b, type: 2}
+    - target: {fileID: 0}
+      propertyPath: Priority
+      value: 65
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

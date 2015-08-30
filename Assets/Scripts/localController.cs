@@ -20,6 +20,19 @@ public class localController : MonoBehaviour
 
     public Transform Player;
     private int _round = 1;
+    private double _counter = 0.000d;
+    private double gameOverCounter = 0.000d;
+    private double scoreCardMs = 1.500d;
+    private double gameOverMs = 3.000d;
+    private bool slowMo = false;
+    private double slowMoCounter = 0.000d;
+    private double slowMoMs = 1.500d;
+    private bool gameOver = false;
+
+    [HideInInspector]
+    public int score = 0;
+
+    private Dictionary<string, int> ClassScores = new Dictionary<string, int>();
 
     // Use this for initialization
     void Start()
@@ -28,12 +41,16 @@ public class localController : MonoBehaviour
 
         scoreCanvas.enabled = false;
 
-        if (speaker.GetComponent<AudioSource>() != null)
+        if (speaker != null) speaker.GetComponent<AudioSource>().Stop();
+
+        foreach (playerSelect.Player t in playerSelect.PlayerList)
         {
-            speaker.GetComponent<AudioSource>().Stop();
+            ClassScores.Add(t.Class,0);
         }
 
         CreatePlayers(playerSelect.PlayerList.Count);
+        SetScoreCard(1.ToString(),string.Empty, string.Empty);
+
     }
 
     void CreatePlayers(int playerCount)
@@ -79,27 +96,28 @@ public class localController : MonoBehaviour
 
     void Update()
     {
-        GameObject[] players = GameObject.FindGameObjectsWithTag("Player").Where(p=> p.transform.position != Vector3.zero).ToArray();
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player").Where(p => p.transform.position != Vector3.zero).ToArray();
 
+        CheckTimers(players);
 
         if (players.Length == 1)
         {
+            ClassScores[players[0].GetComponent<playerControl>()._playerClass]++;
+
             switch (_round)
             {
                 case 1:
-                    Debug.Log("Round One Over " + players[0].GetComponent<playerControl>()._playerClass);
                     _round++;
                     RestartGame(players);
                     break;
                 case 2:
-                    Debug.Log("Round Two Over " + players[0].GetComponent<playerControl>()._playerClass);
                     _round++;
                     RestartGame(players);
                     break;
                 case 3:
                     // Game over
-                    Debug.Log("Game Over");
-                    EndGame();
+                    slowMo = true;
+                    gameOver = true;
                     break;
                 default:
                     Debug.LogError("Round not between 1 or 4!");
@@ -108,12 +126,17 @@ public class localController : MonoBehaviour
         }
     }
 
-    void RestartGame(GameObject[] lastPlayers)
+    void CheckTimers(GameObject[] _players)
     {
 
-        roundText.text = _round.ToString();
-        classScoreText.text = lastPlayers[0].GetComponent<playerControl>()._playerClass;
-        scoreScoreText.text = 1.ToString();
+        ScoreCardTimer();
+        SlowMotionTimer();
+        GameOverTimer();
+    }
+
+    void RestartGame(GameObject[] lastPlayers)
+    {
+        SetScoreCard(_round.ToString(), lastPlayers[0].GetComponent<playerControl>()._playerClass, ClassScores[lastPlayers[0].GetComponent<playerControl>()._playerClass].ToString());
 
         foreach (var o in lastPlayers)
         {
@@ -123,8 +146,91 @@ public class localController : MonoBehaviour
         CreatePlayers(playerSelect.PlayerList.Count);
     }
 
+    void PauseAllPlayers()
+    {
+        GameObject[] allPlayers = GameObject.FindGameObjectsWithTag("Player").Where(p => p.transform.position != Vector3.zero).ToArray();
+
+        foreach (var allPlayer in allPlayers)
+        {
+            allPlayer.SendMessage("Pause");
+        }
+        
+    }
+
+    void UnPauseAllPlayers()
+    {
+        GameObject[] allPlayers = GameObject.FindGameObjectsWithTag("Player").Where(p => p.transform.position != Vector3.zero).ToArray();
+
+        foreach (var allPlayer in allPlayers)
+        {
+            allPlayer.SendMessage("UnPause");
+        }
+        
+    }
+
+
+    void SetScoreCard(string round, string winner, string score)
+    {
+        roundText.text = round;
+        classScoreText.text = winner;
+        scoreScoreText.text = score;
+
+        scoreCanvas.enabled = true;
+    }
+
+    private void ScoreCardTimer()
+    {
+        if (scoreCanvas.enabled)
+        {
+            PauseAllPlayers();
+            _counter += 1 * Time.deltaTime;
+
+            if (_counter >= scoreCardMs)
+            {
+                scoreCanvas.enabled = false;
+                UnPauseAllPlayers();
+                _counter = 0.000d;
+
+            }
+        }
+    }
+
+    private void SlowMotionTimer()
+    {
+        if (slowMo)
+        {
+            Time.timeScale = 0.4f;
+            slowMoCounter+= 1 * Time.deltaTime;
+
+            if (slowMoCounter >= slowMoMs)
+            {
+                Time.timeScale = 1f;
+                slowMo = false;
+                slowMoCounter = 0.000d;
+            }
+        }
+    }
+
+
+    private void GameOverTimer()
+    {
+        if (gameOver)
+        {
+            gameOverCounter+= 1 * Time.deltaTime;
+
+            if (gameOverCounter >= gameOverMs)
+            {
+                gameOver= false;
+                gameOverCounter = 0.000d;
+                EndGame();
+            }
+        }
+    }
+
+
     void EndGame()
     {
+        Time.timeScale = 1f;
         playerSelect.PlayerList = new List<playerSelect.Player>();
         Application.LoadLevel(1);
     }

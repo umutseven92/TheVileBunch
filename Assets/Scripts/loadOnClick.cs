@@ -10,6 +10,11 @@ public class loadOnClick : MonoBehaviour
         Application.LoadLevel(level);
     }
 
+    public void ResetPlayers()
+    {
+        playerSelect.PlayerList = new List<playerSelect.Player>();
+    }
+
     public void QuitGame()
     {
         Application.Quit();
