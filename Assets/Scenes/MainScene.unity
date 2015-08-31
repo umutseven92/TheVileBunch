@@ -452,6 +452,94 @@ Prefab:
       propertyPath: m_Name
       value: scoreCanvas
       objectReference: {fileID: 0}
+    - target: {fileID: 22395632, guid: 0d3f98343404f874b9748f7ed003c767, type: 2}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 1316708778}
+    - target: {fileID: 11420376, guid: 0d3f98343404f874b9748f7ed003c767, type: 2}
+      propertyPath: m_FontData.m_FontSize
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400058, guid: 0d3f98343404f874b9748f7ed003c767, type: 2}
+      propertyPath: m_FontData.m_FontSize
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 11494010, guid: 0d3f98343404f874b9748f7ed003c767, type: 2}
+      propertyPath: m_FontData.m_FontSize
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 22423830, guid: 0d3f98343404f874b9748f7ed003c767, type: 2}
+      propertyPath: m_AnchoredPosition.x
+      value: -110
+      objectReference: {fileID: 0}
+    - target: {fileID: 22423830, guid: 0d3f98343404f874b9748f7ed003c767, type: 2}
+      propertyPath: m_AnchoredPosition.y
+      value: -80
+      objectReference: {fileID: 0}
+    - target: {fileID: 22423830, guid: 0d3f98343404f874b9748f7ed003c767, type: 2}
+      propertyPath: m_SizeDelta.x
+      value: 1064
+      objectReference: {fileID: 0}
+    - target: {fileID: 22423830, guid: 0d3f98343404f874b9748f7ed003c767, type: 2}
+      propertyPath: m_SizeDelta.y
+      value: 240
+      objectReference: {fileID: 0}
+    - target: {fileID: 22458522, guid: 0d3f98343404f874b9748f7ed003c767, type: 2}
+      propertyPath: m_AnchoredPosition.y
+      value: -80
+      objectReference: {fileID: 0}
+    - target: {fileID: 22458522, guid: 0d3f98343404f874b9748f7ed003c767, type: 2}
+      propertyPath: m_SizeDelta.y
+      value: 240
+      objectReference: {fileID: 0}
+    - target: {fileID: 22458522, guid: 0d3f98343404f874b9748f7ed003c767, type: 2}
+      propertyPath: m_AnchoredPosition.x
+      value: 614
+      objectReference: {fileID: 0}
+    - target: {fileID: 22458522, guid: 0d3f98343404f874b9748f7ed003c767, type: 2}
+      propertyPath: m_SizeDelta.x
+      value: 75
+      objectReference: {fileID: 0}
+    - target: {fileID: 11454734, guid: 0d3f98343404f874b9748f7ed003c767, type: 2}
+      propertyPath: m_FontData.m_FontSize
+      value: 175
+      objectReference: {fileID: 0}
+    - target: {fileID: 11457382, guid: 0d3f98343404f874b9748f7ed003c767, type: 2}
+      propertyPath: m_FontData.m_FontSize
+      value: 175
+      objectReference: {fileID: 0}
+    - target: {fileID: 22487010, guid: 0d3f98343404f874b9748f7ed003c767, type: 2}
+      propertyPath: m_AnchoredPosition.x
+      value: -71
+      objectReference: {fileID: 0}
+    - target: {fileID: 22487010, guid: 0d3f98343404f874b9748f7ed003c767, type: 2}
+      propertyPath: m_AnchoredPosition.y
+      value: 152
+      objectReference: {fileID: 0}
+    - target: {fileID: 22487010, guid: 0d3f98343404f874b9748f7ed003c767, type: 2}
+      propertyPath: m_SizeDelta.x
+      value: 401
+      objectReference: {fileID: 0}
+    - target: {fileID: 22487010, guid: 0d3f98343404f874b9748f7ed003c767, type: 2}
+      propertyPath: m_SizeDelta.y
+      value: 184
+      objectReference: {fileID: 0}
+    - target: {fileID: 22432674, guid: 0d3f98343404f874b9748f7ed003c767, type: 2}
+      propertyPath: m_AnchoredPosition.x
+      value: 229
+      objectReference: {fileID: 0}
+    - target: {fileID: 22432674, guid: 0d3f98343404f874b9748f7ed003c767, type: 2}
+      propertyPath: m_AnchoredPosition.y
+      value: 155
+      objectReference: {fileID: 0}
+    - target: {fileID: 22432674, guid: 0d3f98343404f874b9748f7ed003c767, type: 2}
+      propertyPath: m_SizeDelta.x
+      value: 98
+      objectReference: {fileID: 0}
+    - target: {fileID: 22432674, guid: 0d3f98343404f874b9748f7ed003c767, type: 2}
+      propertyPath: m_SizeDelta.y
+      value: 177
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 0d3f98343404f874b9748f7ed003c767, type: 2}
   m_IsPrefabParent: 0
@@ -886,6 +974,7 @@ MonoBehaviour:
   classScoreText: {fileID: 392384755}
   scoreScoreText: {fileID: 392384756}
   Player: {fileID: 441362, guid: 4456e3fb88ab8f149aaaf96cbab5e546, type: 2}
+  score: 0
 --- !u!4 &1042346985
 Transform:
   m_ObjectHideFlags: 0

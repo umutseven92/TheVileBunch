@@ -15,7 +15,9 @@ public class BulletScript : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if (!other.name.Equals("ropeAttached"))
+        string name = other.name;
+
+        if (!name.Equals("ropeAttached") && !name.Equals("slash_0(Clone)"))
         {
             Destroy(gameObject);
         }

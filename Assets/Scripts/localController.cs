@@ -143,6 +143,11 @@ public class localController : MonoBehaviour
             Destroy(o);
         }
 
+        foreach (var s in GameObject.FindGameObjectsWithTag("Slash"))
+        {
+            Destroy(s);
+        }
+
         CreatePlayers(playerSelect.PlayerList.Count);
     }
 

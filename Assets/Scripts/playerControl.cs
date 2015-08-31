@@ -2,6 +2,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 public class playerControl : MonoBehaviour
 {
@@ -28,7 +29,10 @@ public class playerControl : MonoBehaviour
     public Transform Explosion;
     public Transform BloodSplatter;
     public Transform DeadPlayer;
+    public Transform SwordSlash;
+
     public AudioClip GunShot;
+    public AudioClip SlashClip;
     public int Health = 3;
     public int Ammo = 3;
 
@@ -42,6 +46,7 @@ public class playerControl : MonoBehaviour
     private Animator _animator;
     private SpriteRenderer _healthBarRender;
     private bool _dead = false;
+    private const float slashOffset = 0.8f;
 
     private Sprite _health1;
     private Sprite _health2;
@@ -54,11 +59,22 @@ public class playerControl : MonoBehaviour
 
     private List<playerSelect.Player> _localPlayers;
 
-    private double healthBarMs = 2.000d;
+    private const double healthBarMs = 2.000d;
     private bool paused = false;
-    private int playerNum = 0;
+
+    [HideInInspector]
+    public int playerNum = 0;
 
     private bool first = true;
+
+    private GameObject SlashCol;
+
+    private bool _slashing = false;
+    private double _slashingCounter = 0.000d;
+    private const double _slashingMs = 0.5d;
+
+    private const int pushX = 500;
+    private const int pushY = 400;
 
     // Use this for initialization
     void Awake()
@@ -76,6 +92,13 @@ public class playerControl : MonoBehaviour
         _healthBarRender = HealthBar.GetComponent<SpriteRenderer>();
 
         _localPlayers = playerSelect.PlayerList;
+
+        SlashCol = Instantiate(SwordSlash.gameObject,
+            FacingRight
+                ? new Vector3(transform.position.x + slashOffset, transform.position.y, transform.position.y)
+                : new Vector3(transform.position.x - slashOffset, transform.position.y, transform.position.y),
+            transform.rotation) as GameObject;
+
     }
 
 
@@ -105,11 +128,21 @@ public class playerControl : MonoBehaviour
             Shoot();
         }
 
+        if (Input.GetButtonDown(Control + "Slash") && !paused && !_slashing)
+        {
+            Slash();
+        }
+
         _up = Input.GetAxis(Control + "Vertical") > 0.3f;
 
-        CheckHealthBar();
+        CheckTimers();
+        UpdateSlashColPos();
     }
 
+    void UpdateSlashColPos()
+    {
+        SlashCol.transform.position = FacingRight ? new Vector3(transform.position.x + slashOffset, transform.position.y, transform.position.z) : new Vector3(transform.position.x - slashOffset, transform.position.y, transform.position.z);
+    }
 
     private void CheckHealthBar()
     {
@@ -121,6 +154,26 @@ public class playerControl : MonoBehaviour
             {
                 _healthBarRender.enabled = false;
                 _counter = 0.000d;
+            }
+        }
+    }
+
+    private void CheckTimers()
+    {
+        CheckHealthBar();
+        CheckSlashingTimer();
+    }
+
+    private void CheckSlashingTimer()
+    {
+        if (_slashing)
+        {
+            _slashingCounter += 1 * Time.deltaTime;
+            if (_slashingCounter >= _slashingMs)
+            {
+                _slashing = false;
+                SlashCol.SendMessage("GetCol", _slashing);
+                _slashingCounter = 0.000d;
             }
         }
     }
@@ -240,6 +293,13 @@ public class playerControl : MonoBehaviour
 
     }
 
+    void Slash()
+    {
+        _slashing = true;
+        SlashCol.SendMessage("GetCol", _slashing);
+        _audio.PlayOneShot(SlashClip);
+    }
+
     void Shoot()
     {
         var shotTransform = Instantiate(Bullet) as Transform;
@@ -270,38 +330,88 @@ public class playerControl : MonoBehaviour
         if (other.name.Equals("Bullet(Clone)"))
         {
             Health--;
-            switch (Health)
-            {
-                case 2:
-                    _healthBarRender.sprite = _health1;
-                    _healthBarRender.enabled = true;
-                    break;
-                case 1:
-                    _healthBarRender.sprite = _health2;
-                    _healthBarRender.enabled = true;
-                    break;
-                case 0:
-                    // DEATH
-                    _dead = true;
-                    //Instantiate(Explosion, transform.position, transform.rotation);
-                    Instantiate(BloodSplatter, transform.position, transform.rotation);
-                    GameObject deadPlayer = Instantiate(DeadPlayer.gameObject, transform.position, transform.rotation) as GameObject;
 
-                    if (other.transform.position.x < this.transform.position.x)
+            // Small push
+            if (other.gameObject.transform.position.x < this.transform.position.x)
+            {
+                _rb2D.AddForce(new Vector2(pushX, pushY));
+            }
+            else
+            {
+                _rb2D.AddForce(new Vector2(-pushY, pushY));
+            }
+
+            CheckHealth(other);
+        }
+
+        if (other.name.StartsWith("slash"))
+        {
+            if (other.GetComponent<slashScript>().num != playerNum && other.GetComponent<slashScript>().slashing)
+            {
+                Health--;
+
+                if (Health > 0)
+                {
+                    float pX = 0f;
+
+                    GameObject[] go = GameObject.FindGameObjectsWithTag("Player");
+
+                    foreach (var g in go)
                     {
-                        deadPlayer.SendMessage("Die", "left");
+                        if (g.gameObject.GetComponent<playerControl>().playerNum == other.GetComponent<slashScript>().num)
+                        {
+                            pX = g.transform.position.x;
+                        }
+                    }
+
+                    // Small push
+                    if (pX < this.transform.position.x)
+                    {
+                        _rb2D.AddForce(new Vector2(pushX, pushY));
                     }
                     else
                     {
-                        deadPlayer.SendMessage("Die", "right");
+                        _rb2D.AddForce(new Vector2(-pushX, pushY));
                     }
-
-                    Destroy(gameObject);
-                    break;
-                default:
-                    Debug.LogError("Health not between 1 and 4!");
-                    break;
+                }
+                CheckHealth(other);
             }
+        }
+    }
+
+    void CheckHealth(Collider2D other)
+    {
+
+        switch (Health)
+        {
+            case 2:
+                _healthBarRender.sprite = _health1;
+                _healthBarRender.enabled = true;
+                break;
+            case 1:
+                _healthBarRender.sprite = _health2;
+                _healthBarRender.enabled = true;
+                break;
+            case 0:
+                // DEATH
+                _dead = true;
+                Instantiate(BloodSplatter, transform.position, transform.rotation);
+                GameObject deadPlayer = Instantiate(DeadPlayer.gameObject, transform.position, transform.rotation) as GameObject;
+
+                if (other.transform.position.x < this.transform.position.x)
+                {
+                    deadPlayer.SendMessage("Die", "left");
+                }
+                else
+                {
+                    deadPlayer.SendMessage("Die", "right");
+                }
+
+                Destroy(gameObject);
+                break;
+            default:
+                Debug.LogError("Health not between 1 and 4!");
+                break;
         }
     }
 
@@ -315,6 +425,7 @@ public class playerControl : MonoBehaviour
         playerNum = num;
         Control = _localPlayers[num - 1].Control;
         _playerClass = _localPlayers[num - 1].Class;
+        SlashCol.SendMessage("GetPlayerNum", playerNum);
     }
 
     void OnTriggerExit2D(Collider2D other)

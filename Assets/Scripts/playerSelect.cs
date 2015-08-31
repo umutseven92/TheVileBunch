@@ -17,12 +17,10 @@ public class playerSelect : MonoBehaviour
 
     public static List<Player> PlayerList = new List<Player>();
 
-    private readonly string[] _classes = new[] {"The Cowboy", "The Dancer", "The Doctor", "The Prospector"};
+    private readonly string[] _classes = new[] { "The Cowboy", "The Dancer", "The Prospector", "The Amazon", "The Pirate", "The Unknown" };
 
-    private string _firstPlace;
-    private string _secondPlace;
-    private string _thirdPlace;
-    private string _fourthPlace;
+
+    private Dictionary<int, Player> controlPosition = new Dictionary<int, Player>();
 
     // Use this for initialization
     void Start()
@@ -37,18 +35,55 @@ public class playerSelect : MonoBehaviour
             return;
         }
 
+        string pClass = _classes[PlayerList.Count];
+
         Player p = new Player
         {
             Control = control,
-            Class = _classes[PlayerList.Count]
+            Class = pClass
         };
         PlayerList.Add(p);
-        SetPlayerText(control);
+
+        controlPosition[PlayerList.Count] = p;
+
         Source.PlayOneShot(Clip);
+
+        UpdateSelect(controlPosition);
     }
 
-    // Update is called once per frame
-    void Update()
+    void ChangePlayer(string control, int dir)
+    {
+
+    }
+
+    void UpdateSelect(Dictionary<int , Player> dict)
+    {
+        P1Text.text = "Press Start";
+        P2Text.text = "Press Start";
+        P3Text.text = "Press Start";
+        P4Text.text = "Press Start";
+
+        foreach (var i in dict)
+        {
+            switch (i.Key)
+            {
+                case 1:
+                    P1Text.text = dict[i.Key].Class;
+                    break; 
+                case 2: 
+                    P2Text.text = dict[i.Key].Class;
+                    break;
+                case 3:
+                    P3Text.text = dict[i.Key].Class;
+                    break;
+                case 4:
+                    P4Text.text = dict[i.Key].Class;
+                    break;
+            }
+        }
+    }
+
+    void CheckSubmit()
     {
         if (Input.GetButton("kSubmit"))
         {
@@ -62,7 +97,7 @@ public class playerSelect : MonoBehaviour
         {
             SelectPlayer("j2");
         }
-        if (Input.GetButton("j3Submit") )
+        if (Input.GetButton("j3Submit"))
         {
             SelectPlayer("j3");
         }
@@ -70,7 +105,56 @@ public class playerSelect : MonoBehaviour
         {
             SelectPlayer("j4");
         }
+        
+    }
 
+    void CheckHorizontal()
+    {
+        if (Input.GetAxis("kHorizontal") > 0)
+        {
+            ChangePlayer("k", 1);
+        }
+        else if (Input.GetAxis("kHorizontal") < 0)
+        {
+            ChangePlayer("k", -1);
+        }
+        if (Input.GetAxis("j1Horizontal") > 0)
+        {
+            ChangePlayer("j1", 1);
+        }
+        else if (Input.GetAxis("j1Horizontal") < 0)
+        {
+            ChangePlayer("j1", -1);
+        }
+        if (Input.GetAxis("j2Horizontal") > 0)
+        {
+            ChangePlayer("j2", 1);
+        }
+        else if (Input.GetAxis("j2Horizontal") < 0)
+        {
+            ChangePlayer("j2", -1);
+        }
+        if (Input.GetAxis("j3Horizontal") > 0)
+        {
+            ChangePlayer("j3", 1);
+        }
+        else if (Input.GetAxis("j3Horizontal") < 0)
+        {
+            ChangePlayer("j3", -1);
+        }
+        if (Input.GetAxis("j4Horizontal") > 0)
+        {
+            ChangePlayer("j4", 1);
+        }
+
+        else if (Input.GetAxis("j4Horizontal") < 0)
+        {
+            ChangePlayer("j4", -1);
+        }
+    }
+
+    void CheckCancel()
+    {
         if (Input.GetButton("kCancel"))
         {
             RemovePlayer("k");
@@ -91,8 +175,22 @@ public class playerSelect : MonoBehaviour
         {
             RemovePlayer("j4");
         }
+        
+    }
 
+    void CheckInputs()
+    {
+        CheckSubmit();
+        CheckHorizontal();
+        CheckCancel();
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        CheckInputs();
         UpdatePlayButton();
+
     }
 
     private void RemovePlayer(string control)
@@ -103,64 +201,24 @@ public class playerSelect : MonoBehaviour
         }
         PlayerList.Remove(PlayerList.First(p => p.Control == control));
 
-        if (control == _firstPlace)
-        {
-            P1Text.text = "Press Start";
-        }
-        else if (control == _secondPlace)
-        {
-            P2Text.text = "Press Start";
-        }
-        else if (control == _thirdPlace)
-        {
-            P3Text.text = "Press Start";
-        }
-        else if (control == _fourthPlace)
-        {
-            P4Text.text = "Press Start";
-        }
+        controlPosition.Remove(controlPosition.First(p => p.Value.Control == control).Key);
 
+        UpdateSelect(controlPosition);
     }
 
     private void UpdatePlayButton()
     {
-        if (PlayerList.Count>= 2)
+        if (PlayerList.Count >= 2)
         {
             Play.enabled = true;
-            Play.Select();
         }
         else
         {
             Play.enabled = false;
-            
+
         }
     }
 
-    private void SetPlayerText(string control)
-    {
-        switch (PlayerList.Count)
-        {
-            case 1:
-                P1Text.text = _classes[PlayerList.Count-1];
-                _firstPlace = control;
-                break;
-            case 2:
-                P2Text.text = _classes[PlayerList.Count-1];
-                _secondPlace = control;
-                break;
-            case 3:
-                P3Text.text = _classes[PlayerList.Count-1];
-                _thirdPlace = control;
-                break;
-            case 4:
-                P4Text.text = _classes[PlayerList.Count-1];
-                _fourthPlace = control;
-                break;
-            default:
-                Debug.LogError("Player count not between 1 and 5!");
-                break;
-        }
-    }
 
     public class Player
     {
