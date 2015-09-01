@@ -20,4 +20,9 @@ public class loadOnClick : MonoBehaviour
         Application.Quit();
     }
 
+    public void EndLocalGame()
+    {
+        playerSelect.PlayerList = new List<playerSelect.Player>();
+        Application.LoadLevel(1);
+    }
 }

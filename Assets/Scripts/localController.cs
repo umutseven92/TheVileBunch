@@ -14,9 +14,11 @@ public class localController : MonoBehaviour
     public Vector3 PlayerFourSpawn = new Vector3(6.00f, -2.07f, 0);
 
     public Canvas scoreCanvas;
+    public Canvas endGameCanvas;
     public Text roundText;
     public Text classScoreText;
     public Text scoreScoreText;
+    public Text winnerText;
 
     public Transform Player;
     private int _round = 1;
@@ -37,9 +39,15 @@ public class localController : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+
+        if (Time.timeScale < 1.0f)
+        {
+            Time.timeScale = 1f;
+        }
         GameObject speaker = GameObject.Find("Speaker");
 
         scoreCanvas.enabled = false;
+        endGameCanvas.enabled = false;
 
         if (speaker != null) speaker.GetComponent<AudioSource>().Stop();
 
@@ -174,6 +182,13 @@ public class localController : MonoBehaviour
     }
 
 
+    void SetEndGameCard(string winner)
+    {
+        winnerText.text = winner;
+        PauseAllPlayers();
+        endGameCanvas.enabled = true;
+    }
+
     void SetScoreCard(string round, string winner, string score)
     {
         roundText.text = round;
@@ -204,7 +219,7 @@ public class localController : MonoBehaviour
     {
         if (slowMo)
         {
-            Time.timeScale = 0.4f;
+            Time.timeScale = 0.2f;
             slowMoCounter+= 1 * Time.deltaTime;
 
             if (slowMoCounter >= slowMoMs)
@@ -212,6 +227,15 @@ public class localController : MonoBehaviour
                 Time.timeScale = 1f;
                 slowMo = false;
                 slowMoCounter = 0.000d;
+
+                if (ClassScores.Keys.Count(k => ClassScores[k] == ClassScores.Values.Max()) > 1)
+                {
+                    Debug.Log("Multiple Winners!");  
+                }
+
+                string winner = ClassScores.Keys.First(k => ClassScores[k] == ClassScores.Values.Max());
+                SetEndGameCard(winner);
+
             }
         }
     }
@@ -223,20 +247,14 @@ public class localController : MonoBehaviour
         {
             gameOverCounter+= 1 * Time.deltaTime;
 
+
             if (gameOverCounter >= gameOverMs)
             {
                 gameOver= false;
                 gameOverCounter = 0.000d;
-                EndGame();
             }
         }
     }
 
 
-    void EndGame()
-    {
-        Time.timeScale = 1f;
-        playerSelect.PlayerList = new List<playerSelect.Player>();
-        Application.LoadLevel(1);
-    }
 }
