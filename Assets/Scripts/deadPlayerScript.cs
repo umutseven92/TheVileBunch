@@ -11,6 +11,13 @@ public class deadPlayerScript : MonoBehaviour
         Destroy(gameObject, 2f);
     }
 
+    // Update is called once per frame
+    void Update()
+    {
+        transform.Rotate(Vector3.forward * degreesPerSecond * Time.deltaTime);
+
+    }
+
     void Die(string hit)
     {
         if (hit.Equals("right"))
@@ -19,14 +26,8 @@ public class deadPlayerScript : MonoBehaviour
         }
         else
         {
-            GetComponent<Rigidbody2D>().AddForce(new Vector2(15,30), ForceMode2D.Impulse);
+            GetComponent<Rigidbody2D>().AddForce(new Vector2(15, 30), ForceMode2D.Impulse);
         }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        transform.Rotate(Vector3.forward * degreesPerSecond * Time.deltaTime);
-
-    }
 }

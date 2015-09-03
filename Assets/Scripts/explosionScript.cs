@@ -3,7 +3,6 @@ using System.Collections;
 
 public class explosionScript : MonoBehaviour
 {
-
     public AudioClip explosion;
 
 	// Use this for initialization
@@ -17,9 +16,4 @@ public class explosionScript : MonoBehaviour
 
         audioSource.PlayOneShot(explosion);
     }
-
-	// Update is called once per frame
-	void Update () {
-	
-	}
 }

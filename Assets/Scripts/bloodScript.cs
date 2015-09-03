@@ -15,9 +15,4 @@ public class bloodScript : MonoBehaviour
         AudioSource audioSource = GetComponent<AudioSource>();
         audioSource.PlayOneShot(splat);
     }
-
-	// Update is called once per frame
-	void Update () {
-	
-	}
 }

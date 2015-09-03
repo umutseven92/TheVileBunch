@@ -7,39 +7,39 @@ using UnityEngine.UI;
 
 public class localController : MonoBehaviour
 {
+    [HideInInspector]
+    public int score = 0;
 
     public Vector3 PlayerOneSpawn = new Vector3(-6.98f, 3.06f, 0);
     public Vector3 PlayerTwoSpawn = new Vector3(7.02f, 3.06f, 0);
     public Vector3 PlayerThreeSpawn = new Vector3(-7.28f, -1.1f, 0);
     public Vector3 PlayerFourSpawn = new Vector3(7.25f, -1.1f, 0);
-
     public Canvas scoreCanvas;
     public Canvas endGameCanvas;
     public Text roundText;
     public Text classScoreText;
     public Text scoreScoreText;
     public Text winnerText;
-
     public Transform Player;
+
     private int _round = 1;
+
+    private bool gameOver = false;
     private double _counter = 0.000d;
     private double gameOverCounter = 0.000d;
-    private double scoreCardMs = 1.500d;
     private double gameOverMs = 3.000d;
+
     private bool slowMo = false;
     private double slowMoCounter = 0.000d;
     private double slowMoMs = 1.500d;
-    private bool gameOver = false;
 
-    [HideInInspector]
-    public int score = 0;
+    private double scoreCardMs = 1.500d;
 
     private Dictionary<string, int> ClassScores = new Dictionary<string, int>();
 
     // Use this for initialization
     void Start()
     {
-
         if (Time.timeScale < 1.0f)
         {
             Time.timeScale = 1f;
@@ -53,12 +53,49 @@ public class localController : MonoBehaviour
 
         foreach (playerSelect.Player t in playerSelect.PlayerList)
         {
-            ClassScores.Add(t.Class,0);
+            ClassScores.Add(t.Class, 0);
         }
 
         CreatePlayers(playerSelect.PlayerList.Count);
-        SetScoreCard(1.ToString(),string.Empty, string.Empty);
+        SetScoreCard(1.ToString(), string.Empty, string.Empty);
 
+    }
+
+    void Update()
+    {
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player").Where(p => p.transform.position != Vector3.zero).ToArray();
+
+        CheckTimers(players);
+
+        if (players.Length == 1 && !gameOver)
+        {
+            ClassScores[players[0].GetComponent<playerControl>()._playerClass]++;
+
+            foreach (var player in ClassScores)
+            {
+                Debug.Log(player.Key + " - " + player.Value);
+            }
+
+            switch (_round)
+            {
+                case 1:
+                    _round++;
+                    RestartGame(players);
+                    break;
+                case 2:
+                    _round++;
+                    RestartGame(players);
+                    break;
+                case 3:
+                    // Game over
+                    slowMo = true;
+                    gameOver = true;
+                    break;
+                default:
+                    Debug.LogError("Round not between 1 or 4!");
+                    break;
+            }
+        }
     }
 
     void CreatePlayers(int playerCount)
@@ -102,44 +139,13 @@ public class localController : MonoBehaviour
 
     }
 
-    void Update()
-    {
-        GameObject[] players = GameObject.FindGameObjectsWithTag("Player").Where(p => p.transform.position != Vector3.zero).ToArray();
-
-        CheckTimers(players);
-
-        if (players.Length == 1)
-        {
-            ClassScores[players[0].GetComponent<playerControl>()._playerClass]++;
-
-            switch (_round)
-            {
-                case 1:
-                    _round++;
-                    RestartGame(players);
-                    break;
-                case 2:
-                    _round++;
-                    RestartGame(players);
-                    break;
-                case 3:
-                    // Game over
-                    slowMo = true;
-                    gameOver = true;
-                    break;
-                default:
-                    Debug.LogError("Round not between 1 or 4!");
-                    break;
-            }
-        }
-    }
 
     void CheckTimers(GameObject[] _players)
     {
 
         ScoreCardTimer();
         SlowMotionTimer();
-        GameOverTimer();
+        //  GameOverTimer();
     }
 
     void RestartGame(GameObject[] lastPlayers)
@@ -167,7 +173,7 @@ public class localController : MonoBehaviour
         {
             allPlayer.SendMessage("Pause");
         }
-        
+
     }
 
     void UnPauseAllPlayers()
@@ -178,7 +184,7 @@ public class localController : MonoBehaviour
         {
             allPlayer.SendMessage("UnPause");
         }
-        
+
     }
 
 
@@ -220,7 +226,7 @@ public class localController : MonoBehaviour
         if (slowMo)
         {
             Time.timeScale = 0.2f;
-            slowMoCounter+= 1 * Time.deltaTime;
+            slowMoCounter += 1 * Time.deltaTime;
 
             if (slowMoCounter >= slowMoMs)
             {
@@ -228,29 +234,37 @@ public class localController : MonoBehaviour
                 slowMo = false;
                 slowMoCounter = 0.000d;
 
-                if (ClassScores.Keys.Count(k => ClassScores[k] == ClassScores.Values.Max()) > 1)
-                {
-                    Debug.Log("Multiple Winners!");  
-                }
+                Dictionary<string, int> winners = ClassScores.Where(classScore => classScore.Value == ClassScores.Values.Max()).ToDictionary(classScore => classScore.Key, classScore => classScore.Value);
 
-                string winner = ClassScores.Keys.First(k => ClassScores[k] == ClassScores.Values.Max());
-                SetEndGameCard(winner);
+                if (winners.Count == 1)
+                {
+                    // One winner
+                    SetEndGameCard(winners.Keys.First());
+                }
+                else if (winners.Count == 2)
+                {
+                    // Two winners, showdown!
+                    Debug.Log("Multiple Winners");
+                }
+                else if (winners.Count == 3)
+                {
+                    // Three winners, one more round
+                }
 
             }
         }
     }
 
-
     private void GameOverTimer()
     {
         if (gameOver)
         {
-            gameOverCounter+= 1 * Time.deltaTime;
+            gameOverCounter += 1 * Time.deltaTime;
 
 
             if (gameOverCounter >= gameOverMs)
             {
-                gameOver= false;
+                gameOver = false;
                 gameOverCounter = 0.000d;
             }
         }

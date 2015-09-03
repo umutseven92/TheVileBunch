@@ -14,7 +14,6 @@ public class playerSelect : MonoBehaviour
     public Text P2Text;
     public Text P3Text;
     public Text P4Text;
-
     public Image p1Image;
     public Image p2Image;
     public Image p3Image;
@@ -29,14 +28,12 @@ public class playerSelect : MonoBehaviour
 
     private readonly string[] _classes = new[] { "The Cowboy", "The Dancer", "The Prospector", "The Pirate" };
 
-
     private Dictionary<int, Player> controlPosition = new Dictionary<int, Player>();
 
     // Use this for initialization
     void Start()
     {
         Play.enabled = false;
-
         cowboyImage = Resources.Load<Sprite>("cowboy");
         dancerImage = Resources.Load<Sprite>("dancer");
         prospectorImage = Resources.Load<Sprite>("prospector");
@@ -44,88 +41,19 @@ public class playerSelect : MonoBehaviour
 
     }
 
-    private void SelectPlayer(string control)
+    // Update is called once per frame
+    void Update()
     {
-        if (PlayerList.Count >= 4 || PlayerList.Any(player => player.Control == control))
-        {
-            return;
-        }
-
-        string pClass = _classes[PlayerList.Count];
-
-        Player p = new Player
-        {
-            Control = control,
-            Class = pClass
-        };
-        PlayerList.Add(p);
-
-        controlPosition[PlayerList.Count] = p;
-
-        Source.PlayOneShot(Clip);
-
-        UpdateSelect(controlPosition);
+        CheckInputs();
+        UpdatePlayButton();
     }
 
-    void ChangePlayer(string control, int dir)
+    void CheckInputs()
     {
-
+        CheckSubmit();
+        CheckHorizontal();
+        CheckCancel();
     }
-
-    void UpdateSelect(Dictionary<int, Player> dict)
-    {
-        P1Text.text = "Press Start";
-        P2Text.text = "Press Start";
-        P3Text.text = "Press Start";
-        P4Text.text = "Press Start";
-
-        foreach (var i in dict)
-        {
-            switch (i.Key)
-            {
-                case 1:
-                    P1Text.text = dict[i.Key].Class;
-                    SetClassImage(P1Text.text, p1Image);
-                    break;
-                case 2:
-                    P2Text.text = dict[i.Key].Class;
-                    SetClassImage(P2Text.text, p2Image);
-                    break;
-                case 3:
-                    P3Text.text = dict[i.Key].Class;
-                    SetClassImage(P3Text.text, p3Image);
-                    break;
-                case 4:
-                    P4Text.text = dict[i.Key].Class;
-                    SetClassImage(P4Text.text, p4Image);
-                    break;
-            }
-        }
-    }
-
-    void SetClassImage(string pClass, Image image)
-    {
-        image.color = Color.white;
-       
-        if (pClass.Equals("The Cowboy"))
-        {
-            image.sprite = cowboyImage;
-        }
-        else if(pClass.Equals("The Dancer"))
-        {
-            image.sprite = dancerImage;
-        }
-        else if(pClass.Equals("The Prospector"))
-        {
-            image.sprite = prospectorImage;
-        }
-        else if(pClass.Equals("The Pirate"))
-        {
-            image.sprite = pirateImage;
-        }
-
-    }
-
 
     void CheckSubmit()
     {
@@ -222,20 +150,89 @@ public class playerSelect : MonoBehaviour
 
     }
 
-    void CheckInputs()
+
+    private void SelectPlayer(string control)
     {
-        CheckSubmit();
-        CheckHorizontal();
-        CheckCancel();
+        if (PlayerList.Count >= 4 || PlayerList.Any(player => player.Control == control))
+        {
+            return;
+        }
+
+        string pClass = _classes[PlayerList.Count];
+
+        Player p = new Player
+        {
+            Control = control,
+            Class = pClass
+        };
+        PlayerList.Add(p);
+
+        controlPosition[PlayerList.Count] = p;
+
+        Source.PlayOneShot(Clip);
+
+        UpdateSelect(controlPosition);
     }
 
-    // Update is called once per frame
-    void Update()
+    void ChangePlayer(string control, int dir)
     {
-        CheckInputs();
-        UpdatePlayButton();
 
     }
+
+    void UpdateSelect(Dictionary<int, Player> dict)
+    {
+        P1Text.text = "Press Start";
+        P2Text.text = "Press Start";
+        P3Text.text = "Press Start";
+        P4Text.text = "Press Start";
+
+        foreach (var i in dict)
+        {
+            switch (i.Key)
+            {
+                case 1:
+                    P1Text.text = dict[i.Key].Class;
+                    SetClassImage(P1Text.text, p1Image);
+                    break;
+                case 2:
+                    P2Text.text = dict[i.Key].Class;
+                    SetClassImage(P2Text.text, p2Image);
+                    break;
+                case 3:
+                    P3Text.text = dict[i.Key].Class;
+                    SetClassImage(P3Text.text, p3Image);
+                    break;
+                case 4:
+                    P4Text.text = dict[i.Key].Class;
+                    SetClassImage(P4Text.text, p4Image);
+                    break;
+            }
+        }
+    }
+
+    void SetClassImage(string pClass, Image image)
+    {
+        image.color = Color.white;
+
+        if (pClass.Equals("The Cowboy"))
+        {
+            image.sprite = cowboyImage;
+        }
+        else if (pClass.Equals("The Dancer"))
+        {
+            image.sprite = dancerImage;
+        }
+        else if (pClass.Equals("The Prospector"))
+        {
+            image.sprite = prospectorImage;
+        }
+        else if (pClass.Equals("The Pirate"))
+        {
+            image.sprite = pirateImage;
+        }
+
+    }
+
 
     private void RemovePlayer(string control)
     {
@@ -262,7 +259,6 @@ public class playerSelect : MonoBehaviour
 
         }
     }
-
 
     public class Player
     {

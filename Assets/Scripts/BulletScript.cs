@@ -3,7 +3,6 @@ using System.Collections;
 
 public class BulletScript : MonoBehaviour
 {
-
     private bool first = true;
     public int damage = 1;
 
