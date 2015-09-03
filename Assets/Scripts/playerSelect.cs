@@ -15,9 +15,19 @@ public class playerSelect : MonoBehaviour
     public Text P3Text;
     public Text P4Text;
 
+    public Image p1Image;
+    public Image p2Image;
+    public Image p3Image;
+    public Image p4Image;
+
+    private Sprite cowboyImage;
+    private Sprite dancerImage;
+    private Sprite prospectorImage;
+    private Sprite pirateImage;
+
     public static List<Player> PlayerList = new List<Player>();
 
-    private readonly string[] _classes = new[] { "The Cowboy", "The Dancer", "The Prospector", "The Amazon", "The Pirate", "The Unknown" };
+    private readonly string[] _classes = new[] { "The Cowboy", "The Dancer", "The Prospector", "The Pirate" };
 
 
     private Dictionary<int, Player> controlPosition = new Dictionary<int, Player>();
@@ -26,6 +36,12 @@ public class playerSelect : MonoBehaviour
     void Start()
     {
         Play.enabled = false;
+
+        cowboyImage = Resources.Load<Sprite>("cowboy");
+        dancerImage = Resources.Load<Sprite>("dancer");
+        prospectorImage = Resources.Load<Sprite>("prospector");
+        pirateImage = Resources.Load<Sprite>("pirate");
+
     }
 
     private void SelectPlayer(string control)
@@ -56,7 +72,7 @@ public class playerSelect : MonoBehaviour
 
     }
 
-    void UpdateSelect(Dictionary<int , Player> dict)
+    void UpdateSelect(Dictionary<int, Player> dict)
     {
         P1Text.text = "Press Start";
         P2Text.text = "Press Start";
@@ -69,19 +85,47 @@ public class playerSelect : MonoBehaviour
             {
                 case 1:
                     P1Text.text = dict[i.Key].Class;
-                    break; 
-                case 2: 
+                    SetClassImage(P1Text.text, p1Image);
+                    break;
+                case 2:
                     P2Text.text = dict[i.Key].Class;
+                    SetClassImage(P2Text.text, p2Image);
                     break;
                 case 3:
                     P3Text.text = dict[i.Key].Class;
+                    SetClassImage(P3Text.text, p3Image);
                     break;
                 case 4:
                     P4Text.text = dict[i.Key].Class;
+                    SetClassImage(P4Text.text, p4Image);
                     break;
             }
         }
     }
+
+    void SetClassImage(string pClass, Image image)
+    {
+        image.color = Color.white;
+       
+        if (pClass.Equals("The Cowboy"))
+        {
+            image.sprite = cowboyImage;
+        }
+        else if(pClass.Equals("The Dancer"))
+        {
+            image.sprite = dancerImage;
+        }
+        else if(pClass.Equals("The Prospector"))
+        {
+            image.sprite = prospectorImage;
+        }
+        else if(pClass.Equals("The Pirate"))
+        {
+            image.sprite = pirateImage;
+        }
+
+    }
+
 
     void CheckSubmit()
     {
@@ -105,7 +149,7 @@ public class playerSelect : MonoBehaviour
         {
             SelectPlayer("j4");
         }
-        
+
     }
 
     void CheckHorizontal()
@@ -175,7 +219,7 @@ public class playerSelect : MonoBehaviour
         {
             RemovePlayer("j4");
         }
-        
+
     }
 
     void CheckInputs()

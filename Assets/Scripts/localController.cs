@@ -8,10 +8,10 @@ using UnityEngine.UI;
 public class localController : MonoBehaviour
 {
 
-    public Vector3 PlayerOneSpawn = new Vector3(-4.65f, 3.22f, 0);
-    public Vector3 PlayerTwoSpawn = new Vector3(4.15f, 3.45f, 0);
-    public Vector3 PlayerThreeSpawn = new Vector3(-6.36f, -2.07f, 0);
-    public Vector3 PlayerFourSpawn = new Vector3(6.00f, -2.07f, 0);
+    public Vector3 PlayerOneSpawn = new Vector3(-6.98f, 3.06f, 0);
+    public Vector3 PlayerTwoSpawn = new Vector3(7.02f, 3.06f, 0);
+    public Vector3 PlayerThreeSpawn = new Vector3(-7.28f, -1.1f, 0);
+    public Vector3 PlayerFourSpawn = new Vector3(7.25f, -1.1f, 0);
 
     public Canvas scoreCanvas;
     public Canvas endGameCanvas;

@@ -248,7 +248,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: .588235259, g: .237889275, b: .237889275, a: .533999979}
+  m_Color: {r: .58431375, g: .235294119, b: .235294119, a: .533333361}
   m_Sprite: {fileID: 0}
   m_Type: 0
   m_PreserveAspect: 0
@@ -850,6 +850,10 @@ MonoBehaviour:
   P2Text: {fileID: 1125742114}
   P3Text: {fileID: 2098563764}
   P4Text: {fileID: 1330171222}
+  p1Image: {fileID: 49538075}
+  p2Image: {fileID: 2091528249}
+  p3Image: {fileID: 509864877}
+  p4Image: {fileID: 618232037}
 --- !u!4 &817648267
 Transform:
   m_ObjectHideFlags: 0

@@ -45,6 +45,7 @@ public class playerControl : MonoBehaviour
     private AudioSource _audio;
     private Animator _animator;
     private SpriteRenderer _healthBarRender;
+    private SpriteRenderer _sRenderer;
     private bool _dead = false;
     private const float slashOffset = 0.8f;
 
@@ -71,10 +72,17 @@ public class playerControl : MonoBehaviour
 
     private bool _slashing = false;
     private double _slashingCounter = 0.000d;
-    private const double _slashingMs = 0.5d;
+    private const double _slashingMs = 0.3d;
 
     private const int pushX = 500;
     private const int pushY = 400;
+
+    private bool hit = false;
+    private const double _hitMs = 2.000d;
+    private double _hitCounter = 0.000d;
+
+    private const double flash = 0.200d;
+    private double flashTimer = 0.000d;
 
     // Use this for initialization
     void Awake()
@@ -82,6 +90,7 @@ public class playerControl : MonoBehaviour
         _rb2D = GetComponent<Rigidbody2D>();
         _animator = GetComponent<Animator>();
         _audio = GetComponent<AudioSource>();
+        _sRenderer = GetComponent<SpriteRenderer>();
 
         _health1 = Resources.Load<Sprite>("threehealth");
         _health2 = Resources.Load<Sprite>("quarterhealth");
@@ -162,6 +171,7 @@ public class playerControl : MonoBehaviour
     {
         CheckHealthBar();
         CheckSlashingTimer();
+        CheckHitTimer();
     }
 
     private void CheckSlashingTimer()
@@ -174,6 +184,28 @@ public class playerControl : MonoBehaviour
                 _slashing = false;
                 SlashCol.SendMessage("GetCol", _slashing);
                 _slashingCounter = 0.000d;
+            }
+        }
+    }
+
+    private void CheckHitTimer()
+    {
+        if (hit)
+        {
+            _hitCounter += 1 * Time.deltaTime;
+
+            if (_hitCounter >= flashTimer)
+            {
+                flashTimer += flash;
+                _sRenderer.enabled = !_sRenderer.enabled;
+            }
+
+            if (_hitCounter >= _hitMs)
+            {
+                hit = false;
+                _hitCounter = 0.000d;
+                flashTimer = 0.000d;
+                _sRenderer.enabled = true;
             }
         }
     }
@@ -307,6 +339,7 @@ public class playerControl : MonoBehaviour
         if (FacingRight)
         {
             shotTransform.position = new Vector3(transform.position.x + 0.5f, transform.position.y, transform.position.z);
+            shotTransform.Rotate(0, 180, 0);
             shotTransform.GetComponent<Rigidbody2D>().velocity = new Vector2(BulletSpeed, 0);
         }
         else
@@ -346,35 +379,44 @@ public class playerControl : MonoBehaviour
 
         if (other.name.StartsWith("slash"))
         {
+
             if (other.GetComponent<slashScript>().num != playerNum && other.GetComponent<slashScript>().slashing)
             {
-                Health--;
-
-                if (Health > 0)
+                if (!hit)
                 {
-                    float pX = 0f;
 
-                    GameObject[] go = GameObject.FindGameObjectsWithTag("Player");
 
-                    foreach (var g in go)
+                    hit = true;
+                    Health--;
+
+                    if (Health > 0)
                     {
-                        if (g.gameObject.GetComponent<playerControl>().playerNum == other.GetComponent<slashScript>().num)
+                        float pX = 0f;
+
+                        GameObject[] go = GameObject.FindGameObjectsWithTag("Player");
+
+                        foreach (var g in go)
                         {
-                            pX = g.transform.position.x;
+                            if (g.gameObject.GetComponent<playerControl>().playerNum ==
+                                other.GetComponent<slashScript>().num)
+                            {
+                                pX = g.transform.position.x;
+                            }
+                        }
+
+                        // Small push
+                        if (pX < this.transform.position.x)
+                        {
+                            _rb2D.AddForce(new Vector2(pushX, pushY));
+                        }
+                        else
+                        {
+                            _rb2D.AddForce(new Vector2(-pushX, pushY));
                         }
                     }
-
-                    // Small push
-                    if (pX < this.transform.position.x)
-                    {
-                        _rb2D.AddForce(new Vector2(pushX, pushY));
-                    }
-                    else
-                    {
-                        _rb2D.AddForce(new Vector2(-pushX, pushY));
-                    }
+                    CheckHealth(other);
                 }
-                CheckHealth(other);
+
             }
         }
     }
