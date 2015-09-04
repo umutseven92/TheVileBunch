@@ -163,7 +163,8 @@ public class playerSelect : MonoBehaviour
         Player p = new Player
         {
             Control = control,
-            Class = pClass
+            Class = pClass,
+            Num = PlayerList.Count
         };
         PlayerList.Add(p);
 
@@ -264,6 +265,7 @@ public class playerSelect : MonoBehaviour
     {
         public string Control { get; set; }
         public string Class { get; set; }
+        public int Num { get; set; }
     }
 
 }

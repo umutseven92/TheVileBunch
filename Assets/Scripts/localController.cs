@@ -16,11 +16,13 @@ public class localController : MonoBehaviour
     public Vector3 PlayerFourSpawn = new Vector3(7.25f, -1.1f, 0);
     public Canvas scoreCanvas;
     public Canvas endGameCanvas;
+    public Text staticRoundText;
     public Text roundText;
     public Text classScoreText;
     public Text scoreScoreText;
     public Text winnerText;
     public Transform Player;
+    public AudioSource musicPlayer;
 
     private int _round = 1;
 
@@ -28,6 +30,7 @@ public class localController : MonoBehaviour
     private double _counter = 0.000d;
     private double gameOverCounter = 0.000d;
     private double gameOverMs = 3.000d;
+    private bool overtime = false;
 
     private bool slowMo = false;
     private double slowMoCounter = 0.000d;
@@ -36,6 +39,7 @@ public class localController : MonoBehaviour
     private double scoreCardMs = 1.500d;
 
     private Dictionary<string, int> ClassScores = new Dictionary<string, int>();
+    private KeyValuePair<string, int> winner;
 
     // Use this for initialization
     void Start()
@@ -64,17 +68,22 @@ public class localController : MonoBehaviour
     void Update()
     {
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player").Where(p => p.transform.position != Vector3.zero).ToArray();
+        CheckTimers();
 
-        CheckTimers(players);
-
-        if (players.Length == 1 && !gameOver)
+        // Overtime
+        if (players.Length == 1 && !gameOver && overtime)
         {
             ClassScores[players[0].GetComponent<playerControl>()._playerClass]++;
 
-            foreach (var player in ClassScores)
-            {
-                Debug.Log(player.Key + " - " + player.Value);
-            }
+            Dictionary<string, int> winners = ClassScores.Where(classScore => classScore.Value == ClassScores.Values.Max()).ToDictionary(classScore => classScore.Key, classScore => classScore.Value);
+            winner = winners.First();
+            slowMo = true;
+            gameOver = true;
+        }
+
+        if (players.Length == 1 && !gameOver && !overtime)
+        {
+            ClassScores[players[0].GetComponent<playerControl>()._playerClass]++;
 
             switch (_round)
             {
@@ -87,15 +96,55 @@ public class localController : MonoBehaviour
                     RestartGame(players);
                     break;
                 case 3:
-                    // Game over
-                    slowMo = true;
-                    gameOver = true;
+                    Dictionary<string, int> winners = ClassScores.Where(classScore => classScore.Value == ClassScores.Values.Max()).ToDictionary(classScore => classScore.Key, classScore => classScore.Value);
+
+                    if (winners.Count == 1)
+                    {
+                        // One winner
+                        winner = winners.First();
+                        slowMo = true;
+                        gameOver = true;
+                    }
+                    else if (winners.Count == 3)
+                    {
+                        // Three winners, sudden death
+                        overtime = true;
+                        playerSelect.Player loser = new playerSelect.Player();
+                        if (playerSelect.PlayerList.Count > winners.Count)
+                        {
+                            foreach (var p in playerSelect.PlayerList)
+                            {
+                                if (!winners.Keys.Contains(p.Class))
+                                {
+                                    loser = p;
+                                    break;
+                                }
+                            }
+
+                            Debug.Log(loser.Class + " disqualified.");
+                            playerSelect.PlayerList.Remove(loser);
+                        }
+
+                        ClassScores = new Dictionary<string, int>();
+                        foreach (playerSelect.Player t in playerSelect.PlayerList)
+                        {
+                            ClassScores.Add(t.Class, 0);
+                        }
+
+                        RestartGame(players);
+                    }
+                    else
+                    {
+                        Debug.LogError(winners.Count + " players are tied!");
+                    }
+
                     break;
                 default:
                     Debug.LogError("Round not between 1 or 4!");
                     break;
             }
         }
+
     }
 
     void CreatePlayers(int playerCount)
@@ -140,17 +189,22 @@ public class localController : MonoBehaviour
     }
 
 
-    void CheckTimers(GameObject[] _players)
+    void CheckTimers()
     {
-
         ScoreCardTimer();
         SlowMotionTimer();
-        //  GameOverTimer();
     }
 
     void RestartGame(GameObject[] lastPlayers)
     {
-        SetScoreCard(_round.ToString(), lastPlayers[0].GetComponent<playerControl>()._playerClass, ClassScores[lastPlayers[0].GetComponent<playerControl>()._playerClass].ToString());
+        if (overtime)
+        {
+            SetScoreCard(string.Empty, "Sudden Death", string.Empty);
+        }
+        else
+        {
+            SetScoreCard(_round.ToString(), lastPlayers[0].GetComponent<playerControl>()._playerClass, ClassScores[lastPlayers[0].GetComponent<playerControl>()._playerClass].ToString());
+        }
 
         foreach (var o in lastPlayers)
         {
@@ -164,6 +218,7 @@ public class localController : MonoBehaviour
 
         CreatePlayers(playerSelect.PlayerList.Count);
     }
+
 
     void PauseAllPlayers()
     {
@@ -197,6 +252,14 @@ public class localController : MonoBehaviour
 
     void SetScoreCard(string round, string winner, string score)
     {
+        if (overtime)
+        {
+            staticRoundText.enabled = false;
+        }
+        else
+        {
+            staticRoundText.enabled = true;
+        }
         roundText.text = round;
         classScoreText.text = winner;
         scoreScoreText.text = score;
@@ -226,49 +289,21 @@ public class localController : MonoBehaviour
         if (slowMo)
         {
             Time.timeScale = 0.2f;
+            musicPlayer.pitch = 0.5f;
             slowMoCounter += 1 * Time.deltaTime;
 
             if (slowMoCounter >= slowMoMs)
             {
                 Time.timeScale = 1f;
+                musicPlayer.pitch = 1f;
                 slowMo = false;
                 slowMoCounter = 0.000d;
 
-                Dictionary<string, int> winners = ClassScores.Where(classScore => classScore.Value == ClassScores.Values.Max()).ToDictionary(classScore => classScore.Key, classScore => classScore.Value);
-
-                if (winners.Count == 1)
-                {
-                    // One winner
-                    SetEndGameCard(winners.Keys.First());
-                }
-                else if (winners.Count == 2)
-                {
-                    // Two winners, showdown!
-                    Debug.Log("Multiple Winners");
-                }
-                else if (winners.Count == 3)
-                {
-                    // Three winners, one more round
-                }
+                // One winner
+                SetEndGameCard(winner.Key);
 
             }
         }
     }
-
-    private void GameOverTimer()
-    {
-        if (gameOver)
-        {
-            gameOverCounter += 1 * Time.deltaTime;
-
-
-            if (gameOverCounter >= gameOverMs)
-            {
-                gameOver = false;
-                gameOverCounter = 0.000d;
-            }
-        }
-    }
-
 
 }
