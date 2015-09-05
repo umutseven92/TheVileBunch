@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.UI;
 
 public class playerControl : MonoBehaviour
 {
@@ -31,7 +32,6 @@ public class playerControl : MonoBehaviour
     public Transform GroundCheck;
     public Transform GroundCheck2;
     public Transform Bullet;
-    public Transform HealthBar;
     public Transform Explosion;
     public Transform BloodSplatter;
     public Transform DeadPlayer;
@@ -40,6 +40,8 @@ public class playerControl : MonoBehaviour
     public AudioClip SlashClip;
     public int Health = 3;
     public int Ammo = 3;
+    public int bulletDamage = 2;
+    public int swordDamage = 1;
 
     private bool _grounded = false;
     private bool _grounded2 = false;
@@ -48,21 +50,17 @@ public class playerControl : MonoBehaviour
     private bool _dead = false;
     private bool first = true;
     private bool paused = false;
+    private int _maxHealth;
 
     private Rigidbody2D _rb2D;
     private AudioSource _audio;
     private Animator _animator;
-    private SpriteRenderer _healthBarRender;
     private SpriteRenderer _sRenderer;
+    private Slider _healthSlider;
 
     private const float slashOffset = 0.8f;
     private const int pushX = 500;
     private const int pushY = 400;
-
-    private Sprite _health1;
-    private Sprite _health2;
-    private Sprite _health1Reverse;
-    private Sprite _health2Reverse;
 
     private List<playerSelect.Player> _localPlayers;
 
@@ -73,13 +71,13 @@ public class playerControl : MonoBehaviour
 
     private bool _slashing = false;
     private double _slashingCounter = 0.000d;
-    private const double _slashingMs = 0.3d;
+    public double _slashingMs = 0.3d;
 
     private bool hit = false;
-    private const double _hitMs = 2.000d;
+    public double _hitMs = 2.000d;
     private double _hitCounter = 0.000d;
 
-    private const double flash = 0.200d;
+    public double flash = 0.200d;
     private double flashTimer = 0.000d;
 
     // Use this for initialization
@@ -89,14 +87,7 @@ public class playerControl : MonoBehaviour
         _animator = GetComponent<Animator>();
         _audio = GetComponent<AudioSource>();
         _sRenderer = GetComponent<SpriteRenderer>();
-
-        _health1 = Resources.Load<Sprite>("threehealth");
-        _health2 = Resources.Load<Sprite>("quarterhealth");
-
-        _health1Reverse = Resources.Load<Sprite>("threehealthReverse");
-        _health2Reverse = Resources.Load<Sprite>("quarterhealthReverse");
-
-        _healthBarRender = HealthBar.GetComponent<SpriteRenderer>();
+        _healthSlider = GetComponentInChildren<Slider>();
 
         _localPlayers = playerSelect.PlayerList;
 
@@ -106,8 +97,10 @@ public class playerControl : MonoBehaviour
                 : new Vector3(transform.position.x - slashOffset, transform.position.y, transform.position.y),
             transform.rotation) as GameObject;
 
+        _maxHealth = Health;
+        _healthSlider.maxValue = _maxHealth;
+        _healthSlider.value = _maxHealth;
     }
-
 
     // Update is called once per frame
     void Update()
@@ -119,6 +112,7 @@ public class playerControl : MonoBehaviour
                 Flip();
             }
             first = false;
+
         }
 
         _grounded = Physics2D.Linecast(transform.position, GroundCheck.position, 1 << LayerMask.NameToLayer("Ground"));
@@ -235,30 +229,33 @@ public class playerControl : MonoBehaviour
 
         if (other.name.Equals("Bullet(Clone)"))
         {
-            Health--;
-
-            // Small push
-            if (other.gameObject.transform.position.x < this.transform.position.x)
+            if (!hit)
             {
-                _rb2D.AddForce(new Vector2(pushX, pushY));
-            }
-            else
-            {
-                _rb2D.AddForce(new Vector2(-pushY, pushY));
-            }
+                hit = true;
+                LowerHealth(bulletDamage);
 
-            CheckHealth(other);
+                // Small push
+                if (other.gameObject.transform.position.x < this.transform.position.x)
+                {
+                    _rb2D.AddForce(new Vector2(pushX, pushY));
+                }
+                else
+                {
+                    _rb2D.AddForce(new Vector2(-pushY, pushY));
+                }
+
+                CheckHealth(other);
+            }
         }
 
         if (other.name.StartsWith("slash"))
         {
-
             if (other.GetComponent<slashScript>().num != playerNum && other.GetComponent<slashScript>().slashing)
             {
                 if (!hit)
                 {
                     hit = true;
-                    Health--;
+                    LowerHealth(swordDamage);
 
                     if (Health > 0)
                     {
@@ -292,6 +289,12 @@ public class playerControl : MonoBehaviour
         }
     }
 
+    void LowerHealth(int damage)
+    {
+        Health -= damage;
+        _healthSlider.value -= damage;
+    }
+
     void OnTriggerExit2D(Collider2D other)
     {
         if (other.name.Equals("ropeAttached"))
@@ -315,15 +318,13 @@ public class playerControl : MonoBehaviour
 
     private void CheckHealthBar()
     {
-        if (_healthBarRender.enabled)
+        if (hit)
         {
-            _counter += 1 * Time.deltaTime;
-
-            if (_counter >= healthBarMs)
-            {
-                _healthBarRender.enabled = false;
-                _counter = 0.000d;
-            }
+            _healthSlider.GetComponentInParent<Canvas>().enabled = true;
+        }
+        else
+        {
+            _healthSlider.GetComponentInParent<Canvas>().enabled = false;
         }
     }
 
@@ -369,27 +370,11 @@ public class playerControl : MonoBehaviour
     {
         if (FacingRight)
         {
-            switch (Health)
-            {
-                case 2:
-                    _healthBarRender.sprite = _health1Reverse;
-                    break;
-                case 1:
-                    _healthBarRender.sprite = _health2Reverse;
-                    break;
-            }
+            _healthSlider.direction = Slider.Direction.RightToLeft;
         }
         else
         {
-            switch (Health)
-            {
-                case 2:
-                    _healthBarRender.sprite = _health1;
-                    break;
-                case 1:
-                    _healthBarRender.sprite = _health2;
-                    break;
-            }
+            _healthSlider.direction = Slider.Direction.LeftToRight;
         }
 
         FacingRight = !FacingRight;
@@ -431,36 +416,24 @@ public class playerControl : MonoBehaviour
 
     void CheckHealth(Collider2D other)
     {
-        switch (Health)
+        if (Health <= 0)
         {
-            case 2:
-                _healthBarRender.sprite = _health1;
-                _healthBarRender.enabled = true;
-                break;
-            case 1:
-                _healthBarRender.sprite = _health2;
-                _healthBarRender.enabled = true;
-                break;
-            case 0:
-                // DEATH
-                _dead = true;
-                Instantiate(BloodSplatter, transform.position, transform.rotation);
-                GameObject deadPlayer = Instantiate(DeadPlayer.gameObject, transform.position, transform.rotation) as GameObject;
+            // DEATH
+            _dead = true;
+            Instantiate(BloodSplatter, transform.position, transform.rotation);
+            GameObject deadPlayer =
+                Instantiate(DeadPlayer.gameObject, transform.position, transform.rotation) as GameObject;
 
-                if (other.transform.position.x < this.transform.position.x)
-                {
-                    deadPlayer.SendMessage("Die", "left");
-                }
-                else
-                {
-                    deadPlayer.SendMessage("Die", "right");
-                }
+            if (other.transform.position.x < this.transform.position.x)
+            {
+                deadPlayer.SendMessage("Die", "left");
+            }
+            else
+            {
+                deadPlayer.SendMessage("Die", "right");
+            }
 
-                Destroy(gameObject);
-                break;
-            default:
-                Debug.LogError("Health not between 1 and 4!");
-                break;
+            Destroy(gameObject);
         }
     }
 
@@ -474,7 +447,10 @@ public class playerControl : MonoBehaviour
         playerNum = num;
         Control = _localPlayers[num - 1].Control;
         _playerClass = _localPlayers[num - 1].Class;
+
+
         SlashCol.SendMessage("GetPlayerNum", playerNum);
+
     }
 
     void Pause()

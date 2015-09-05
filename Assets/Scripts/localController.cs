@@ -31,6 +31,7 @@ public class localController : MonoBehaviour
     private double gameOverCounter = 0.000d;
     private double gameOverMs = 3.000d;
     private bool overtime = false;
+    private bool devMode = false;
 
     private bool slowMo = false;
     private double slowMoCounter = 0.000d;
@@ -69,6 +70,12 @@ public class localController : MonoBehaviour
     {
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player").Where(p => p.transform.position != Vector3.zero).ToArray();
         CheckTimers();
+
+        if (Input.GetButtonDown("DevMode"))
+        {
+            devMode = !devMode;
+            Debug.Log("Dev Mode: " + devMode);
+        }
 
         // Overtime
         if (players.Length == 1 && !gameOver && overtime)

@@ -18,7 +18,7 @@ public class matchmaker : Photon.PunBehaviour {
         GUILayout.Label(PhotonNetwork.connectionStateDetailed.ToString());
     }
 
-    void OnJoinedLobby()
+    public override void OnJoinedLobby()
     {
         Debug.Log("Trying to join random room..");
         PhotonNetwork.JoinRandomRoom();
@@ -30,7 +30,7 @@ public class matchmaker : Photon.PunBehaviour {
         PhotonNetwork.CreateRoom(null);
     }
 
-    void OnJoinedRoom()
+    public override void OnJoinedRoom()
     {
         Debug.Log(string.Format("Connected to room {0}",PhotonNetwork.room.name));
     }
