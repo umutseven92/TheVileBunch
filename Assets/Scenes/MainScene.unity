@@ -1370,10 +1370,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   score: 0
-  PlayerOneSpawn: {x: -6.98000002, y: 3.05999994, z: 0}
-  PlayerTwoSpawn: {x: 7.01999998, y: 3.05999994, z: 0}
-  PlayerThreeSpawn: {x: -7.28000021, y: -1.10000002, z: 0}
-  PlayerFourSpawn: {x: 7.25, y: -1.10000002, z: 0}
+  PlayerOneSpawn: {x: -7, y: 0, z: 0}
+  PlayerTwoSpawn: {x: 7, y: 0, z: 0}
+  PlayerThreeSpawn: {x: -4.5, y: 3, z: 0}
+  PlayerFourSpawn: {x: 4.5, y: 3, z: 0}
   scoreCanvas: {fileID: 392384754}
   endGameCanvas: {fileID: 1175722636}
   staticRoundText: {fileID: 392384758}
