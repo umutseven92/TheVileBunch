@@ -182,7 +182,7 @@ Rigidbody2D:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 170880}
   m_Mass: 1
-  m_LinearDrag: 2
+  m_LinearDrag: 4
   m_AngularDrag: .0500000007
   m_GravityScale: 4
   m_IsKinematic: 0
@@ -309,7 +309,7 @@ MonoBehaviour:
   _playerClass: 
   MoveForce: 365
   MaxSpeed: 5
-  JumpForce: 17
+  JumpForce: 15
   BulletSpeed: 20
   GroundCheck: {fileID: 474538}
   GroundCheck2: {fileID: 436820}
@@ -652,7 +652,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: m_LinearDrag
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: bullet
@@ -740,7 +740,7 @@ Prefab:
       objectReference: {fileID: 5009434}
     - target: {fileID: 0}
       propertyPath: JumpForce
-      value: 17
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: m_Interpolate
