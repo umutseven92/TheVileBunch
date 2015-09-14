@@ -171,8 +171,8 @@ RectTransform:
   m_RootOrder: 2
   m_AnchorMin: {x: .5, y: .5}
   m_AnchorMax: {x: .5, y: .5}
-  m_AnchoredPosition: {x: 8, y: 0}
-  m_SizeDelta: {x: 1006, y: 240}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 992, y: 240}
   m_Pivot: {x: .5, y: .5}
 --- !u!114 &101735863
 MonoBehaviour:
@@ -201,7 +201,7 @@ MonoBehaviour:
     m_BestFit: 0
     m_MinSize: 10
     m_MaxSize: 40
-    m_Alignment: 0
+    m_Alignment: 1
     m_RichText: 1
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
@@ -619,7 +619,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22423830, guid: 0d3f98343404f874b9748f7ed003c767, type: 2}
       propertyPath: m_AnchoredPosition.x
-      value: -110
+      value: -91
       objectReference: {fileID: 0}
     - target: {fileID: 22423830, guid: 0d3f98343404f874b9748f7ed003c767, type: 2}
       propertyPath: m_AnchoredPosition.y
@@ -627,7 +627,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22423830, guid: 0d3f98343404f874b9748f7ed003c767, type: 2}
       propertyPath: m_SizeDelta.x
-      value: 1064
+      value: 994
       objectReference: {fileID: 0}
     - target: {fileID: 22423830, guid: 0d3f98343404f874b9748f7ed003c767, type: 2}
       propertyPath: m_SizeDelta.y
@@ -643,7 +643,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22458522, guid: 0d3f98343404f874b9748f7ed003c767, type: 2}
       propertyPath: m_AnchoredPosition.x
-      value: 614
+      value: 570
       objectReference: {fileID: 0}
     - target: {fileID: 22458522, guid: 0d3f98343404f874b9748f7ed003c767, type: 2}
       propertyPath: m_SizeDelta.x
@@ -659,7 +659,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22487010, guid: 0d3f98343404f874b9748f7ed003c767, type: 2}
       propertyPath: m_AnchoredPosition.x
-      value: -71
+      value: -90
       objectReference: {fileID: 0}
     - target: {fileID: 22487010, guid: 0d3f98343404f874b9748f7ed003c767, type: 2}
       propertyPath: m_AnchoredPosition.y
@@ -667,7 +667,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22487010, guid: 0d3f98343404f874b9748f7ed003c767, type: 2}
       propertyPath: m_SizeDelta.x
-      value: 401
+      value: 363
       objectReference: {fileID: 0}
     - target: {fileID: 22487010, guid: 0d3f98343404f874b9748f7ed003c767, type: 2}
       propertyPath: m_SizeDelta.y
@@ -675,7 +675,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22432674, guid: 0d3f98343404f874b9748f7ed003c767, type: 2}
       propertyPath: m_AnchoredPosition.x
-      value: 229
+      value: 225
       objectReference: {fileID: 0}
     - target: {fileID: 22432674, guid: 0d3f98343404f874b9748f7ed003c767, type: 2}
       propertyPath: m_AnchoredPosition.y
@@ -683,7 +683,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22432674, guid: 0d3f98343404f874b9748f7ed003c767, type: 2}
       propertyPath: m_SizeDelta.x
-      value: 98
+      value: 91
       objectReference: {fileID: 0}
     - target: {fileID: 22432674, guid: 0d3f98343404f874b9748f7ed003c767, type: 2}
       propertyPath: m_SizeDelta.y
@@ -691,6 +691,22 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22395632, guid: 0d3f98343404f874b9748f7ed003c767, type: 2}
       propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11454734, guid: 0d3f98343404f874b9748f7ed003c767, type: 2}
+      propertyPath: m_FontData.m_Alignment
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11457382, guid: 0d3f98343404f874b9748f7ed003c767, type: 2}
+      propertyPath: m_FontData.m_Alignment
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400058, guid: 0d3f98343404f874b9748f7ed003c767, type: 2}
+      propertyPath: m_FontData.m_Alignment
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11494010, guid: 0d3f98343404f874b9748f7ed003c767, type: 2}
+      propertyPath: m_FontData.m_Alignment
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -1551,8 +1567,8 @@ RectTransform:
   m_RootOrder: 1
   m_AnchorMin: {x: .5, y: .5}
   m_AnchorMax: {x: .5, y: .5}
-  m_AnchoredPosition: {x: 0, y: 198}
-  m_SizeDelta: {x: 426, y: 154}
+  m_AnchoredPosition: {x: 0, y: 197}
+  m_SizeDelta: {x: 410, y: 154}
   m_Pivot: {x: .5, y: .5}
 --- !u!114 &1160553124
 MonoBehaviour:
@@ -1581,7 +1597,7 @@ MonoBehaviour:
     m_BestFit: 0
     m_MinSize: 10
     m_MaxSize: 40
-    m_Alignment: 0
+    m_Alignment: 1
     m_RichText: 1
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
