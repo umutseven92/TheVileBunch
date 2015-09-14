@@ -555,8 +555,8 @@ RectTransform:
   m_RootOrder: 1
   m_AnchorMin: {x: .5, y: .5}
   m_AnchorMax: {x: .5, y: .5}
-  m_AnchoredPosition: {x: 3.50001907, y: -269}
-  m_SizeDelta: {x: 315, y: 61}
+  m_AnchoredPosition: {x: 3.50001907, y: -299}
+  m_SizeDelta: {x: 315, y: 120}
   m_Pivot: {x: .5, y: .5}
 --- !u!114 &451940538
 MonoBehaviour:
@@ -589,9 +589,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: 'Press Start
-
-'
+  m_Text: "Press Start \n(Space)"
 --- !u!222 &451940539
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1215,8 +1213,8 @@ RectTransform:
   m_RootOrder: 3
   m_AnchorMin: {x: .5, y: .5}
   m_AnchorMax: {x: .5, y: .5}
-  m_AnchoredPosition: {x: 1, y: 220}
-  m_SizeDelta: {x: 299, y: 52}
+  m_AnchoredPosition: {x: 1, y: 251}
+  m_SizeDelta: {x: 299, y: 118}
   m_Pivot: {x: .5, y: .5}
 --- !u!114 &1125742114
 MonoBehaviour:
@@ -1251,7 +1249,7 @@ MonoBehaviour:
     m_LineSpacing: 1
   m_Text: 'Press Start
 
-'
+    (Space)'
 --- !u!222 &1125742115
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1662,8 +1660,8 @@ RectTransform:
   m_RootOrder: 1
   m_AnchorMin: {x: .5, y: .5}
   m_AnchorMax: {x: .5, y: .5}
-  m_AnchoredPosition: {x: -2.05039996e-05, y: 224}
-  m_SizeDelta: {x: 282, y: 56}
+  m_AnchoredPosition: {x: -2.05039996e-05, y: 252}
+  m_SizeDelta: {x: 282, y: 113}
   m_Pivot: {x: .5, y: .5}
 --- !u!114 &1330171222
 MonoBehaviour:
@@ -1698,7 +1696,7 @@ MonoBehaviour:
     m_LineSpacing: 1
   m_Text: 'Press Start
 
-'
+    (Space)'
 --- !u!222 &1330171223
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2270,8 +2268,8 @@ RectTransform:
   m_RootOrder: 1
   m_AnchorMin: {x: .5, y: .5}
   m_AnchorMax: {x: .5, y: .5}
-  m_AnchoredPosition: {x: -7.62939999e-06, y: -262}
-  m_SizeDelta: {x: 297, y: 50}
+  m_AnchoredPosition: {x: -7.62939999e-06, y: -295}
+  m_SizeDelta: {x: 297, y: 116}
   m_Pivot: {x: .5, y: .5}
 --- !u!114 &2098563764
 MonoBehaviour:
@@ -2306,7 +2304,7 @@ MonoBehaviour:
     m_LineSpacing: 1
   m_Text: 'Press Start
 
-'
+    (Space)'
 --- !u!222 &2098563765
 CanvasRenderer:
   m_ObjectHideFlags: 0
