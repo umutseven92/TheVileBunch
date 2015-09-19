@@ -10,6 +10,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/LocalPlayerSelect.unity
   - enabled: 1
-    path: Assets/Scenes/MainScene.unity
+    path: Assets/Scenes/Dunes.unity
+  - enabled: 1
+    path: Assets/Scenes/Caves.unity
   - enabled: 1
     path: Assets/Scenes/MultiScene.unity
