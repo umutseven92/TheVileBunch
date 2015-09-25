@@ -3,12 +3,15 @@ using System.Collections;
 
 public class slashScript : MonoBehaviour
 {
+	[HideInInspector]
     public bool slashing;
+
+	[HideInInspector]
     public int num;
 
     private BoxCollider2D _bCol;
     private SpriteRenderer sprRenderer;
-
+	
     // Use this for initialization
     void Start()
     {
