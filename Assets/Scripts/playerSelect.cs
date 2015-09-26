@@ -18,6 +18,15 @@ public class playerSelect : MonoBehaviour
 	public Image p3Image;
 	public Image p4Image;
 
+	public Button p1Right;
+	public Button p1Left;
+	public Button p2Right;
+	public Button p2Left;
+	public Button p3Right;
+	public Button p3Left;
+	public Button p4Right;
+	public Button p4Left;
+
 	private Sprite cowboyImage;
 	private Sprite dancerImage;
 	private Sprite prospectorImage;
@@ -29,10 +38,42 @@ public class playerSelect : MonoBehaviour
 	private bool j3Delay = false;
 	private bool j4Delay = false;
 
+	private bool kSubmit = true;
+	private bool j1Submit = true;
+	private bool j2Submit = true;
+	private bool j3Submit = true;
+	private bool j4Submit = true;
+
+	private bool kCancel = true;
+	private bool j1Cancel = true;
+	private bool j2Cancel = true;
+	private bool j3Cancel = true;
+	private bool j4Cancel = true;
+
+	private bool kCanHorizontal = false;
+	private bool j1CanHorizontal = false;
+	private bool j2CanHorizontal = false;
+	private bool j3CanHorizontal = false;
+	private bool j4CanHorizontal = false;
+
+	private enum SelectStages
+	{
+		Browse,
+		Chosen,
+		Disabled
+	}
+
+	private SelectStages kStage = SelectStages.Disabled;
+	private SelectStages j1Stage = SelectStages.Disabled;
+	private SelectStages j2Stage = SelectStages.Disabled;
+	private SelectStages j3Stage = SelectStages.Disabled;
+	private SelectStages j4Stage = SelectStages.Disabled;
+
 	public static List<Player> PlayerList = new List<Player>();
 
 	private List<Image> playerImages = new List<Image>();
 	private List<Text> playerTexts = new List<Text>();
+	private List<List<Button>> playerHorizontals = new List<List<Button>>();
 
 	private List<string> pickedClasses = new List<string>();
 	private List<string> _classes = new List<string>();
@@ -51,6 +92,11 @@ public class playerSelect : MonoBehaviour
 		_classes.Add("The Dancer");
 		_classes.Add("The Prospector");
 		_classes.Add("The Pirate");
+
+		playerHorizontals.Add(new List<Button>() { p1Left, p1Right });
+		playerHorizontals.Add(new List<Button>() { p2Left, p2Right });
+		playerHorizontals.Add(new List<Button>() { p3Left, p3Right });
+		playerHorizontals.Add(new List<Button>() { p4Left, p4Right });
 
 		playerImages.Add(p1Image);
 		playerImages.Add(p2Image);
@@ -76,84 +122,243 @@ public class playerSelect : MonoBehaviour
 		CheckHorizontal();
 		CheckCancel();
 		CheckHorizontalCancel();
+		CheckSubmitCancel();
+		CheckCancelCancel();
+	}
+
+	void CheckCancelCancel()
+	{
+		if (Input.GetButtonUp("kCancel"))
+		{
+			kCancel = true;
+		}
+		if (Input.GetButtonUp("j1Cancel"))
+		{
+			j1Cancel = true;
+		}
+		if (Input.GetButtonUp("j2Cancel"))
+		{
+			j2Cancel = true;
+		}
+		if (Input.GetButtonUp("j3Cancel"))
+		{
+			j3Cancel = true;
+		}
+		if (Input.GetButtonUp("j4Cancel"))
+		{
+			j4Cancel = true;
+		}
+
+	}
+
+	void CheckSubmitCancel()
+	{
+		if (Input.GetButtonUp("kStart"))
+		{
+			kSubmit = true;
+		}
+		if (Input.GetButtonUp("j1Start"))
+		{
+			j1Submit = true;
+		}
+		if (Input.GetButtonUp("j2Start"))
+		{
+			j2Submit = true;
+		}
+		if (Input.GetButtonUp("j3Start"))
+		{
+			j3Submit = true;
+		}
+		if (Input.GetButtonUp("j4Start"))
+		{
+			j4Submit = true;
+		}
+
 	}
 
 	void CheckSubmit()
 	{
 		if (Input.GetButton("kStart"))
 		{
-			SelectInitialPlayer("k");
+			if (kSubmit)
+			{
+				if (kStage == SelectStages.Browse)
+				{
+					AddPlayer("k");
+					kStage = SelectStages.Chosen;
+					kCanHorizontal = false;
+				}
+				if (kStage == SelectStages.Disabled)
+				{
+					SelectInitialPlayer("k");
+					kStage = SelectStages.Browse;
+					kCanHorizontal = true;
+				}
+				kSubmit = false;
+
+			}
 		}
 		if (Input.GetButton("j1Start"))
 		{
-			SelectInitialPlayer("j1");
+			if (j1Submit)
+			{
+				if (j1Stage == SelectStages.Browse)
+				{
+					AddPlayer("j1");
+					j1Stage = SelectStages.Chosen;
+					j1CanHorizontal = false;
+				}
+				if (j1Stage == SelectStages.Disabled)
+				{
+					SelectInitialPlayer("j1");
+					j1Stage = SelectStages.Browse;
+					j1CanHorizontal = true;
+				}
+				j1Submit = false;
+
+			}
+
 		}
 		if (Input.GetButton("j2Start"))
 		{
-			SelectInitialPlayer("j2");
+			if (j2Submit)
+			{
+				if (j2Stage == SelectStages.Browse)
+				{
+					AddPlayer("j2");
+					j2Stage = SelectStages.Chosen;
+					j2CanHorizontal = false;
+				}
+				if (j2Stage == SelectStages.Disabled)
+				{
+					SelectInitialPlayer("j2");
+					j2Stage = SelectStages.Browse;
+					j2CanHorizontal = true;
+				}
+				j2Submit = false;
+
+			}
+
 		}
 		if (Input.GetButton("j3Start"))
 		{
-			SelectInitialPlayer("j3");
+			if (j3Submit)
+			{
+				if (j3Stage == SelectStages.Browse)
+				{
+					AddPlayer("j3");
+					j3Stage = SelectStages.Chosen;
+					j3CanHorizontal = false;
+				}
+				if (j3Stage == SelectStages.Disabled)
+				{
+					SelectInitialPlayer("j3");
+					j3Stage = SelectStages.Browse;
+					j3CanHorizontal = true;
+				}
+				j3Submit = false;
+
+			}
+
 		}
 		if (Input.GetButton("j4Start"))
 		{
-			SelectInitialPlayer("j4");
+			if (j4Submit)
+			{
+				if (j4Stage == SelectStages.Browse)
+				{
+					AddPlayer("j4");
+					j4Stage = SelectStages.Chosen;
+					j4CanHorizontal = false;
+				}
+				if (j4Stage == SelectStages.Disabled)
+				{
+					SelectInitialPlayer("j4");
+					j4Stage = SelectStages.Browse;
+					j4CanHorizontal = true;
+				}
+				j4Submit = false;
+
+			}
+
 		}
 
 	}
 
 	void CheckHorizontal()
 	{
-		if (Input.GetAxis("kHorizontal") > 0)
+		if (kCanHorizontal)
 		{
-			ChangePlayer("k", 1);
-			kDelay = true;
+			if (Input.GetAxis("kHorizontal") > 0)
+			{
+				ChangePlayer("k", 1);
+				kDelay = true;
+			}
+			else if (Input.GetAxis("kHorizontal") < 0)
+			{
+				ChangePlayer("k", -1);
+				kDelay = true;
+			}
+
 		}
-		else if (Input.GetAxis("kHorizontal") < 0)
+		if (j1CanHorizontal)
 		{
-			ChangePlayer("k", -1);
-			kDelay = true;
+			if (Input.GetAxis("j1Horizontal") > 0)
+			{
+				ChangePlayer("j1", 1);
+				j1Delay = true;
+			}
+			else if (Input.GetAxis("j1Horizontal") < 0)
+			{
+				ChangePlayer("j1", -1);
+				j1Delay = true;
+			}
+
 		}
-		if (Input.GetAxis("j1Horizontal") > 0)
+
+		if (j2CanHorizontal)
 		{
-			ChangePlayer("j1", 1);
-			j1Delay = true;
+			if (Input.GetAxis("j2Horizontal") > 0)
+			{
+				ChangePlayer("j2", 1);
+				j2Delay = true;
+			}
+			else if (Input.GetAxis("j2Horizontal") < 0)
+			{
+				ChangePlayer("j2", -1);
+				j2Delay = true;
+			}
+
 		}
-		else if (Input.GetAxis("j1Horizontal") < 0)
+
+		if (j3CanHorizontal)
 		{
-			ChangePlayer("j1", -1);
-			j1Delay = true;
+			if (Input.GetAxis("j3Horizontal") > 0)
+			{
+				ChangePlayer("j3", 1);
+				j3Delay = true;
+			}
+			else if (Input.GetAxis("j3Horizontal") < 0)
+			{
+				ChangePlayer("j3", -1);
+				j3Delay = true;
+			}
+
 		}
-		if (Input.GetAxis("j2Horizontal") > 0)
+
+		if (j4CanHorizontal)
 		{
-			ChangePlayer("j2", 1);
-			j2Delay = true;
-		}
-		else if (Input.GetAxis("j2Horizontal") < 0)
-		{
-			ChangePlayer("j2", -1);
-			j2Delay = true;
-		}
-		if (Input.GetAxis("j3Horizontal") > 0)
-		{
-			ChangePlayer("j3", 1);
-			j3Delay = true;
-		}
-		else if (Input.GetAxis("j3Horizontal") < 0)
-		{
-			ChangePlayer("j3", -1);
-			j3Delay = true;
-		}
-		if (Input.GetAxis("j4Horizontal") > 0)
-		{
-			ChangePlayer("j4", 1);
-			j4Delay = true;
-		}
-		else if (Input.GetAxis("j4Horizontal") < 0)
-		{
-			ChangePlayer("j4", -1);
-			j4Delay = true;
+			if (Input.GetAxis("j4Horizontal") > 0)
+			{
+				ChangePlayer("j4", 1);
+				j4Delay = true;
+			}
+			else if (Input.GetAxis("j4Horizontal") < 0)
+			{
+				ChangePlayer("j4", -1);
+				j4Delay = true;
+			}
+
 		}
 	}
 
@@ -161,23 +366,43 @@ public class playerSelect : MonoBehaviour
 	{
 		if (Input.GetButton("kCancel"))
 		{
-			RemovePlayer("k");
+			if (kCancel)
+			{
+				RemovePlayer("k", kStage);
+				kCancel = false;
+			}
 		}
 		if (Input.GetButton("j1Cancel"))
 		{
-			RemovePlayer("j1");
+			if (j1Cancel)
+			{
+				RemovePlayer("j1", j1Stage);
+				j1Cancel = false;
+			}
 		}
 		if (Input.GetButton("j2Cancel"))
 		{
-			RemovePlayer("j2");
+			if (j2Cancel)
+			{
+				RemovePlayer("j2", j2Stage);
+				j2Cancel = false;
+			}
 		}
 		if (Input.GetButton("j3Cancel"))
 		{
-			RemovePlayer("j3");
+			if (j3Cancel)
+			{
+				RemovePlayer("j3", j3Stage);
+				j3Cancel = false;
+			}
 		}
 		if (Input.GetButton("j4Cancel"))
 		{
-			RemovePlayer("j4");
+			if (j4Cancel)
+			{
+				RemovePlayer("j4", j4Stage);
+				j4Cancel = false;
+			}
 		}
 
 	}
@@ -213,41 +438,18 @@ public class playerSelect : MonoBehaviour
 			return;
 		}
 
-		string pClass = string.Empty;
-
-		foreach (var c in _classes)
-		{
-			var player = PlayerList.Where(pl => pl.Class == c);
-
-			if (!player.Any())
-			{
-				pClass = c;
-			}
-		}
+		string pClass = _classes[0];
 
 		if (pClass == string.Empty)
 		{
 			Debug.LogError("Class name null!");
 		}
 
-		Player p = new Player
-		{
-			Control = control,
-			Class = pClass,
-			Num = PlayerList.Count
-		};
-		PlayerList.Add(p);
-
-		pickedClasses.Add(pClass);
-
-		Source.PlayOneShot(Clip);
-
-		UpdateSelect(PlayerList);
+		AddInitialPlayer(control, pClass);
 	}
 
 	void ChangePlayer(string control, int dir)
 	{
-
 		bool check = false;
 
 		switch (control)
@@ -288,55 +490,34 @@ public class playerSelect : MonoBehaviour
 			classPos = -1;
 		}
 
-		ReturnAvailableClass(classPos, dir);
-
-		Player playerToUpdate = PlayerList.First(p => p.Control == control);
-
-		pickedClasses.Remove(playerToUpdate.Class);
-
-		playerToUpdate.Class = classToPick2;
-
-		pickedClasses.Add(playerToUpdate.Class);
-
+		PlayerList.Find(p => p.Control == control).Class = _classes[classPos + dir];
 		UpdateSelect(PlayerList);
 	}
 
-	private string classToPick2 = string.Empty;
-
-	void ReturnAvailableClass(int classPos, int dir)
+	void AddPlayer(string control)
 	{
-		if (pickedClasses.Contains(_classes[classPos + dir]))
-		{
-			if (dir < 0)
-			{
-				if (pickedClasses.Contains(_classes[classPos + dir--]))
-				{
-					ReturnAvailableClass(classPos, dir--);
-				}
-				else
-				{
-					classToPick2 = _classes[classPos + dir--];
-				}
-			}
-			else
-			{
-				if (pickedClasses.Contains(_classes[classPos + dir++]))
-				{
-					ReturnAvailableClass(classPos, dir++);
-				}
-				else
-				{
-					classToPick2 = _classes[classPos + dir++];
-				}
-
-			}
-		}
-		else
-		{
-			classToPick2 = _classes[classPos + dir];
-		}
-		
+		// There is a bug here.
+		PlayerList.Find(pl => pl.Control == control).Set = true;
+		pickedClasses.Add(PlayerList.Find(p2 => p2.Control == control).Class);
+		UpdateSelect(PlayerList);
 	}
+
+	void AddInitialPlayer(string control, string pClass)
+	{
+		var p = new Player
+		{
+			Control = control,
+			Class = pClass,
+			Num = PlayerList.Count,
+			Set = false
+		};
+
+		PlayerList.Add(p);
+
+		Source.PlayOneShot(Clip);
+		UpdateSelect(PlayerList);
+	}
+
 
 	void UpdateSelect(List<Player> players)
 	{
@@ -350,10 +531,31 @@ public class playerSelect : MonoBehaviour
 		p3Image.sprite = null;
 		p4Image.sprite = null;
 
+
 		for (int i = 0; i < PlayerList.Count; i++)
 		{
 			SetClassImage(players[i].Class, playerImages[i]);
 			playerTexts[i].text = players[i].Class;
+
+			if (players[i].Set)
+			{
+				foreach (var h in playerHorizontals[i])
+				{
+					h.enabled = false;
+					h.GetComponentInChildren<CanvasRenderer>().SetAlpha(0);
+				}
+
+			}
+			else
+			{
+				foreach (var h in playerHorizontals[i])
+				{
+					h.enabled = true;
+					h.GetComponentInChildren<CanvasRenderer>().SetAlpha(1);
+				}
+
+			}
+
 		}
 	}
 
@@ -380,23 +582,108 @@ public class playerSelect : MonoBehaviour
 	}
 
 
-	private void RemovePlayer(string control)
+	private void RemovePlayer(string control, SelectStages stage)
 	{
 		if (PlayerList.All(player => player.Control != control))
 		{
 			return;
 		}
-
 		Player playerToRemove = PlayerList.First(p => p.Control == control);
 
-		PlayerList.Remove(playerToRemove);
-		pickedClasses.Remove(playerToRemove.Class);
+		if (stage == kStage)
+		{
+			if (kStage == SelectStages.Browse)
+			{
+				kStage = SelectStages.Disabled;
+				kCanHorizontal = false;
+				PlayerList.Remove(playerToRemove);
+			}
+			if (kStage == SelectStages.Chosen)
+			{
+				kStage = SelectStages.Browse;
+				kCanHorizontal = true;
+				pickedClasses.Remove(playerToRemove.Class);
+				playerToRemove.Set = false;
+			}
+
+		}
+		else if (stage == j1Stage)
+		{
+			if (j1Stage == SelectStages.Browse)
+			{
+				j1Stage = SelectStages.Disabled;
+				j1CanHorizontal = false;
+				PlayerList.Remove(playerToRemove);
+			}
+			if (j1Stage == SelectStages.Chosen)
+			{
+				j1Stage = SelectStages.Browse;
+				j1CanHorizontal = true;
+				pickedClasses.Remove(playerToRemove.Class);
+				playerToRemove.Set = false;
+
+			}
+
+		}
+		else if (stage == j2Stage)
+		{
+			if (j2Stage == SelectStages.Browse)
+			{
+				j2Stage = SelectStages.Disabled;
+				j2CanHorizontal = false;
+				PlayerList.Remove(playerToRemove);
+			}
+			if (j2Stage == SelectStages.Chosen)
+			{
+				j2Stage = SelectStages.Browse;
+				j2CanHorizontal = true;
+				pickedClasses.Remove(playerToRemove.Class);
+				playerToRemove.Set = false;
+
+			}
+
+		}
+		else if (stage == j3Stage)
+		{
+			if (j3Stage == SelectStages.Browse)
+			{
+				j3Stage = SelectStages.Disabled;
+				j3CanHorizontal = false;
+				PlayerList.Remove(playerToRemove);
+			}
+			if (j3Stage == SelectStages.Chosen)
+			{
+				j3Stage = SelectStages.Browse;
+				j3CanHorizontal = true;
+				pickedClasses.Remove(playerToRemove.Class);
+				playerToRemove.Set = false;
+
+			}
+
+		}
+		else if (stage == j4Stage)
+		{
+			if (j4Stage == SelectStages.Browse)
+			{
+				j4Stage = SelectStages.Disabled;
+				j4CanHorizontal = false;
+				PlayerList.Remove(playerToRemove);
+			}
+			if (j4Stage == SelectStages.Chosen)
+			{
+				j4Stage = SelectStages.Browse;
+				j4CanHorizontal = true;
+				pickedClasses.Remove(playerToRemove.Class);
+				playerToRemove.Set = false;
+			}
+
+		}
 		UpdateSelect(PlayerList);
 	}
 
 	private void UpdatePlayButton()
 	{
-		if (PlayerList.Count >= 2)
+		if (PlayerList.Count(o => o.Set) >= 2)
 		{
 			Play.enabled = true;
 			Play.Select();
@@ -412,6 +699,7 @@ public class playerSelect : MonoBehaviour
 		public string Control { get; set; }
 		public string Class { get; set; }
 		public int Num { get; set; }
+		public bool Set { get; set; }
 	}
 
 }
