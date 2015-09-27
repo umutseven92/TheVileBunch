@@ -135,6 +135,22 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &175718
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 469828}
+  - 108: {fileID: 10806822}
+  m_Layer: 9
+  m_Name: Point light
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!4 &436820
 Transform:
   m_ObjectHideFlags: 1
@@ -154,14 +170,27 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 170880}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: .221332014, y: 2.02052212, z: 0}
+  m_LocalPosition: {x: 6.19679976, y: -2.03000283, z: 0}
   m_LocalScale: {x: .800000012, y: .800000012, z: 1}
   m_Children:
   - {fileID: 474538}
   - {fileID: 436820}
   - {fileID: 22484862}
+  - {fileID: 469828}
   m_Father: {fileID: 0}
   m_RootOrder: 0
+--- !u!4 &469828
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 175718}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: .569999993, y: .0599999987, z: -1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 441362}
+  m_RootOrder: 3
 --- !u!4 &474538
 Transform:
   m_ObjectHideFlags: 1
@@ -290,6 +319,38 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
+--- !u!108 &10806822
+Light:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 175718}
+  m_Enabled: 1
+  serializedVersion: 6
+  m_Type: 2
+  m_Color: {r: .977941155, g: .885326207, b: .582450271, a: 1}
+  m_Intensity: 0
+  m_Range: 10
+  m_SpotAngle: 30
+  m_CookieSize: 10
+  m_Shadows:
+    m_Type: 0
+    m_Resolution: -1
+    m_Strength: 1
+    m_Bias: .0500000007
+    m_NormalBias: .400000006
+  m_Cookie: {fileID: 0}
+  m_DrawHalo: 0
+  m_Flare: {fileID: 0}
+  m_RenderMode: 0
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_Lightmapping: 4
+  m_BounceIntensity: 1
+  m_ShadowRadius: 0
+  m_ShadowAngle: 0
+  m_AreaSize: {x: 1, y: 1}
 --- !u!114 &11414428
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -311,6 +372,7 @@ MonoBehaviour:
   MaxSpeed: 5
   JumpForce: 15
   BulletSpeed: 20
+  MovementLock: .200000003
   GroundCheck: {fileID: 474538}
   GroundCheck2: {fileID: 436820}
   Bullet: {fileID: 456820, guid: 63fe6d9b80059a248b8c801944bb1866, type: 2}
@@ -320,6 +382,7 @@ MonoBehaviour:
   SwordSlash: {fileID: 413908, guid: cf49b905a43eed54c99c4b9838f2b8a7, type: 2}
   GunShot: {fileID: 8300000, guid: 82543674d324cd449aaf9328d7647a71, type: 3}
   SlashClip: {fileID: 8300000, guid: 0c162dbb7458f0448ad52feb1406234e, type: 3}
+  GunLight: {fileID: 10806822}
   Health: 5
   Ammo: 3
   bulletDamage: 2
@@ -327,6 +390,7 @@ MonoBehaviour:
   _slashingMs: .29999999999999999
   _hitMs: 2
   flash: .20000000000000001
+  _gunLightMs: .20000000000000001
 --- !u!114 &11417966
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -819,6 +883,30 @@ Prefab:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: c014f95403af1714b841d5f3684429af, type: 2}
+    - target: {fileID: 0}
+      propertyPath: GunLight
+      value: 
+      objectReference: {fileID: 10806822}
+    - target: {fileID: 0}
+      propertyPath: m_Color.r
+      value: .977941155
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_Color.g
+      value: .885326207
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_Color.b
+      value: .582450271
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_Intensity
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: _gunLightMs
+      value: .20000000000000001
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 170880}

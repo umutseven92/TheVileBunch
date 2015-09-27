@@ -29,6 +29,9 @@ public class playerControl : MonoBehaviour
 	public float MaxSpeed = 5f;
 	public float JumpForce = 10f;
 	public float BulletSpeed = 20f;
+	public float MovementLock = 0.2f;
+	public float GunLightSpeed = 0.30f;
+
 	public Transform GroundCheck;
 	public Transform GroundCheck2;
 	public Transform Bullet;
@@ -38,6 +41,7 @@ public class playerControl : MonoBehaviour
 	public Transform SwordSlash;
 	public AudioClip GunShot;
 	public AudioClip SlashClip;
+	public Light GunLight;
 
 	public int Health = 3;
 	public int Ammo = 3;
@@ -81,6 +85,10 @@ public class playerControl : MonoBehaviour
 	public double flash = 0.200d;
 	private double flashTimer = 0.000d;
 
+	private bool _gunLight = false;
+	private double _gunLightCounter = 0.000d;
+	public double _gunLightMs = 0.100d;
+
 	// Use this for initialization
 	void Awake()
 	{
@@ -101,6 +109,9 @@ public class playerControl : MonoBehaviour
 		_maxHealth = Health;
 		_healthSlider.maxValue = _maxHealth;
 		_healthSlider.value = _maxHealth;
+
+		GunLight.enabled = false;
+		GunLight.intensity = 0;
 	}
 
 	// Update is called once per frame
@@ -144,8 +155,12 @@ public class playerControl : MonoBehaviour
 	private void FixedUpdate()
 	{
 		float h = Input.GetAxis(Control + "Horizontal");
-
 		float v = Input.GetAxis(Control + "Vertical");
+
+		if ((h < MovementLock && h > 0) || (h > -MovementLock && h < 0))
+		{
+			h = 0;
+		}
 
 		if (h == 0)
 		{
@@ -320,6 +335,7 @@ public class playerControl : MonoBehaviour
 		CheckHealthBar();
 		CheckSlashingTimer();
 		CheckHitTimer();
+		CheckGunLightTimer();
 	}
 
 	private void CheckHealthBar()
@@ -345,6 +361,32 @@ public class playerControl : MonoBehaviour
 				_slashing = false;
 				SlashCol.SendMessage("GetCol", _slashing);
 				_slashingCounter = 0.000d;
+			}
+		}
+	}
+
+
+	private void CheckGunLightTimer()
+	{
+		if (_gunLight)
+		{
+			_gunLightCounter += 1 * Time.deltaTime;
+
+			if (_gunLightCounter >= _gunLightMs / 2)
+			{
+				GunLight.intensity -= GunLightSpeed;
+			}
+			else
+			{
+				GunLight.intensity += GunLightSpeed;
+			}
+
+
+			if (_gunLightCounter >= _gunLightMs)
+			{
+				GunLight.enabled = false;
+				_gunLight = false;
+				_gunLightCounter = 0.000d;
 			}
 		}
 	}
@@ -416,6 +458,8 @@ public class playerControl : MonoBehaviour
 
 		}
 		_audio.PlayOneShot(GunShot);
+		GunLight.enabled = true;
+		_gunLight = true;
 		Ammo--;
 	}
 
@@ -435,7 +479,7 @@ public class playerControl : MonoBehaviour
 
 		if (!other.name.Equals("FallCollider"))
 		{
-			GameObject deadPlayer =	Instantiate(DeadPlayer.gameObject, transform.position, transform.rotation) as GameObject;
+			GameObject deadPlayer = Instantiate(DeadPlayer.gameObject, transform.position, transform.rotation) as GameObject;
 
 			if (other.transform.position.x < this.transform.position.x)
 			{
