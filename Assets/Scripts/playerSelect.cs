@@ -289,6 +289,7 @@ public class playerSelect : MonoBehaviour
 	{
 		if (kCanHorizontal)
 		{
+			// TODO: Fix the bug here (Input.GetAxis not updating).
 			if (Input.GetAxis("kHorizontal") > 0)
 			{
 				ChangePlayer("k", 1);
@@ -368,7 +369,7 @@ public class playerSelect : MonoBehaviour
 		{
 			if (kCancel)
 			{
-				RemovePlayer("k", kStage);
+				RemovePlayer("k");
 				kCancel = false;
 			}
 		}
@@ -376,7 +377,7 @@ public class playerSelect : MonoBehaviour
 		{
 			if (j1Cancel)
 			{
-				RemovePlayer("j1", j1Stage);
+				RemovePlayer("j1");
 				j1Cancel = false;
 			}
 		}
@@ -384,7 +385,7 @@ public class playerSelect : MonoBehaviour
 		{
 			if (j2Cancel)
 			{
-				RemovePlayer("j2", j2Stage);
+				RemovePlayer("j2");
 				j2Cancel = false;
 			}
 		}
@@ -392,7 +393,7 @@ public class playerSelect : MonoBehaviour
 		{
 			if (j3Cancel)
 			{
-				RemovePlayer("j3", j3Stage);
+				RemovePlayer("j3");
 				j3Cancel = false;
 			}
 		}
@@ -400,7 +401,7 @@ public class playerSelect : MonoBehaviour
 		{
 			if (j4Cancel)
 			{
-				RemovePlayer("j4", j4Stage);
+				RemovePlayer("j4");
 				j4Cancel = false;
 			}
 		}
@@ -491,12 +492,12 @@ public class playerSelect : MonoBehaviour
 		}
 
 		PlayerList.Find(p => p.Control == control).Class = _classes[classPos + dir];
+
 		UpdateSelect(PlayerList);
 	}
 
 	void AddPlayer(string control)
 	{
-		// There is a bug here.
 		PlayerList.Find(pl => pl.Control == control).Set = true;
 		pickedClasses.Add(PlayerList.Find(p2 => p2.Control == control).Class);
 		UpdateSelect(PlayerList);
@@ -582,100 +583,101 @@ public class playerSelect : MonoBehaviour
 	}
 
 
-	private void RemovePlayer(string control, SelectStages stage)
+	private void RemovePlayer(string control)
 	{
+
 		if (PlayerList.All(player => player.Control != control))
 		{
 			return;
 		}
 		Player playerToRemove = PlayerList.First(p => p.Control == control);
 
-		if (stage == kStage)
+		switch (control)
 		{
-			if (kStage == SelectStages.Browse)
-			{
-				kStage = SelectStages.Disabled;
-				kCanHorizontal = false;
-				PlayerList.Remove(playerToRemove);
-			}
-			if (kStage == SelectStages.Chosen)
-			{
-				kStage = SelectStages.Browse;
-				kCanHorizontal = true;
-				pickedClasses.Remove(playerToRemove.Class);
-				playerToRemove.Set = false;
-			}
+			case "k":
+				if (kStage == SelectStages.Browse)
+				{
+					kStage = SelectStages.Disabled;
+					kCanHorizontal = false;
+					PlayerList.Remove(playerToRemove);
+				}
+				if (kStage == SelectStages.Chosen)
+				{
+					kStage = SelectStages.Browse;
+					kCanHorizontal = true;
+					pickedClasses.Remove(playerToRemove.Class);
+					playerToRemove.Set = false;
+				}
+				break;
 
-		}
-		else if (stage == j1Stage)
-		{
-			if (j1Stage == SelectStages.Browse)
-			{
-				j1Stage = SelectStages.Disabled;
-				j1CanHorizontal = false;
-				PlayerList.Remove(playerToRemove);
-			}
-			if (j1Stage == SelectStages.Chosen)
-			{
-				j1Stage = SelectStages.Browse;
-				j1CanHorizontal = true;
-				pickedClasses.Remove(playerToRemove.Class);
-				playerToRemove.Set = false;
+			case "j1":
+				if (j1Stage == SelectStages.Browse)
+				{
+					j1Stage = SelectStages.Disabled;
+					j1CanHorizontal = false;
+					PlayerList.Remove(playerToRemove);
+				}
+				if (j1Stage == SelectStages.Chosen)
+				{
+					j1Stage = SelectStages.Browse;
+					j1CanHorizontal = true;
+					pickedClasses.Remove(playerToRemove.Class);
+					playerToRemove.Set = false;
+				}
+				break;
 
-			}
+			case "j2":
+				if (j2Stage == SelectStages.Browse)
+				{
+					j2Stage = SelectStages.Disabled;
+					j2CanHorizontal = false;
+					PlayerList.Remove(playerToRemove);
+				}
+				if (j2Stage == SelectStages.Chosen)
+				{
+					j2Stage = SelectStages.Browse;
+					j2CanHorizontal = true;
+					pickedClasses.Remove(playerToRemove.Class);
+					playerToRemove.Set = false;
 
-		}
-		else if (stage == j2Stage)
-		{
-			if (j2Stage == SelectStages.Browse)
-			{
-				j2Stage = SelectStages.Disabled;
-				j2CanHorizontal = false;
-				PlayerList.Remove(playerToRemove);
-			}
-			if (j2Stage == SelectStages.Chosen)
-			{
-				j2Stage = SelectStages.Browse;
-				j2CanHorizontal = true;
-				pickedClasses.Remove(playerToRemove.Class);
-				playerToRemove.Set = false;
+				}
+				break;
 
-			}
+			case "j3":
+				if (j3Stage == SelectStages.Browse)
+				{
+					j3Stage = SelectStages.Disabled;
+					j3CanHorizontal = false;
+					PlayerList.Remove(playerToRemove);
+				}
+				if (j3Stage == SelectStages.Chosen)
+				{
+					j3Stage = SelectStages.Browse;
+					j3CanHorizontal = true;
+					pickedClasses.Remove(playerToRemove.Class);
+					playerToRemove.Set = false;
+				}
+				break;
 
-		}
-		else if (stage == j3Stage)
-		{
-			if (j3Stage == SelectStages.Browse)
-			{
-				j3Stage = SelectStages.Disabled;
-				j3CanHorizontal = false;
-				PlayerList.Remove(playerToRemove);
-			}
-			if (j3Stage == SelectStages.Chosen)
-			{
-				j3Stage = SelectStages.Browse;
-				j3CanHorizontal = true;
-				pickedClasses.Remove(playerToRemove.Class);
-				playerToRemove.Set = false;
+			case "j4":
+				if (j4Stage == SelectStages.Browse)
+				{
+					j4Stage = SelectStages.Disabled;
+					j4CanHorizontal = false;
+					PlayerList.Remove(playerToRemove);
+				}
+				if (j4Stage == SelectStages.Chosen)
+				{
+					j4Stage = SelectStages.Browse;
+					j4CanHorizontal = true;
+					pickedClasses.Remove(playerToRemove.Class);
+					playerToRemove.Set = false;
+				}
+				break;
 
-			}
-
-		}
-		else if (stage == j4Stage)
-		{
-			if (j4Stage == SelectStages.Browse)
-			{
-				j4Stage = SelectStages.Disabled;
-				j4CanHorizontal = false;
-				PlayerList.Remove(playerToRemove);
-			}
-			if (j4Stage == SelectStages.Chosen)
-			{
-				j4Stage = SelectStages.Browse;
-				j4CanHorizontal = true;
-				pickedClasses.Remove(playerToRemove.Class);
-				playerToRemove.Set = false;
-			}
+			default:
+				Debug.LogError(control + " not found!");
+				break;
 
 		}
 		UpdateSelect(PlayerList);
