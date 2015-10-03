@@ -162,7 +162,7 @@ public class playerControl : MonoBehaviour
 			h = 0;
 		}
 
-		if (h == 0)
+		if (h == 0 && !_slashing)
 		{
 			_animator.SetInteger("anim", 0);
 		}
@@ -204,7 +204,7 @@ public class playerControl : MonoBehaviour
 					_rb2D.velocity = new Vector2(Mathf.Sign(_rb2D.velocity.x) * MaxSpeed, _rb2D.velocity.y);
 				}
 
-				if (h != 0)
+				if (h != 0 && !_slashing)
 				{
 					_animator.SetInteger("anim", 1);
 				}
@@ -232,6 +232,15 @@ public class playerControl : MonoBehaviour
 			_rb2D.AddForce(new Vector2(0, JumpForce), ForceMode2D.Impulse);
 			Jump = false;
 
+		}
+
+		if (_slashing)
+		{
+			Debug.Log("SLASH");
+		}
+		else
+		{
+			Debug.Log("");
 		}
 	}
 
@@ -359,6 +368,7 @@ public class playerControl : MonoBehaviour
 			if (_slashingCounter >= _slashingMs)
 			{
 				_slashing = false;
+				_animator.SetInteger("anim", 0);
 				SlashCol.SendMessage("GetCol", _slashing);
 				_slashingCounter = 0.000d;
 			}
@@ -437,6 +447,9 @@ public class playerControl : MonoBehaviour
 	void Slash()
 	{
 		_slashing = true;
+
+		_animator.SetInteger("anim", 3);
+
 		SlashCol.SendMessage("GetCol", _slashing);
 		_audio.PlayOneShot(SlashClip);
 	}
