@@ -1,0 +1,132 @@
+fileFormatVersion: 2
+guid: 0122c5e1346ae7544bdc8deba24f4a5f
+timeCreated: 1440967432
+licenseType: Free
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: blood_0
+    21300002: blood_1
+    21300004: blood_2
+    21300006: blood_3
+    21300008: blood_4
+    21300010: blood_5
+    21300012: blood_6
+  serializedVersion: 2
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 1
+    linearTexture: 0
+    correctGamma: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: .25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 0
+  cubemapConvolution: 0
+  cubemapConvolutionSteps: 8
+  cubemapConvolutionExponent: 1.5
+  seamlessCubemap: 0
+  textureFormat: -1
+  maxTextureSize: 2048
+  textureSettings:
+    filterMode: -1
+    aniso: 16
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  rGBM: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: .5, y: .5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spritePixelsToUnits: 100
+  alphaIsTransparency: 1
+  textureType: 8
+  buildTargetSettings: []
+  spriteSheet:
+    sprites:
+    - name: blood_0
+      rect:
+        serializedVersion: 2
+        x: 142
+        y: 183
+        width: 236
+        height: 211
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: blood_1
+      rect:
+        serializedVersion: 2
+        x: 646
+        y: 186
+        width: 270
+        height: 245
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: blood_2
+      rect:
+        serializedVersion: 2
+        x: 1124
+        y: 189
+        width: 324
+        height: 279
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 11, y: 0, z: 0, w: 14}
+    - name: blood_3
+      rect:
+        serializedVersion: 2
+        x: 1644
+        y: 178
+        width: 322
+        height: 281
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: blood_4
+      rect:
+        serializedVersion: 2
+        x: 2156
+        y: 158
+        width: 336
+        height: 296
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: blood_5
+      rect:
+        serializedVersion: 2
+        x: 2668
+        y: 146
+        width: 341
+        height: 311
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: blood_6
+      rect:
+        serializedVersion: 2
+        x: 2503
+        y: 36
+        width: 407
+        height: 62
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+  spritePackingTag: 
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
