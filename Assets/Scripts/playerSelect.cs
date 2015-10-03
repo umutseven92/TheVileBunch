@@ -6,8 +6,11 @@ using UnityEngine.UI;
 
 public class playerSelect : MonoBehaviour
 {
-	public AudioSource Source;
 	public AudioClip Clip;
+	public AudioClip DirClip;
+	public AudioClip InvalidClip;
+	public AudioClip ReadyClip;
+
 	public Button Play;
 	public Text P1Text;
 	public Text P2Text;
@@ -17,6 +20,11 @@ public class playerSelect : MonoBehaviour
 	public Image p2Image;
 	public Image p3Image;
 	public Image p4Image;
+
+	public AudioSource p1Audio;
+	public AudioSource p2Audio;
+	public AudioSource p3Audio;
+	public AudioSource p4Audio;
 
 	public Button p1Right;
 	public Button p1Left;
@@ -182,15 +190,22 @@ public class playerSelect : MonoBehaviour
 		{
 			if (kSubmit)
 			{
+				string control = "k";
 				if (kStage == SelectStages.Browse)
 				{
-					AddPlayer("k");
+					if (pickedClasses.Count > 0 && pickedClasses.Contains(PlayerList.Find(c => c.Control == control).Class))
+					{
+						PlayPlayersAudio(InvalidClip, control);
+						return;
+					}
+
+					AddPlayer(control);
 					kStage = SelectStages.Chosen;
 					kCanHorizontal = false;
 				}
 				if (kStage == SelectStages.Disabled)
 				{
-					SelectInitialPlayer("k");
+					SelectInitialPlayer(control);
 					kStage = SelectStages.Browse;
 					kCanHorizontal = true;
 				}
@@ -202,15 +217,22 @@ public class playerSelect : MonoBehaviour
 		{
 			if (j1Submit)
 			{
+				string control = "j1";
+
 				if (j1Stage == SelectStages.Browse)
 				{
-					AddPlayer("j1");
+					if (pickedClasses.Count > 0 && pickedClasses.Contains(PlayerList.Find(c => c.Control == control).Class))
+					{
+						PlayPlayersAudio(InvalidClip, control);
+						return;
+					}
+					AddPlayer(control);
 					j1Stage = SelectStages.Chosen;
 					j1CanHorizontal = false;
 				}
 				if (j1Stage == SelectStages.Disabled)
 				{
-					SelectInitialPlayer("j1");
+					SelectInitialPlayer(control);
 					j1Stage = SelectStages.Browse;
 					j1CanHorizontal = true;
 				}
@@ -223,15 +245,23 @@ public class playerSelect : MonoBehaviour
 		{
 			if (j2Submit)
 			{
+				string control = "j2";
+
 				if (j2Stage == SelectStages.Browse)
 				{
-					AddPlayer("j2");
+					if (pickedClasses.Count > 0 && pickedClasses.Contains(PlayerList.Find(c => c.Control == control).Class))
+					{
+						PlayPlayersAudio(InvalidClip, control);
+						return;
+					}
+
+					AddPlayer(control);
 					j2Stage = SelectStages.Chosen;
 					j2CanHorizontal = false;
 				}
 				if (j2Stage == SelectStages.Disabled)
 				{
-					SelectInitialPlayer("j2");
+					SelectInitialPlayer(control);
 					j2Stage = SelectStages.Browse;
 					j2CanHorizontal = true;
 				}
@@ -244,15 +274,23 @@ public class playerSelect : MonoBehaviour
 		{
 			if (j3Submit)
 			{
+				string control = "j3";
+
 				if (j3Stage == SelectStages.Browse)
 				{
-					AddPlayer("j3");
+					if (pickedClasses.Count > 0 && pickedClasses.Contains(PlayerList.Find(c => c.Control == control).Class))
+					{
+						PlayPlayersAudio(InvalidClip, control);
+						return;
+					}
+
+					AddPlayer(control);
 					j3Stage = SelectStages.Chosen;
 					j3CanHorizontal = false;
 				}
 				if (j3Stage == SelectStages.Disabled)
 				{
-					SelectInitialPlayer("j3");
+					SelectInitialPlayer(control);
 					j3Stage = SelectStages.Browse;
 					j3CanHorizontal = true;
 				}
@@ -265,15 +303,23 @@ public class playerSelect : MonoBehaviour
 		{
 			if (j4Submit)
 			{
+				string control = "j4";
+
 				if (j4Stage == SelectStages.Browse)
 				{
-					AddPlayer("j4");
+					if (pickedClasses.Count > 0 && pickedClasses.Contains(PlayerList.Find(c => c.Control == control).Class))
+					{
+						PlayPlayersAudio(InvalidClip, control);
+						return;
+					}
+
+					AddPlayer(control);
 					j4Stage = SelectStages.Chosen;
 					j4CanHorizontal = false;
 				}
 				if (j4Stage == SelectStages.Disabled)
 				{
-					SelectInitialPlayer("j4");
+					SelectInitialPlayer(control);
 					j4Stage = SelectStages.Browse;
 					j4CanHorizontal = true;
 				}
@@ -439,7 +485,7 @@ public class playerSelect : MonoBehaviour
 			return;
 		}
 
-		string pClass = _classes[0];
+		string pClass = _classes.FirstOrDefault(c => !pickedClasses.Contains(c));
 
 		if (pClass == string.Empty)
 		{
@@ -493,6 +539,8 @@ public class playerSelect : MonoBehaviour
 
 		PlayerList.Find(p => p.Control == control).Class = _classes[classPos + dir];
 
+		PlayPlayersAudio(DirClip, control);
+
 		UpdateSelect(PlayerList);
 	}
 
@@ -500,6 +548,9 @@ public class playerSelect : MonoBehaviour
 	{
 		PlayerList.Find(pl => pl.Control == control).Set = true;
 		pickedClasses.Add(PlayerList.Find(p2 => p2.Control == control).Class);
+
+		PlayPlayersAudio(Clip, control);
+
 		UpdateSelect(PlayerList);
 	}
 
@@ -515,10 +566,32 @@ public class playerSelect : MonoBehaviour
 
 		PlayerList.Add(p);
 
-		Source.PlayOneShot(Clip);
+		PlayPlayersAudio(ReadyClip, control);
+
 		UpdateSelect(PlayerList);
 	}
 
+	void PlayPlayersAudio(AudioClip clip, string control)
+	{
+		Player p = PlayerList.Find(pl => pl.Control == control);
+
+		switch (PlayerList.IndexOf(p))
+		{
+			case 0:
+				p1Audio.PlayOneShot(clip);
+				break;
+			case 1:
+				p2Audio.PlayOneShot(clip);
+				break;
+			case 2:
+				p3Audio.PlayOneShot(clip);
+				break;
+			case 3:
+				p4Audio.PlayOneShot(clip);
+				break;
+		}
+
+	}
 
 	void UpdateSelect(List<Player> players)
 	{
@@ -680,6 +753,7 @@ public class playerSelect : MonoBehaviour
 				break;
 
 		}
+
 		UpdateSelect(PlayerList);
 	}
 
