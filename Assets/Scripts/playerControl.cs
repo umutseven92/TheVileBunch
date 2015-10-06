@@ -89,6 +89,8 @@ public class playerControl : MonoBehaviour
 	private double _gunLightCounter = 0.000d;
 	public double _gunLightMs = 0.100d;
 
+	private float _horizontal;
+
 	// Use this for initialization
 	void Awake()
 	{
@@ -97,7 +99,7 @@ public class playerControl : MonoBehaviour
 		_audio = GetComponent<AudioSource>();
 		_sRenderer = GetComponent<SpriteRenderer>();
 		_healthSlider = GetComponentInChildren<Slider>();
-
+		
 		_localPlayers = playerSelect.PlayerList;
 
 		SlashCol = Instantiate(SwordSlash.gameObject,
@@ -150,12 +152,36 @@ public class playerControl : MonoBehaviour
 
 		CheckTimers();
 		UpdateSlashColPos();
+
+		Debug.Log(_animator.GetInteger("anim"));
+
+		var jumping = !_grounded && !_grounded2;
+
+		if (_slashing)
+		{
+			_animator.SetInteger("anim", 3);
+		}
+		if (!_slashing && jumping)
+		{
+			_animator.SetInteger("anim", 2);
+		}
+		if (!_slashing && !jumping && _horizontal == 0)
+		{
+			_animator.SetInteger("anim", 0);
+		}
+		if (!_slashing && !jumping && _horizontal != 0)
+		{
+			_animator.SetInteger("anim", 1);
+		}
+
 	}
 
 	private void FixedUpdate()
 	{
 		float h = Input.GetAxis(Control + "Horizontal");
 		float v = Input.GetAxis(Control + "Vertical");
+
+		_horizontal = h;
 
 		if ((h < MovementLock && h > 0) || (h > -MovementLock && h < 0))
 		{
@@ -164,8 +190,9 @@ public class playerControl : MonoBehaviour
 
 		if (h == 0 && !_slashing)
 		{
-			_animator.SetInteger("anim", 0);
+			//_animator.SetInteger("anim", 0);
 		}
+
 
 		if (_inFrontOfLadder)
 		{
@@ -206,11 +233,12 @@ public class playerControl : MonoBehaviour
 
 				if (h != 0 && !_slashing)
 				{
-					_animator.SetInteger("anim", 1);
+					//_animator.SetInteger("anim", 1);
 				}
 
 			}
 		}
+
 
 		if (h > 0 && !FacingRight && !paused)
 		{
@@ -234,14 +262,7 @@ public class playerControl : MonoBehaviour
 
 		}
 
-		if (_slashing)
-		{
-			Debug.Log("SLASH");
-		}
-		else
-		{
-			Debug.Log("");
-		}
+
 	}
 
 	void OnTriggerEnter2D(Collider2D other)
@@ -368,7 +389,7 @@ public class playerControl : MonoBehaviour
 			if (_slashingCounter >= _slashingMs)
 			{
 				_slashing = false;
-				_animator.SetInteger("anim", 0);
+				//	_animator.SetInteger("anim", 0);
 				SlashCol.SendMessage("GetCol", _slashing);
 				_slashingCounter = 0.000d;
 			}
@@ -441,14 +462,13 @@ public class playerControl : MonoBehaviour
 		theScale.x *= -1;
 
 		transform.localScale = theScale;
-
 	}
 
 	void Slash()
 	{
 		_slashing = true;
 
-		_animator.SetInteger("anim", 3);
+		//_animator.SetInteger("anim", 3);
 
 		SlashCol.SendMessage("GetCol", _slashing);
 		_audio.PlayOneShot(SlashClip);
