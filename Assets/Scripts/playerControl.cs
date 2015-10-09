@@ -63,7 +63,7 @@ public class playerControl : MonoBehaviour
 	private SpriteRenderer _sRenderer;
 	private Slider _healthSlider;
 
-	private const float slashOffset = 0.8f;
+	public float slashOffset = 0.8f;
 	private const int pushX = 500;
 	private const int pushY = 400;
 
@@ -152,31 +152,33 @@ public class playerControl : MonoBehaviour
 
 		CheckTimers();
 		UpdateSlashColPos();
-
-		Debug.Log(_animator.GetInteger("anim"));
-
-		var jumping = !_grounded && !_grounded2;
-
-		if (_slashing)
-		{
-			_animator.SetInteger("anim", 3);
-		}
-		if (!_slashing && jumping)
-		{
-			_animator.SetInteger("anim", 2);
-		}
-		if (!_slashing && !jumping && _horizontal == 0)
-		{
-			_animator.SetInteger("anim", 0);
-		}
-		if (!_slashing && !jumping && _horizontal != 0)
-		{
-			_animator.SetInteger("anim", 1);
-		}
+	    HandleAnimations();
 
 	}
 
-	private void FixedUpdate()
+    private void HandleAnimations()
+    {
+        var jumping = !_grounded && !_grounded2;
+
+        if (_slashing)
+        {
+            _animator.SetInteger("anim", 3);
+        }
+        if (!_slashing && jumping)
+        {
+            _animator.SetInteger("anim", 2);
+        }
+        if (!_slashing && !jumping && _horizontal == 0)
+        {
+            _animator.SetInteger("anim", 0);
+        }
+        if (!_slashing && !jumping && _horizontal != 0)
+        {
+            _animator.SetInteger("anim", 1);
+        }
+    }
+
+    private void FixedUpdate()
 	{
 		float h = Input.GetAxis(Control + "Horizontal");
 		float v = Input.GetAxis(Control + "Vertical");
@@ -186,11 +188,6 @@ public class playerControl : MonoBehaviour
 		if ((h < MovementLock && h > 0) || (h > -MovementLock && h < 0))
 		{
 			h = 0;
-		}
-
-		if (h == 0 && !_slashing)
-		{
-			//_animator.SetInteger("anim", 0);
 		}
 
 
@@ -229,11 +226,6 @@ public class playerControl : MonoBehaviour
 				if (Mathf.Abs(_rb2D.velocity.x) > MaxSpeed)
 				{
 					_rb2D.velocity = new Vector2(Mathf.Sign(_rb2D.velocity.x) * MaxSpeed, _rb2D.velocity.y);
-				}
-
-				if (h != 0 && !_slashing)
-				{
-					//_animator.SetInteger("anim", 1);
 				}
 
 			}
@@ -389,7 +381,6 @@ public class playerControl : MonoBehaviour
 			if (_slashingCounter >= _slashingMs)
 			{
 				_slashing = false;
-				//	_animator.SetInteger("anim", 0);
 				SlashCol.SendMessage("GetCol", _slashing);
 				_slashingCounter = 0.000d;
 			}
@@ -467,8 +458,6 @@ public class playerControl : MonoBehaviour
 	void Slash()
 	{
 		_slashing = true;
-
-		//_animator.SetInteger("anim", 3);
 
 		SlashCol.SendMessage("GetCol", _slashing);
 		_audio.PlayOneShot(SlashClip);

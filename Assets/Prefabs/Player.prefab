@@ -388,6 +388,7 @@ MonoBehaviour:
   Ammo: 3
   bulletDamage: 2
   swordDamage: 1
+  slashOffset: .5
   _slashingMs: .29999999999999999
   _hitMs: 2
   flash: .20000000000000001
@@ -911,6 +912,10 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: _slashingMs
       value: .29999999999999999
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: slashOffset
+      value: .5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

@@ -3,15 +3,16 @@ using System.Collections;
 
 public class slashScript : MonoBehaviour
 {
-	[HideInInspector]
+    [HideInInspector]
     public bool slashing;
 
-	[HideInInspector]
+    [HideInInspector]
     public int num;
 
     private BoxCollider2D _bCol;
     private SpriteRenderer sprRenderer;
-	
+    public bool visible = true;
+
     // Use this for initialization
     void Start()
     {
@@ -28,7 +29,14 @@ public class slashScript : MonoBehaviour
         if (slashing)
         {
             _bCol.enabled = true;
-            sprRenderer.enabled = true;
+            if (visible)
+            {
+                sprRenderer.enabled = true;
+            }
+            else
+            {
+                sprRenderer.enabled = false;
+            }
         }
         else
         {
