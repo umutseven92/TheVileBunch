@@ -9,9 +9,10 @@ public class slashScript : MonoBehaviour
     [HideInInspector]
     public int num;
 
+    public bool visible = true; // Is the slash hitbox visible
+
     private BoxCollider2D _bCol;
     private SpriteRenderer sprRenderer;
-    public bool visible = true;
 
     // Use this for initialization
     void Start()
