@@ -27,8 +27,10 @@ public class playerControl : MonoBehaviour
 
     #region Public Values
 
-    public int Health = 3;  // Player health
-    public int Ammo = 3; // Ammo count
+    public int StartingAmmo = 3; // Starting ammo
+    public int MaxAmmo = 3; // Maximum ammo a player can have
+    public int StartingHealth = 3; // Starting healt
+    public int MaxHealth = 3; // Maximum health a player can have
     public int bulletDamage = 2; // How much damage one bullet causes
     public int swordDamage = 1; // How much damage a sword slash causes
     public float MoveForce = 365f; // Player move force
@@ -40,10 +42,13 @@ public class playerControl : MonoBehaviour
     public float slashOffset = 0.8f; // How far the player slashes
     public double _slashingMs = 0.3d; // How long does slashing take
     public double _hitMs = 2.000d; // Invulnerability timer after getting hit
+    public double _healedMs = 2.000d; // Health bar visibility after healed
     public double _gunLightMs = 0.100d; // How log does gun light stays
     public double flash = 0.200d; // Player invulnerability flash frequency
     public int pushX = 500; // How far in the X plane player flies when hit
     public int pushY = 400; // How far in the Y plane player flies when hit
+    public int AmmoPickup = 3; // How much ammo does ammo pickup give
+    public int HealthPickup = 3; // How much health does health pickup give
 
     #endregion
 
@@ -60,6 +65,8 @@ public class playerControl : MonoBehaviour
 
     #region Private Values
 
+    private int Health;
+    private int Ammo;
     private bool _grounded = false;
     private bool _grounded2 = false;
     private bool _inFrontOfLadder = false;
@@ -67,7 +74,6 @@ public class playerControl : MonoBehaviour
     private bool _dead = false;
     private bool first = true;
     private bool paused = false;
-    private int _maxHealth;
     private Rigidbody2D _rb2D;
     private AudioSource _audio;
     private Animator _animator;
@@ -79,7 +85,9 @@ public class playerControl : MonoBehaviour
     private bool _slashing = false;
     private double _slashingCounter = 0.000d;
     private bool hit = false;
+    private bool healed = false;
     private double _hitCounter = 0.000d;
+    private double _healedCounter = 0.000d;
     private double flashTimer = 0.000d;
     private bool _gunLight = false;
     private double _gunLightCounter = 0.000d;
@@ -103,13 +111,14 @@ public class playerControl : MonoBehaviour
                 : new Vector3(transform.position.x - slashOffset, transform.position.y, transform.position.y),
             transform.rotation) as GameObject;
 
-        _maxHealth = Health;
-        _healthSlider.maxValue = _maxHealth;
-        _healthSlider.value = _maxHealth;
+        _healthSlider.maxValue = MaxHealth;
+        _healthSlider.value = MaxHealth;
 
         GunLight.enabled = false;
         GunLight.intensity = 0;
 
+        Ammo = StartingAmmo;
+        Health = StartingHealth;
     }
 
     void Update()
@@ -242,14 +251,17 @@ public class playerControl : MonoBehaviour
         }
     }
 
+    // Player collided with..
     void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.name.Equals("ropeAttached") && _up)
+        // Rope
+        if (other.name.StartsWith("ropeAttached") && _up)
         {
             _inFrontOfLadder = true;
         }
 
-        if (other.name.Equals("Bullet(Clone)"))
+        // Bullet
+        if (other.name.StartsWith("Bullet(Clone)"))
         {
             if (!hit)
             {
@@ -265,11 +277,31 @@ public class playerControl : MonoBehaviour
             }
         }
 
-        if (other.name.Equals("FallCollider"))
+        // Fall
+        if (other.name.StartsWith("FallCollider"))
         {
             Die(other);
         }
 
+        // Ammo pickup
+        if (other.name.StartsWith("ammo"))
+        {
+            Ammo += AmmoPickup;
+
+            if (Ammo > MaxAmmo)
+            {
+                Ammo = MaxAmmo;
+            }
+        }
+
+        // Health pickup
+        if (other.name.StartsWith("health"))
+        {
+            healed = true;
+            GiveHealth(HealthPickup);
+        }
+
+        // Sword slash
         if (other.name.StartsWith("slash"))
         {
             if (other.GetComponent<slashScript>().num != playerNum && other.GetComponent<slashScript>().slashing)
@@ -308,6 +340,22 @@ public class playerControl : MonoBehaviour
         _healthSlider.value -= damage;
     }
 
+    void GiveHealth(int health)
+    {
+        Health += health;
+
+        if (Health > MaxHealth)
+        {
+            Health = MaxHealth;
+            _healthSlider.value = _healthSlider.maxValue;
+        }
+        else
+        {
+            _healthSlider.value += health;
+        }
+
+    }
+
     void OnTriggerExit2D(Collider2D other)
     {
         if (other.name.Equals("ropeAttached"))
@@ -328,11 +376,12 @@ public class playerControl : MonoBehaviour
         CheckSlashingTimer();
         CheckHitTimer();
         CheckGunLightTimer();
+        CheckHealedTimer();
     }
 
     private void CheckHealthBar()
     {
-        if (hit)
+        if (hit || healed)
         {
             _healthSlider.GetComponentInParent<Canvas>().enabled = true;
         }
@@ -341,7 +390,6 @@ public class playerControl : MonoBehaviour
             _healthSlider.GetComponentInParent<Canvas>().enabled = false;
         }
     }
-
 
     private void CheckSlashingTimer()
     {
@@ -356,7 +404,6 @@ public class playerControl : MonoBehaviour
             }
         }
     }
-
 
     private void CheckGunLightTimer()
     {
@@ -401,6 +448,21 @@ public class playerControl : MonoBehaviour
                 flashTimer = 0.000d;
                 _sRenderer.enabled = true;
             }
+        }
+    }
+
+    private void CheckHealedTimer()
+    {
+        if (healed)
+        {
+            _healedCounter += 1 * Time.deltaTime;
+
+            if (_healedCounter >= _healedMs)
+            {
+                healed = false;
+                _healedCounter = 0.000d;
+            }
+            
         }
     }
 

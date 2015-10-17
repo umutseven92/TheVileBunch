@@ -368,12 +368,26 @@ MonoBehaviour:
   Control: 
   playerNum: 0
   _playerClass: 
+  StartingAmmo: 3
+  MaxAmmo: 3
+  StartingHealth: 6
+  MaxHealth: 6
+  bulletDamage: 2
+  swordDamage: 1
   MoveForce: 365
   MaxSpeed: 5
   JumpForce: 15
   BulletSpeed: 20
   MovementLock: .200000003
   GunLightSpeed: .300000012
+  slashOffset: .5
+  _slashingMs: .29999999999999999
+  _hitMs: 2
+  _gunLightMs: .20000000000000001
+  flash: .20000000000000001
+  pushX: 500
+  pushY: 400
+  AmmoPickup: 3
   GroundCheck: {fileID: 474538}
   GroundCheck2: {fileID: 436820}
   Bullet: {fileID: 456820, guid: 63fe6d9b80059a248b8c801944bb1866, type: 2}
@@ -384,15 +398,6 @@ MonoBehaviour:
   GunShot: {fileID: 8300000, guid: 82543674d324cd449aaf9328d7647a71, type: 3}
   SlashClip: {fileID: 8300000, guid: 0c162dbb7458f0448ad52feb1406234e, type: 3}
   GunLight: {fileID: 10806822}
-  Health: 5
-  Ammo: 3
-  bulletDamage: 2
-  swordDamage: 1
-  slashOffset: .5
-  _slashingMs: .29999999999999999
-  _hitMs: 2
-  flash: .20000000000000001
-  _gunLightMs: .20000000000000001
 --- !u!114 &11417966
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -916,6 +921,14 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: slashOffset
       value: .5
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StartingHealth
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: MaxHealth
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
