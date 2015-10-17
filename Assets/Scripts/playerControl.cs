@@ -61,6 +61,8 @@ public class playerControl : MonoBehaviour
     public Transform SwordSlash;
     public AudioClip GunShot;
     public AudioClip SlashClip;
+    public AudioClip HealthClip;
+    public AudioClip AmmoClip;
     public Light GunLight;
 
     #region Private Values
@@ -286,8 +288,8 @@ public class playerControl : MonoBehaviour
         // Ammo pickup
         if (other.name.StartsWith("ammo"))
         {
+            _audio.PlayOneShot(AmmoClip);
             Ammo += AmmoPickup;
-
             if (Ammo > MaxAmmo)
             {
                 Ammo = MaxAmmo;
@@ -297,6 +299,7 @@ public class playerControl : MonoBehaviour
         // Health pickup
         if (other.name.StartsWith("health"))
         {
+            _audio.PlayOneShot(HealthClip);
             healed = true;
             GiveHealth(HealthPickup);
         }
