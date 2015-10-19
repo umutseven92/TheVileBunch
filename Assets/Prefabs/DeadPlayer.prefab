@@ -71,6 +71,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4aeb5d55f971b0249bfe542bc4b4f1dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  degreesPerSecond: 90
+  pushX: 15
+  pushY: 30
 --- !u!212 &21257928
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -81,7 +84,7 @@ SpriteRenderer:
   m_CastShadows: 0
   m_ReceiveShadows: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000e000000000000000, type: 0}
+  - {fileID: 2100000, guid: c014f95403af1714b841d5f3684429af, type: 2}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 0
@@ -132,6 +135,10 @@ Prefab:
       propertyPath: m_LocalScale.y
       value: .800000012
       objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: c014f95403af1714b841d5f3684429af, type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 168710}
