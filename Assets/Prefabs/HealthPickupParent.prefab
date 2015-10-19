@@ -1,17 +1,17 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &125796
+--- !u!1 &103098
 GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 4
   m_Component:
-  - 4: {fileID: 459900}
-  - 212: {fileID: 21206318}
-  - 61: {fileID: 6186772}
-  - 114: {fileID: 11417768}
-  - 111: {fileID: 11148506}
+  - 4: {fileID: 437974}
+  - 212: {fileID: 21227172}
+  - 61: {fileID: 6179274}
+  - 114: {fileID: 11419494}
+  - 111: {fileID: 11138192}
   m_Layer: 0
   m_Name: healthPickup
   m_TagString: Untagged
@@ -19,24 +19,52 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &459900
+--- !u!1 &133122
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 425224}
+  m_Layer: 0
+  m_Name: HealthPickupParent
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &425224
 Transform:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 125796}
+  m_GameObject: {fileID: 133122}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: .129999995, y: .129999995, z: 1}
-  m_Children: []
+  m_LocalPosition: {x: 1.97000003, y: 3.11999989, z: 11}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 437974}
   m_Father: {fileID: 0}
   m_RootOrder: 0
---- !u!61 &6186772
+--- !u!4 &437974
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 103098}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: .0299999993, y: .430000007, z: 11}
+  m_LocalScale: {x: .129999995, y: .129999995, z: 1}
+  m_Children: []
+  m_Father: {fileID: 425224}
+  m_RootOrder: 0
+--- !u!61 &6179274
 BoxCollider2D:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 125796}
+  m_GameObject: {fileID: 103098}
   m_Enabled: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 1
@@ -44,12 +72,12 @@ BoxCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Size: {x: 4, y: 4}
---- !u!111 &11148506
+--- !u!111 &11138192
 Animation:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 125796}
+  m_GameObject: {fileID: 103098}
   m_Enabled: 1
   serializedVersion: 3
   m_Animation: {fileID: 7400000, guid: a6b380ab7a2682847a5f1569c05a57b9, type: 2}
@@ -59,23 +87,23 @@ Animation:
   m_PlayAutomatically: 1
   m_AnimatePhysics: 0
   m_CullingType: 0
---- !u!114 &11417768
+--- !u!114 &11419494
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 125796}
+  m_GameObject: {fileID: 103098}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ff10e036949e82749b77cbac44b70186, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!212 &21206318
+--- !u!212 &21227172
 SpriteRenderer:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 125796}
+  m_GameObject: {fileID: 103098}
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
@@ -105,5 +133,5 @@ Prefab:
     m_Modifications: []
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
-  m_RootGameObject: {fileID: 125796}
+  m_RootGameObject: {fileID: 133122}
   m_IsPrefabParent: 1
