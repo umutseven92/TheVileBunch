@@ -9,8 +9,6 @@ GameObject:
   m_Component:
   - 4: {fileID: 437974}
   - 212: {fileID: 21227172}
-  - 61: {fileID: 6179274}
-  - 114: {fileID: 11419494}
   - 111: {fileID: 11138192}
   m_Layer: 0
   m_Name: healthPickup
@@ -27,9 +25,11 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 425224}
+  - 114: {fileID: 11485572}
+  - 61: {fileID: 6194562}
   m_Layer: 0
   m_Name: HealthPickupParent
-  m_TagString: Untagged
+  m_TagString: healthPickup
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -59,19 +59,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 425224}
   m_RootOrder: 0
---- !u!61 &6179274
+--- !u!61 &6194562
 BoxCollider2D:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 103098}
+  m_GameObject: {fileID: 133122}
   m_Enabled: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Size: {x: 4, y: 4}
+  m_Size: {x: 1, y: 1}
 --- !u!111 &11138192
 Animation:
   m_ObjectHideFlags: 1
@@ -87,12 +87,12 @@ Animation:
   m_PlayAutomatically: 1
   m_AnimatePhysics: 0
   m_CullingType: 0
---- !u!114 &11419494
+--- !u!114 &11485572
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 103098}
+  m_GameObject: {fileID: 133122}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ff10e036949e82749b77cbac44b70186, type: 3}
@@ -130,7 +130,15 @@ Prefab:
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 0}
-    m_Modifications: []
+    m_Modifications:
+    - target: {fileID: 0}
+      propertyPath: m_TagString
+      value: healthPickup
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 133122}

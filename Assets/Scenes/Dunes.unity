@@ -1637,6 +1637,10 @@ MonoBehaviour:
   - {fileID: 1468037287}
   - {fileID: 939337605}
   - {fileID: 1912810153}
+  ammoMsUpper: 30
+  ammoMsLower: 10
+  healthMsUpper: 40
+  healthMsLower: 20
 --- !u!4 &1042346985
 Transform:
   m_ObjectHideFlags: 0

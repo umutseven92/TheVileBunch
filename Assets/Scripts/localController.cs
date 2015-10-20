@@ -62,6 +62,8 @@ public class localController : MonoBehaviour
     public int healthMsLower = 20;
     private int healthMs;
 
+    private bool ammoOnScreen = false;
+    private bool healthOnScreen = false;
 
     // Use this for initialization
     void Start()
@@ -98,10 +100,6 @@ public class localController : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.L))
-        {
-            SpawnRandomItem(AmmoPickup);
-        }
 
         if (Input.GetButtonDown("Pause"))
         {
@@ -202,27 +200,51 @@ public class localController : MonoBehaviour
 
     }
 
-    void SpawnRandomItem(Transform pickup)
+    void SpawnRandomAmmo(Transform pickup)
     {
         var pos = _rand.Next(0, pickupSpawns.Length);
         var spawn = pickupSpawns[pos];
 
-        var pickupsOnScene = FindObjectsOfType(typeof(Transform)).Where(t => t.name.Equals("AmmoPickupParent") || t.name.Equals("HealthPickupParent")) as IEnumerable<Transform>;
-
-        if (pickupsOnScene != null)
+        if (GameObject.FindGameObjectsWithTag("ammoPickup").Length <= 0)
         {
-            var count = pickupsOnScene.Count(p => p.position.x == spawn.position.x && p.position.y == spawn.position.y && p.position.z == spawn.position.z);
+            var hPickup = GameObject.FindGameObjectWithTag("healthPickup");
 
-            if (count == 0)
+            if (hPickup == null)
             {
                 Instantiate(pickup, new Vector3(spawn.position.x, spawn.position.y, spawn.position.z), Quaternion.identity);
             }
+            else
+            {
+                if (new Vector2(hPickup.transform.position.x, hPickup.transform.position.y) != new Vector2(spawn.position.x, spawn.position.y))
+                {
+                    Instantiate(pickup, new Vector3(spawn.position.x, spawn.position.y, spawn.position.z), Quaternion.identity);
+                }
+            }
         }
-        else
-        {
-            Instantiate(pickup, new Vector3(spawn.position.x, spawn.position.y, spawn.position.z), Quaternion.identity);
-        }
+    }
 
+    void SpawnRandomHealth(Transform pickup)
+    {
+        var pos = _rand.Next(0, pickupSpawns.Length);
+        var spawn = pickupSpawns[pos];
+
+        if (GameObject.FindGameObjectsWithTag("healthPickup").Length <= 0)
+        {
+            var aPickup = GameObject.FindGameObjectWithTag("ammoPickup");
+
+            if (aPickup == null)
+            {
+                Instantiate(pickup, new Vector3(spawn.position.x, spawn.position.y, spawn.position.z), Quaternion.identity);
+
+            }
+            else
+            {
+                if (new Vector2(aPickup.transform.position.x, aPickup.transform.position.y) != new Vector2(spawn.position.x, spawn.position.y))
+                {
+                    Instantiate(pickup, new Vector3(spawn.position.x, spawn.position.y, spawn.position.z), Quaternion.identity);
+                }
+            }
+        }
     }
 
     int CalculateNewAmmoRange()
@@ -305,6 +327,13 @@ public class localController : MonoBehaviour
             Destroy(s);
         }
 
+        _healthCounter = 0;
+        _ammoCounter = 0;
+
+        // Destroy ammo & health pickups
+        GameObject.FindGameObjectsWithTag("ammoPickup").ToList().ForEach(Destroy);
+        GameObject.FindGameObjectsWithTag("healthPickup").ToList().ForEach(Destroy);
+
         CreatePlayers(playerSelect.PlayerList.Count);
     }
 
@@ -385,7 +414,7 @@ public class localController : MonoBehaviour
 
         if (_ammoCounter >= ammoMs)
         {
-            SpawnRandomItem(AmmoPickup);
+            SpawnRandomAmmo(AmmoPickup);
             _ammoCounter = 0;
             ammoMs = CalculateNewAmmoRange();
         }
@@ -398,7 +427,7 @@ public class localController : MonoBehaviour
 
         if (_healthCounter >= healthMs)
         {
-            SpawnRandomItem(HealthPickup);
+            SpawnRandomHealth(HealthPickup);
             _healthCounter = 0;
             healthMs = CalculateNewHealthRange();
         }

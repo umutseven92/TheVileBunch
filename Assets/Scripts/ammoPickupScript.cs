@@ -8,6 +8,7 @@ public class ammoPickupScript : MonoBehaviour
         if (other.name.StartsWith("Player"))
         {
             Destroy(this.gameObject);
+            
         }
     }
 }
