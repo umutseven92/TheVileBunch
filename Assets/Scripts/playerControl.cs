@@ -286,7 +286,7 @@ public class playerControl : MonoBehaviour
         }
 
         // Ammo pickup
-        if (other.name.StartsWith("ammo"))
+        if (other.name.StartsWith("Ammo"))
         {
             _audio.PlayOneShot(AmmoClip);
             Ammo += AmmoPickup;
@@ -297,7 +297,7 @@ public class playerControl : MonoBehaviour
         }
 
         // Health pickup
-        if (other.name.StartsWith("health"))
+        if (other.name.StartsWith("Health"))
         {
             _audio.PlayOneShot(HealthClip);
             healed = true;
