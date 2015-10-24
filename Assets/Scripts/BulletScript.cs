@@ -7,7 +7,7 @@ public class BulletScript : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        Destroy(gameObject, 5);
+        Destroy(gameObject, 3);
     }
 
     void OnTriggerEnter2D(Collider2D other)

@@ -29,7 +29,7 @@ public class playerControl : MonoBehaviour
 
     public int StartingAmmo = 3; // Starting ammo
     public int MaxAmmo = 3; // Maximum ammo a player can have
-    public int StartingHealth = 3; // Starting healt
+    public int StartingHealth = 3; // Starting health
     public int MaxHealth = 3; // Maximum health a player can have
     public int bulletDamage = 2; // How much damage one bullet causes
     public int swordDamage = 1; // How much damage a sword slash causes
@@ -49,9 +49,8 @@ public class playerControl : MonoBehaviour
     public int pushY = 400; // How far in the Y plane player flies when hit
     public int AmmoPickup = 3; // How much ammo does ammo pickup give
     public int HealthPickup = 3; // How much health does health pickup give
-
-    #endregion
-
+    public float DirectionLock = 0.2f;
+    public double _aimMs = 0.2d;
     public Transform GroundCheck;
     public Transform GroundCheck2;
     public Transform Bullet;
@@ -63,7 +62,9 @@ public class playerControl : MonoBehaviour
     public AudioClip SlashClip;
     public AudioClip HealthClip;
     public AudioClip AmmoClip;
+    public AudioClip GunCockClip;
     public Light GunLight;
+    #endregion
 
     #region Private Values
 
@@ -94,6 +95,13 @@ public class playerControl : MonoBehaviour
     private bool _gunLight = false;
     private double _gunLightCounter = 0.000d;
     private float _horizontal;
+    private bool BulletUp;
+    private bool BulletDown;
+    private bool BulletRight;
+    private bool BulletLeft;
+    private bool aiming;
+    private bool softAim;
+    private double _aimCounter = 0.000d;
 
     #endregion
 
@@ -137,18 +145,24 @@ public class playerControl : MonoBehaviour
         _grounded = Physics2D.Linecast(transform.position, GroundCheck.position, 1 << LayerMask.NameToLayer("Ground"));
         _grounded2 = Physics2D.Linecast(transform.position, GroundCheck2.position, 1 << LayerMask.NameToLayer("Ground"));
 
+        if (Input.GetButtonDown(Control + "Fire") && !paused && Ammo > 0)
+        {
+            softAim = true;
+        }
 
-        if (Input.GetButtonDown(Control + "Jump") && ((_grounded || _grounded2) || _inFrontOfLadder) && !paused)
+        if (Input.GetButtonDown(Control + "Jump") && ((_grounded || _grounded2) || _inFrontOfLadder) && !paused && !aiming)
         {
             Jump = true;
         }
 
-        if (Input.GetButtonDown(Control + "Fire") && !paused && Ammo > 0)
+        if (Input.GetButtonUp(Control + "Fire") && !paused && Ammo > 0)
         {
             Shoot();
+            aiming = false;
+            softAim = false;
         }
 
-        if (Input.GetButtonDown(Control + "Slash") && !paused && !_slashing)
+        if (Input.GetButtonDown(Control + "Slash") && !paused && !_slashing && !aiming)
         {
             Slash();
         }
@@ -158,30 +172,38 @@ public class playerControl : MonoBehaviour
         CheckTimers();
         UpdateSlashColPos();
         HandleAnimations();
-
     }
 
     private void HandleAnimations()
     {
         var jumping = !_grounded && !_grounded2;
 
+        if (aiming)
+        {
+            _animator.SetInteger("anim", 0);
+        }
         if (_slashing)
         {
+            // Slash
             _animator.SetInteger("anim", 3);
         }
         if (!_slashing && jumping)
         {
+            // Jump
             _animator.SetInteger("anim", 2);
         }
         if (!_slashing && !jumping && _horizontal == 0)
         {
+            // Idle
             _animator.SetInteger("anim", 0);
         }
-        if (!_slashing && !jumping && _horizontal != 0)
+        if (!_slashing && !jumping && ((_horizontal > MovementLock && _horizontal > 0) || (_horizontal < -MovementLock && _horizontal < 0)) && !aiming)
         {
+            // Running
             _animator.SetInteger("anim", 1);
         }
     }
+
 
     private void FixedUpdate()
     {
@@ -201,19 +223,56 @@ public class playerControl : MonoBehaviour
             h = 0;
         }
 
+        if (v > DirectionLock && v > 0)
+        {
+            BulletUp = true;
+            BulletDown = false;
+        }
+        else if (v < -DirectionLock && v < 0)
+        {
+            BulletUp = false;
+            BulletDown = true;
+        }
+
+        if (v < DirectionLock && v > -DirectionLock)
+        {
+            BulletUp = false;
+            BulletDown = false;
+        }
+
+        if (h > DirectionLock && h > 0)
+        {
+            BulletRight = true;
+            BulletLeft = false;
+        }
+        else if (h < -DirectionLock && h < 0)
+        {
+            BulletRight = false;
+            BulletLeft = true;
+        }
+
+        if (h < DirectionLock && h > -DirectionLock)
+        {
+            BulletRight = false;
+            BulletLeft = false;
+        }
+
         if (_inFrontOfLadder)
         {
             _rb2D.gravityScale = 0;
             _rb2D.velocity = Vector3.zero;
 
-            if (v * _rb2D.velocity.y < MaxSpeed)
+            if (!aiming)
             {
-                _rb2D.AddForce(Vector2.up * v * MoveForce);
-            }
+                if (v * _rb2D.velocity.y < MaxSpeed)
+                {
+                    _rb2D.AddForce(Vector2.up * v * MoveForce);
+                }
 
-            if (Mathf.Abs(_rb2D.velocity.y) > MaxSpeed)
-            {
-                _rb2D.velocity = new Vector2(_rb2D.velocity.x, Mathf.Sign(_rb2D.velocity.y) * MaxSpeed);
+                if (Mathf.Abs(_rb2D.velocity.y) > MaxSpeed)
+                {
+                    _rb2D.velocity = new Vector2(_rb2D.velocity.x, Mathf.Sign(_rb2D.velocity.y) * MaxSpeed);
+                }
             }
 
         }
@@ -221,14 +280,17 @@ public class playerControl : MonoBehaviour
         {
             _rb2D.gravityScale = 4;
 
-            if (h * _rb2D.velocity.x < MaxSpeed)
+            if (!aiming)
             {
-                _rb2D.AddForce(Vector2.right * h * MoveForce);
-            }
+                if (h * _rb2D.velocity.x < MaxSpeed)
+                {
+                    _rb2D.AddForce(Vector2.right * h * MoveForce);
+                }
 
-            if (Mathf.Abs(_rb2D.velocity.x) > MaxSpeed)
-            {
-                _rb2D.velocity = new Vector2(Mathf.Sign(_rb2D.velocity.x) * MaxSpeed, _rb2D.velocity.y);
+                if (Mathf.Abs(_rb2D.velocity.x) > MaxSpeed)
+                {
+                    _rb2D.velocity = new Vector2(Mathf.Sign(_rb2D.velocity.x) * MaxSpeed, _rb2D.velocity.y);
+                }
             }
         }
 
@@ -251,6 +313,18 @@ public class playerControl : MonoBehaviour
             _rb2D.AddForce(new Vector2(0, JumpForce), ForceMode2D.Impulse);
             Jump = false;
         }
+
+        if (aiming)
+        {
+            _rb2D.velocity = new Vector2(0, _rb2D.velocity.y);
+        }
+
+        DrawLine();
+    }
+
+    void DrawLine()
+    {
+
     }
 
     // Player collided with..
@@ -332,7 +406,6 @@ public class playerControl : MonoBehaviour
                     }
                     CheckHealth(other);
                 }
-
             }
         }
     }
@@ -380,6 +453,7 @@ public class playerControl : MonoBehaviour
         CheckHitTimer();
         CheckGunLightTimer();
         CheckHealedTimer();
+        CheckAimTimer();
     }
 
     private void CheckHealthBar()
@@ -465,7 +539,28 @@ public class playerControl : MonoBehaviour
                 healed = false;
                 _healedCounter = 0.000d;
             }
-            
+
+        }
+    }
+
+    private void CheckAimTimer()
+    {
+        if (softAim)
+        {
+            _aimCounter += 1 * Time.deltaTime;
+
+            if (_aimCounter >= _aimMs)
+            {
+                softAim = false;
+                aiming = true;
+                _aimCounter = 0.000d;
+                _audio.PlayOneShot(GunCockClip);
+            }
+
+        }
+        else
+        {
+            _aimCounter = 0.000d;
         }
     }
 
@@ -496,28 +591,87 @@ public class playerControl : MonoBehaviour
         _audio.PlayOneShot(SlashClip);
     }
 
+
     void Shoot()
     {
         var shotTransform = Instantiate(Bullet) as Transform;
 
-        if (FacingRight)
+        float bXPos = 0f;
+        float bYPos = 0f;
+        float bXSpeed = 0f;
+        float bYSpeed = 0f;
+        int bRotation = 0;
+
+        if (!BulletUp && !BulletDown && !BulletRight && !BulletLeft)
         {
-            shotTransform.position = new Vector3(transform.position.x + 0.5f, transform.position.y, transform.position.z);
-            shotTransform.Rotate(0, 180, 0);
-            shotTransform.GetComponent<Rigidbody2D>().velocity = new Vector2(BulletSpeed, 0);
+            if (FacingRight)
+            {
+                BulletRight = true;
+            }
+            else
+            {
+                BulletLeft = true;
+            }
         }
-        else
+
+        if (BulletRight)
         {
-            shotTransform.position = new Vector3(transform.position.x - 0.5f, transform.position.y, transform.position.z);
-            shotTransform.GetComponent<Rigidbody2D>().velocity = new Vector2(-BulletSpeed, 0);
+            bXSpeed = BulletSpeed;
+            bXPos = 0.5f;
+            bRotation += 180;
+        }
+        else if (BulletLeft)
+        {
+            bXSpeed = -BulletSpeed;
+            bXPos = -0.5f;
+        }
+
+        if (BulletUp)
+        {
+            bYSpeed = BulletSpeed;
+            bYPos = 0.5f;
+
+            if (BulletRight)
+            {
+                bRotation += 45 - 180;
+            }
+            if (BulletLeft)
+            {
+                bRotation += 45;
+            }
+            else
+            {
+                bRotation += 90;
+            }
 
         }
+        else if (BulletDown)
+        {
+            bYSpeed = -BulletSpeed;
+            bYPos = -0.5f;
+
+            if (BulletRight)
+            {
+                bRotation += 45 + 90;
+            }
+            if (BulletLeft)
+            {
+                bRotation += 45 - 90;
+            }
+            else
+            {
+                bRotation -= 90;
+            }
+        }
+
+        shotTransform.position = new Vector3(transform.position.x + bXPos, transform.position.y + bYPos, transform.position.z);
+        shotTransform.GetComponent<Rigidbody2D>().velocity = new Vector2(bXSpeed, bYSpeed);
+
         _audio.PlayOneShot(GunShot);
         GunLight.enabled = true;
         _gunLight = true;
         Ammo--;
     }
-
 
     void CheckHealth(Collider2D other)
     {
