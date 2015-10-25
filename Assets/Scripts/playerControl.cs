@@ -58,6 +58,7 @@ public class playerControl : MonoBehaviour
     public Transform BloodSplatter;
     public Transform DeadPlayer;
     public Transform SwordSlash;
+    public Transform Line;
     public AudioClip GunShot;
     public AudioClip SlashClip;
     public AudioClip HealthClip;
@@ -105,6 +106,20 @@ public class playerControl : MonoBehaviour
 
     #endregion
 
+    private Transform _line;
+    public Transform AimLine
+    {
+        get
+        {
+            if (_line == null)
+            {
+                _line = Instantiate(Line);
+            }
+
+            return _line;
+        }
+    }
+
     void Awake()
     {
         _rb2D = GetComponent<Rigidbody2D>();
@@ -129,6 +144,7 @@ public class playerControl : MonoBehaviour
 
         Ammo = StartingAmmo;
         Health = StartingHealth;
+
     }
 
     void Update()
@@ -158,6 +174,7 @@ public class playerControl : MonoBehaviour
         if (Input.GetButtonUp(Control + "Fire") && !paused && Ammo > 0)
         {
             Shoot();
+            AimLine.GetComponent<SpriteRenderer>().enabled = false;
             aiming = false;
             softAim = false;
         }
@@ -172,6 +189,11 @@ public class playerControl : MonoBehaviour
         CheckTimers();
         UpdateSlashColPos();
         HandleAnimations();
+
+        if (aiming)
+        {
+            DrawLine();
+        }
     }
 
     private void HandleAnimations()
@@ -319,12 +341,79 @@ public class playerControl : MonoBehaviour
             _rb2D.velocity = new Vector2(0, _rb2D.velocity.y);
         }
 
-        DrawLine();
     }
+
 
     void DrawLine()
     {
+        AimLine.GetComponent<SpriteRenderer>().enabled = true;
 
+        var line = AimLine;
+        var bXPos = 0f;
+        var bYPos = 0f;
+        var bRotation = 0f;
+
+        if (!BulletUp && !BulletDown && !BulletRight && !BulletLeft)
+        {
+            if (FacingRight)
+            {
+                BulletRight = true;
+            }
+            else
+            {
+                BulletLeft = true;
+            }
+        }
+
+        if (BulletRight)
+        {
+            bXPos = 0.5f;
+            bRotation += 180;
+        }
+        else if (BulletLeft)
+        {
+            bXPos = -0.5f;
+        }
+
+        if (BulletUp)
+        {
+            bYPos = 0.5f;
+
+            if (BulletRight)
+            {
+                bRotation += 45 - 180;
+            }
+            if (BulletLeft)
+            {
+                bRotation += 45;
+            }
+            else
+            {
+                bRotation += 90;
+            }
+
+        }
+        else if (BulletDown)
+        {
+            bYPos = -0.5f;
+
+            if (BulletRight)
+            {
+                bRotation += 45 + 90;
+            }
+            if (BulletLeft)
+            {
+                bRotation += 45 - 90;
+            }
+            else
+            {
+                bRotation -= 90;
+            }
+        }
+
+        line.position = new Vector3(transform.position.x + bXPos, transform.position.y + bYPos, transform.position.z);
+
+        line.eulerAngles = new Vector3(0, 0, -bRotation);
     }
 
     // Player collided with..

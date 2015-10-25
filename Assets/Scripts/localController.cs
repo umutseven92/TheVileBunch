@@ -86,7 +86,7 @@ public class localController : MonoBehaviour
         }
 
         CreatePlayers(playerSelect.PlayerList.Count);
-        SetScoreCard(1.ToString(), string.Empty, string.Empty);
+        SetScoreCard(1.ToString(), "Get Ready!", string.Empty);
 
         foreach (var s in pickupSpawns)
         {

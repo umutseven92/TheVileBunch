@@ -399,13 +399,13 @@ MonoBehaviour:
   BloodSplatter: {fileID: 461058, guid: 56619b1abbf8cc0408a86f944e489a5b, type: 2}
   DeadPlayer: {fileID: 477012, guid: d83ce1a25973b4d44aec557843b8c283, type: 2}
   SwordSlash: {fileID: 413908, guid: cf49b905a43eed54c99c4b9838f2b8a7, type: 2}
+  Line: {fileID: 429834, guid: d6e30f6cbd2b0bd46bb6f73ecb3d786a, type: 2}
   GunShot: {fileID: 8300000, guid: 82543674d324cd449aaf9328d7647a71, type: 3}
   SlashClip: {fileID: 8300000, guid: 0c162dbb7458f0448ad52feb1406234e, type: 3}
   HealthClip: {fileID: 8300000, guid: 92a8123a48cb4df42817f347e568d42e, type: 3}
   AmmoClip: {fileID: 8300000, guid: 4df9347d248a0964a99c2b77d1254af7, type: 3}
   GunCockClip: {fileID: 8300000, guid: 6292ec40198cd5141a4ea21c3b9dc389, type: 3}
   GunLight: {fileID: 10806822}
-  Line: {fileID: 452224, guid: 671518ac604da534ebca820e7bd66e64, type: 2}
 --- !u!114 &11417966
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -993,7 +993,7 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: Line
       value: 
-      objectReference: {fileID: 452224, guid: 671518ac604da534ebca820e7bd66e64, type: 2}
+      objectReference: {fileID: 429834, guid: d6e30f6cbd2b0bd46bb6f73ecb3d786a, type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 170880}
