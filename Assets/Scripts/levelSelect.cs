@@ -17,6 +17,7 @@ public class levelSelect : MonoBehaviour
 
 	public void LoadLevel()
 	{
+
 		foreach (var p in playerSelect.PlayerList)
 		{
 			if (!p.Set)
@@ -28,10 +29,10 @@ public class levelSelect : MonoBehaviour
 		switch (txtLevel.text)
 		{
 			case "Dunes":
-				Application.LoadLevel(2);
+				Application.LoadLevel(5);
 				break;
 			case "Caves":
-				Application.LoadLevel(3);
+				Application.LoadLevel(6);
 				break;
 			default:
 				Debug.LogError(txtLevel.text + " not found!");

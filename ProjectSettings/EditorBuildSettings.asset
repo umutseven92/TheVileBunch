@@ -15,3 +15,7 @@ EditorBuildSettings:
     path: Assets/Scenes/Caves.unity
   - enabled: 1
     path: Assets/Scenes/MultiScene.unity
+  - enabled: 1
+    path: Assets/Scenes/DunesLoading.unity
+  - enabled: 1
+    path: Assets/Scenes/CavesLoading.unity
