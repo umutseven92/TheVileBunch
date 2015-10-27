@@ -1706,7 +1706,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22405326, guid: a24de13ab26f646459f893223cb690c9, type: 2}
       propertyPath: m_LocalPosition.z
-      value: 90
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 22405326, guid: a24de13ab26f646459f893223cb690c9, type: 2}
       propertyPath: m_LocalRotation.x
@@ -1738,11 +1738,11 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22405326, guid: a24de13ab26f646459f893223cb690c9, type: 2}
       propertyPath: m_SizeDelta.x
-      value: 1500
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 22405326, guid: a24de13ab26f646459f893223cb690c9, type: 2}
       propertyPath: m_SizeDelta.y
-      value: 720
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 22405326, guid: a24de13ab26f646459f893223cb690c9, type: 2}
       propertyPath: m_AnchorMin.x
@@ -1762,11 +1762,11 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22405326, guid: a24de13ab26f646459f893223cb690c9, type: 2}
       propertyPath: m_Pivot.x
-      value: .5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 22405326, guid: a24de13ab26f646459f893223cb690c9, type: 2}
       propertyPath: m_Pivot.y
-      value: .5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 22308784, guid: a24de13ab26f646459f893223cb690c9, type: 2}
       propertyPath: m_Camera
@@ -2083,7 +2083,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22487918, guid: 854abb20faaadb14e916bc09a27c7e3c, type: 2}
       propertyPath: m_LocalPosition.z
-      value: 90
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 22487918, guid: 854abb20faaadb14e916bc09a27c7e3c, type: 2}
       propertyPath: m_LocalRotation.x
@@ -2107,19 +2107,19 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22487918, guid: 854abb20faaadb14e916bc09a27c7e3c, type: 2}
       propertyPath: m_AnchoredPosition.x
-      value: .0373974964
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 22487918, guid: 854abb20faaadb14e916bc09a27c7e3c, type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: .0887207389
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 22487918, guid: 854abb20faaadb14e916bc09a27c7e3c, type: 2}
       propertyPath: m_SizeDelta.x
-      value: 1198
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 22487918, guid: 854abb20faaadb14e916bc09a27c7e3c, type: 2}
       propertyPath: m_SizeDelta.y
-      value: 674
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 22487918, guid: 854abb20faaadb14e916bc09a27c7e3c, type: 2}
       propertyPath: m_AnchorMin.x
@@ -2139,12 +2139,16 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22487918, guid: 854abb20faaadb14e916bc09a27c7e3c, type: 2}
       propertyPath: m_Pivot.x
-      value: .5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 22487918, guid: 854abb20faaadb14e916bc09a27c7e3c, type: 2}
       propertyPath: m_Pivot.y
-      value: .5
+      value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 22350314, guid: 854abb20faaadb14e916bc09a27c7e3c, type: 2}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 1316708778}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 854abb20faaadb14e916bc09a27c7e3c, type: 2}
   m_IsPrefabParent: 0

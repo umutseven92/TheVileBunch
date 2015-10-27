@@ -391,7 +391,7 @@ MonoBehaviour:
   AmmoPickup: 3
   HealthPickup: 3
   DirectionLock: .200000003
-  _aimMs: .20000000000000001
+  _aimMs: .14999999999999999
   GroundCheck: {fileID: 474538}
   GroundCheck2: {fileID: 436820}
   Bullet: {fileID: 456820, guid: 63fe6d9b80059a248b8c801944bb1866, type: 2}
@@ -994,6 +994,10 @@ Prefab:
       propertyPath: Line
       value: 
       objectReference: {fileID: 429834, guid: d6e30f6cbd2b0bd46bb6f73ecb3d786a, type: 2}
+    - target: {fileID: 0}
+      propertyPath: _aimMs
+      value: .14999999999999999
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 170880}

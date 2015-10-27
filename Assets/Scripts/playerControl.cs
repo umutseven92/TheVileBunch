@@ -103,6 +103,7 @@ public class playerControl : MonoBehaviour
     private bool aiming;
     private bool softAim;
     private double _aimCounter = 0.000d;
+    private bool _aimCanceled;
 
     #endregion
 
@@ -173,6 +174,12 @@ public class playerControl : MonoBehaviour
 
         if (Input.GetButtonUp(Control + "Fire") && !paused && Ammo > 0)
         {
+            if (_aimCanceled)
+            {
+                _aimCanceled = false;
+                return;
+                
+            }
             Shoot();
             AimLine.GetComponent<SpriteRenderer>().enabled = false;
             aiming = false;
@@ -182,6 +189,13 @@ public class playerControl : MonoBehaviour
         if (Input.GetButtonDown(Control + "Slash") && !paused && !_slashing && !aiming)
         {
             Slash();
+        }
+
+        if (Input.GetButtonDown(Control + "Slash") && !paused && !_slashing && aiming)
+        {
+            aiming = false;
+            AimLine.GetComponent<SpriteRenderer>().enabled = false;
+            _aimCanceled = true;
         }
 
         _up = Input.GetAxis(Control + "Vertical") > 0.3f;
@@ -689,7 +703,6 @@ public class playerControl : MonoBehaviour
         float bYPos = 0f;
         float bXSpeed = 0f;
         float bYSpeed = 0f;
-        int bRotation = 0;
 
         if (!BulletUp && !BulletDown && !BulletRight && !BulletLeft)
         {
@@ -707,7 +720,6 @@ public class playerControl : MonoBehaviour
         {
             bXSpeed = BulletSpeed;
             bXPos = 0.5f;
-            bRotation += 180;
         }
         else if (BulletLeft)
         {
@@ -719,38 +731,11 @@ public class playerControl : MonoBehaviour
         {
             bYSpeed = BulletSpeed;
             bYPos = 0.5f;
-
-            if (BulletRight)
-            {
-                bRotation += 45 - 180;
-            }
-            if (BulletLeft)
-            {
-                bRotation += 45;
-            }
-            else
-            {
-                bRotation += 90;
-            }
-
         }
         else if (BulletDown)
         {
             bYSpeed = -BulletSpeed;
             bYPos = -0.5f;
-
-            if (BulletRight)
-            {
-                bRotation += 45 + 90;
-            }
-            if (BulletLeft)
-            {
-                bRotation += 45 - 90;
-            }
-            else
-            {
-                bRotation -= 90;
-            }
         }
 
         shotTransform.position = new Vector3(transform.position.x + bXPos, transform.position.y + bYPos, transform.position.z);
