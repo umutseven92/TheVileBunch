@@ -37,7 +37,7 @@ public class playerSelect : MonoBehaviour
     private Sprite cowboyImage;
     private Sprite dancerImage;
     private Sprite prospectorImage;
-    private Sprite pirateImage;
+    private Sprite freemanImage;
 
     private bool kDelay = false;
     private bool j1Delay = false;
@@ -93,12 +93,12 @@ public class playerSelect : MonoBehaviour
         cowboyImage = Resources.Load<Sprite>("cowboy");
         dancerImage = Resources.Load<Sprite>("dancer");
         prospectorImage = Resources.Load<Sprite>("prospector");
-        pirateImage = Resources.Load<Sprite>("pirate");
+        freemanImage = Resources.Load<Sprite>("freeman");
 
         _classes.Add("The Cowboy");
         _classes.Add("The Dancer");
         _classes.Add("The Prospector");
-        _classes.Add("The Pirate");
+        _classes.Add("The Freeman");
 
         playerHorizontals.Add(new List<Button>() { p1Left, p1Right });
         playerHorizontals.Add(new List<Button>() { p2Left, p2Right });
@@ -648,9 +648,9 @@ public class playerSelect : MonoBehaviour
         {
             image.sprite = prospectorImage;
         }
-        else if (pClass.Equals("The Pirate"))
+        else if (pClass.Equals("The Freeman"))
         {
-            image.sprite = pirateImage;
+            image.sprite = freemanImage;
         }
     }
 

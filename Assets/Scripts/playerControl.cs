@@ -7,6 +7,8 @@ using UnityEngine.UI;
 
 public class playerControl : MonoBehaviour
 {
+    #region Public Values
+
     [HideInInspector]
     public bool FacingRight = true;
 
@@ -25,32 +27,31 @@ public class playerControl : MonoBehaviour
     [HideInInspector]
     public string _playerClass;
 
-    #region Public Values
-
     public int StartingAmmo = 3; // Starting ammo
     public int MaxAmmo = 3; // Maximum ammo a player can have
     public int StartingHealth = 3; // Starting health
     public int MaxHealth = 3; // Maximum health a player can have
-    public int bulletDamage = 2; // How much damage one bullet causes
-    public int swordDamage = 1; // How much damage a sword slash causes
+    public int BulletDamage = 2; // How much damage one bullet causes
+    public int SwordDamage = 1; // How much damage a sword slash causes
     public float MoveForce = 365f; // Player move force
     public float MaxSpeed = 5f; // Player max speed
     public float JumpForce = 10f; // Player jump force
     public float BulletSpeed = 20f; // Speed of the bullet
     public float MovementLock = 0.2f; // Analog stick movement start value
     public float GunLightSpeed = 0.30f; // How fast does gun light appear
-    public float slashOffset = 0.8f; // How far the player slashes
-    public double _slashingMs = 0.3d; // How long does slashing take
-    public double _hitMs = 2.000d; // Invulnerability timer after getting hit
-    public double _healedMs = 2.000d; // Health bar visibility after healed
-    public double _gunLightMs = 0.100d; // How log does gun light stays
-    public double flash = 0.200d; // Player invulnerability flash frequency
-    public int pushX = 500; // How far in the X plane player flies when hit
-    public int pushY = 400; // How far in the Y plane player flies when hit
+    public float SlashOffset = 0.8f; // How far the player slashes
+    public double SlashingMs = 0.3d; // How long does slashing take
+    public double HitMs = 2.000d; // Invulnerability timer after getting hit
+    public double HealedMs = 2.000d; // Health bar visibility after healed
+    public double GunLightMs = 0.200d; // How log does gun light stays
+    public double Flash = 0.200d; // Player invulnerability flash frequency
+    public int PushX = 500; // How far in the X plane player flies when hit
+    public int PushY = 400; // How far in the Y plane player flies when hit
     public int AmmoPickup = 3; // How much ammo does ammo pickup give
     public int HealthPickup = 3; // How much health does health pickup give
-    public float DirectionLock = 0.2f;
-    public double _aimMs = 0.2d;
+    public float DirectionLock = 0.2f; // Analog direction start value
+    public double AimMs = 0.15d; // How long to press before player starts aiming
+
     public Transform GroundCheck;
     public Transform GroundCheck2;
     public Transform Bullet;
@@ -69,42 +70,44 @@ public class playerControl : MonoBehaviour
 
     #region Private Values
 
-    private int Health;
-    private int Ammo;
-    private bool _grounded = false;
-    private bool _grounded2 = false;
-    private bool _inFrontOfLadder = false;
-    private bool _up = false;
-    private bool _dead = false;
-    private bool first = true;
-    private bool paused = false;
+    private int _health;
+    private int _ammo;
+    private bool _grounded;
+    private bool _grounded2;
+    private bool _inFrontOfLadder;
+    private bool _up;
+    private bool _dead;
+    private bool _first = true;
+    private bool _paused;
     private Rigidbody2D _rb2D;
     private AudioSource _audio;
     private Animator _animator;
     private SpriteRenderer _sRenderer;
     private Slider _healthSlider;
     private List<playerSelect.Player> _localPlayers;
-    private double _counter = 0.000d;
-    private GameObject SlashCol;
-    private bool _slashing = false;
-    private double _slashingCounter = 0.000d;
-    private bool hit = false;
-    private bool healed = false;
-    private double _hitCounter = 0.000d;
-    private double _healedCounter = 0.000d;
-    private double flashTimer = 0.000d;
-    private bool _gunLight = false;
-    private double _gunLightCounter = 0.000d;
+    private GameObject _slashCol;
+    private bool _slashing;
+    private double _slashingCounter;
+    private bool _hit;
+    private bool _healed;
+    private double _hitCounter;
+    private double _healedCounter;
+    private double _flashTimer;
+    private bool _gunLight;
+    private double _gunLightCounter;
     private float _horizontal;
-    private bool BulletUp;
-    private bool BulletDown;
-    private bool BulletRight;
-    private bool BulletLeft;
-    private bool aiming;
-    private bool softAim;
-    private double _aimCounter = 0.000d;
+    private bool _bulletUp;
+    private bool _bulletDown;
+    private bool _bulletRight;
+    private bool _bulletLeft;
+    private bool _aiming;
+    private bool _softAim;
+    private double _aimCounter;
+    private bool _aimCanceled;
 
     #endregion
+
+    #region Properties
 
     private Transform _line;
     public Transform AimLine
@@ -120,6 +123,8 @@ public class playerControl : MonoBehaviour
         }
     }
 
+    #endregion
+
     void Awake()
     {
         _rb2D = GetComponent<Rigidbody2D>();
@@ -130,10 +135,10 @@ public class playerControl : MonoBehaviour
 
         _localPlayers = playerSelect.PlayerList;
 
-        SlashCol = Instantiate(SwordSlash.gameObject,
+        _slashCol = Instantiate(SwordSlash.gameObject,
             FacingRight
-                ? new Vector3(transform.position.x + slashOffset, transform.position.y, transform.position.y)
-                : new Vector3(transform.position.x - slashOffset, transform.position.y, transform.position.y),
+                ? new Vector3(transform.position.x + SlashOffset, transform.position.y, transform.position.y)
+                : new Vector3(transform.position.x - SlashOffset, transform.position.y, transform.position.y),
             transform.rotation) as GameObject;
 
         _healthSlider.maxValue = MaxHealth;
@@ -142,46 +147,59 @@ public class playerControl : MonoBehaviour
         GunLight.enabled = false;
         GunLight.intensity = 0;
 
-        Ammo = StartingAmmo;
-        Health = StartingHealth;
+        _ammo = StartingAmmo;
+        _health = StartingHealth;
 
     }
 
     void Update()
     {
-        if (first)
+        if (_first)
         {
             if (playerNum == 2 || playerNum == 4)
             {
                 Flip();
             }
-            first = false;
+            _first = false;
         }
 
         _grounded = Physics2D.Linecast(transform.position, GroundCheck.position, 1 << LayerMask.NameToLayer("Ground"));
         _grounded2 = Physics2D.Linecast(transform.position, GroundCheck2.position, 1 << LayerMask.NameToLayer("Ground"));
 
-        if (Input.GetButtonDown(Control + "Fire") && !paused && Ammo > 0)
+        if (Input.GetButtonDown(Control + "Fire") && !_paused && _ammo > 0)
         {
-            softAim = true;
+            _softAim = true;
         }
 
-        if (Input.GetButtonDown(Control + "Jump") && ((_grounded || _grounded2) || _inFrontOfLadder) && !paused && !aiming)
+        if (Input.GetButtonDown(Control + "Jump") && ((_grounded || _grounded2) || _inFrontOfLadder) && !_paused && !_aiming)
         {
             Jump = true;
         }
 
-        if (Input.GetButtonUp(Control + "Fire") && !paused && Ammo > 0)
+        if (Input.GetButtonUp(Control + "Fire") && !_paused && _ammo > 0)
         {
+            if (_aimCanceled)
+            {
+                _aimCanceled = false;
+                return;
+
+            }
             Shoot();
             AimLine.GetComponent<SpriteRenderer>().enabled = false;
-            aiming = false;
-            softAim = false;
+            _aiming = false;
+            _softAim = false;
         }
 
-        if (Input.GetButtonDown(Control + "Slash") && !paused && !_slashing && !aiming)
+        if (Input.GetButtonDown(Control + "Slash") && !_paused && !_slashing && !_aiming)
         {
             Slash();
+        }
+
+        if (Input.GetButtonDown(Control + "Slash") && !_paused && !_slashing && _aiming)
+        {
+            _aiming = false;
+            AimLine.GetComponent<SpriteRenderer>().enabled = false;
+            _aimCanceled = true;
         }
 
         _up = Input.GetAxis(Control + "Vertical") > 0.3f;
@@ -190,7 +208,7 @@ public class playerControl : MonoBehaviour
         UpdateSlashColPos();
         HandleAnimations();
 
-        if (aiming)
+        if (_aiming)
         {
             DrawLine();
         }
@@ -200,7 +218,7 @@ public class playerControl : MonoBehaviour
     {
         var jumping = !_grounded && !_grounded2;
 
-        if (aiming)
+        if (_aiming)
         {
             _animator.SetInteger("anim", 0);
         }
@@ -219,7 +237,7 @@ public class playerControl : MonoBehaviour
             // Idle
             _animator.SetInteger("anim", 0);
         }
-        if (!_slashing && !jumping && ((_horizontal > MovementLock && _horizontal > 0) || (_horizontal < -MovementLock && _horizontal < 0)) && !aiming)
+        if (!_slashing && !jumping && ((_horizontal > MovementLock && _horizontal > 0) || (_horizontal < -MovementLock && _horizontal < 0)) && !_aiming)
         {
             // Running
             _animator.SetInteger("anim", 1);
@@ -234,7 +252,7 @@ public class playerControl : MonoBehaviour
 
         _horizontal = h;
 
-        if (paused)
+        if (_paused)
         {
             return;
         }
@@ -247,36 +265,36 @@ public class playerControl : MonoBehaviour
 
         if (v > DirectionLock && v > 0)
         {
-            BulletUp = true;
-            BulletDown = false;
+            _bulletUp = true;
+            _bulletDown = false;
         }
         else if (v < -DirectionLock && v < 0)
         {
-            BulletUp = false;
-            BulletDown = true;
+            _bulletUp = false;
+            _bulletDown = true;
         }
 
         if (v < DirectionLock && v > -DirectionLock)
         {
-            BulletUp = false;
-            BulletDown = false;
+            _bulletUp = false;
+            _bulletDown = false;
         }
 
         if (h > DirectionLock && h > 0)
         {
-            BulletRight = true;
-            BulletLeft = false;
+            _bulletRight = true;
+            _bulletLeft = false;
         }
         else if (h < -DirectionLock && h < 0)
         {
-            BulletRight = false;
-            BulletLeft = true;
+            _bulletRight = false;
+            _bulletLeft = true;
         }
 
         if (h < DirectionLock && h > -DirectionLock)
         {
-            BulletRight = false;
-            BulletLeft = false;
+            _bulletRight = false;
+            _bulletLeft = false;
         }
 
         if (_inFrontOfLadder)
@@ -284,7 +302,7 @@ public class playerControl : MonoBehaviour
             _rb2D.gravityScale = 0;
             _rb2D.velocity = Vector3.zero;
 
-            if (!aiming)
+            if (!_aiming)
             {
                 if (v * _rb2D.velocity.y < MaxSpeed)
                 {
@@ -302,7 +320,7 @@ public class playerControl : MonoBehaviour
         {
             _rb2D.gravityScale = 4;
 
-            if (!aiming)
+            if (!_aiming)
             {
                 if (h * _rb2D.velocity.x < MaxSpeed)
                 {
@@ -316,11 +334,11 @@ public class playerControl : MonoBehaviour
             }
         }
 
-        if (h > 0 && !FacingRight && !paused)
+        if (h > 0 && !FacingRight && !_paused)
         {
             Flip();
         }
-        else if (h < 0 && FacingRight && !paused)
+        else if (h < 0 && FacingRight && !_paused)
         {
             Flip();
         }
@@ -336,7 +354,7 @@ public class playerControl : MonoBehaviour
             Jump = false;
         }
 
-        if (aiming)
+        if (_aiming)
         {
             _rb2D.velocity = new Vector2(0, _rb2D.velocity.y);
         }
@@ -353,37 +371,37 @@ public class playerControl : MonoBehaviour
         var bYPos = 0f;
         var bRotation = 0f;
 
-        if (!BulletUp && !BulletDown && !BulletRight && !BulletLeft)
+        if (!_bulletUp && !_bulletDown && !_bulletRight && !_bulletLeft)
         {
             if (FacingRight)
             {
-                BulletRight = true;
+                _bulletRight = true;
             }
             else
             {
-                BulletLeft = true;
+                _bulletLeft = true;
             }
         }
 
-        if (BulletRight)
+        if (_bulletRight)
         {
             bXPos = 0.5f;
             bRotation += 180;
         }
-        else if (BulletLeft)
+        else if (_bulletLeft)
         {
             bXPos = -0.5f;
         }
 
-        if (BulletUp)
+        if (_bulletUp)
         {
             bYPos = 0.5f;
 
-            if (BulletRight)
+            if (_bulletRight)
             {
                 bRotation += 45 - 180;
             }
-            if (BulletLeft)
+            if (_bulletLeft)
             {
                 bRotation += 45;
             }
@@ -393,15 +411,15 @@ public class playerControl : MonoBehaviour
             }
 
         }
-        else if (BulletDown)
+        else if (_bulletDown)
         {
             bYPos = -0.5f;
 
-            if (BulletRight)
+            if (_bulletRight)
             {
                 bRotation += 45 + 90;
             }
-            if (BulletLeft)
+            if (_bulletLeft)
             {
                 bRotation += 45 - 90;
             }
@@ -428,15 +446,15 @@ public class playerControl : MonoBehaviour
         // Bullet
         if (other.name.StartsWith("Bullet(Clone)"))
         {
-            if (!hit)
+            if (!_hit)
             {
-                hit = true;
-                LowerHealth(bulletDamage);
+                _hit = true;
+                LowerHealth(BulletDamage);
 
                 // Small push
                 _rb2D.AddForce(other.gameObject.transform.position.x < this.transform.position.x
-                    ? new Vector2(pushX, pushY)
-                    : new Vector2(-pushY, pushY));
+                    ? new Vector2(PushX, PushY)
+                    : new Vector2(-PushY, PushY));
 
                 CheckHealth(other);
             }
@@ -452,10 +470,10 @@ public class playerControl : MonoBehaviour
         if (other.name.StartsWith("Ammo"))
         {
             _audio.PlayOneShot(AmmoClip);
-            Ammo += AmmoPickup;
-            if (Ammo > MaxAmmo)
+            _ammo += AmmoPickup;
+            if (_ammo > MaxAmmo)
             {
-                Ammo = MaxAmmo;
+                _ammo = MaxAmmo;
             }
         }
 
@@ -463,7 +481,7 @@ public class playerControl : MonoBehaviour
         if (other.name.StartsWith("Health"))
         {
             _audio.PlayOneShot(HealthClip);
-            healed = true;
+            _healed = true;
             GiveHealth(HealthPickup);
         }
 
@@ -472,12 +490,12 @@ public class playerControl : MonoBehaviour
         {
             if (other.GetComponent<slashScript>().num != playerNum && other.GetComponent<slashScript>().slashing)
             {
-                if (!hit)
+                if (!_hit)
                 {
-                    hit = true;
-                    LowerHealth(swordDamage);
+                    _hit = true;
+                    LowerHealth(SwordDamage);
 
-                    if (Health > 0)
+                    if (_health > 0)
                     {
                         float pX = 0f;
 
@@ -490,8 +508,8 @@ public class playerControl : MonoBehaviour
 
                         // Small push
                         _rb2D.AddForce(pX < transform.position.x
-                            ? new Vector2(pushX, pushY)
-                            : new Vector2(-pushX, pushY));
+                            ? new Vector2(PushX, PushY)
+                            : new Vector2(-PushX, PushY));
                     }
                     CheckHealth(other);
                 }
@@ -501,17 +519,17 @@ public class playerControl : MonoBehaviour
 
     void LowerHealth(int damage)
     {
-        Health -= damage;
+        _health -= damage;
         _healthSlider.value -= damage;
     }
 
     void GiveHealth(int health)
     {
-        Health += health;
+        _health += health;
 
-        if (Health > MaxHealth)
+        if (_health > MaxHealth)
         {
-            Health = MaxHealth;
+            _health = MaxHealth;
             _healthSlider.value = _healthSlider.maxValue;
         }
         else
@@ -532,7 +550,7 @@ public class playerControl : MonoBehaviour
 
     void UpdateSlashColPos()
     {
-        SlashCol.transform.position = FacingRight ? new Vector3(transform.position.x + slashOffset, transform.position.y, transform.position.z) : new Vector3(transform.position.x - slashOffset, transform.position.y, transform.position.z);
+        _slashCol.transform.position = FacingRight ? new Vector3(transform.position.x + SlashOffset, transform.position.y, transform.position.z) : new Vector3(transform.position.x - SlashOffset, transform.position.y, transform.position.z);
     }
 
     private void CheckTimers()
@@ -547,7 +565,7 @@ public class playerControl : MonoBehaviour
 
     private void CheckHealthBar()
     {
-        if (hit || healed)
+        if (_hit || _healed)
         {
             _healthSlider.GetComponentInParent<Canvas>().enabled = true;
         }
@@ -557,15 +575,17 @@ public class playerControl : MonoBehaviour
         }
     }
 
+    #region Timers
+
     private void CheckSlashingTimer()
     {
         if (_slashing)
         {
             _slashingCounter += 1 * Time.deltaTime;
-            if (_slashingCounter >= _slashingMs)
+            if (_slashingCounter >= SlashingMs)
             {
                 _slashing = false;
-                SlashCol.SendMessage("GetCol", _slashing);
+                _slashCol.SendMessage("GetCol", _slashing);
                 _slashingCounter = 0.000d;
             }
         }
@@ -577,7 +597,7 @@ public class playerControl : MonoBehaviour
         {
             _gunLightCounter += 1 * Time.deltaTime;
 
-            if (_gunLightCounter >= _gunLightMs / 2)
+            if (_gunLightCounter >= GunLightMs / 2)
             {
                 GunLight.intensity -= GunLightSpeed;
             }
@@ -586,7 +606,7 @@ public class playerControl : MonoBehaviour
                 GunLight.intensity += GunLightSpeed;
             }
 
-            if (_gunLightCounter >= _gunLightMs)
+            if (_gunLightCounter >= GunLightMs)
             {
                 GunLight.enabled = false;
                 _gunLight = false;
@@ -597,21 +617,21 @@ public class playerControl : MonoBehaviour
 
     private void CheckHitTimer()
     {
-        if (hit)
+        if (_hit)
         {
             _hitCounter += 1 * Time.deltaTime;
 
-            if (_hitCounter >= flashTimer)
+            if (_hitCounter >= _flashTimer)
             {
-                flashTimer += flash;
+                _flashTimer += Flash;
                 _sRenderer.enabled = !_sRenderer.enabled;
             }
 
-            if (_hitCounter >= _hitMs)
+            if (_hitCounter >= HitMs)
             {
-                hit = false;
+                _hit = false;
                 _hitCounter = 0.000d;
-                flashTimer = 0.000d;
+                _flashTimer = 0.000d;
                 _sRenderer.enabled = true;
             }
         }
@@ -619,13 +639,13 @@ public class playerControl : MonoBehaviour
 
     private void CheckHealedTimer()
     {
-        if (healed)
+        if (_healed)
         {
             _healedCounter += 1 * Time.deltaTime;
 
-            if (_healedCounter >= _healedMs)
+            if (_healedCounter >= HealedMs)
             {
-                healed = false;
+                _healed = false;
                 _healedCounter = 0.000d;
             }
 
@@ -634,14 +654,14 @@ public class playerControl : MonoBehaviour
 
     private void CheckAimTimer()
     {
-        if (softAim)
+        if (_softAim)
         {
             _aimCounter += 1 * Time.deltaTime;
 
-            if (_aimCounter >= _aimMs)
+            if (_aimCounter >= AimMs)
             {
-                softAim = false;
-                aiming = true;
+                _softAim = false;
+                _aiming = true;
                 _aimCounter = 0.000d;
                 _audio.PlayOneShot(GunCockClip);
             }
@@ -652,6 +672,8 @@ public class playerControl : MonoBehaviour
             _aimCounter = 0.000d;
         }
     }
+
+    #endregion
 
     void Flip()
     {
@@ -676,7 +698,7 @@ public class playerControl : MonoBehaviour
     {
         _slashing = true;
 
-        SlashCol.SendMessage("GetCol", _slashing);
+        _slashCol.SendMessage("GetCol", _slashing);
         _audio.PlayOneShot(SlashClip);
     }
 
@@ -689,68 +711,39 @@ public class playerControl : MonoBehaviour
         float bYPos = 0f;
         float bXSpeed = 0f;
         float bYSpeed = 0f;
-        int bRotation = 0;
 
-        if (!BulletUp && !BulletDown && !BulletRight && !BulletLeft)
+        if (!_bulletUp && !_bulletDown && !_bulletRight && !_bulletLeft)
         {
             if (FacingRight)
             {
-                BulletRight = true;
+                _bulletRight = true;
             }
             else
             {
-                BulletLeft = true;
+                _bulletLeft = true;
             }
         }
 
-        if (BulletRight)
+        if (_bulletRight)
         {
             bXSpeed = BulletSpeed;
             bXPos = 0.5f;
-            bRotation += 180;
         }
-        else if (BulletLeft)
+        else if (_bulletLeft)
         {
             bXSpeed = -BulletSpeed;
             bXPos = -0.5f;
         }
 
-        if (BulletUp)
+        if (_bulletUp)
         {
             bYSpeed = BulletSpeed;
             bYPos = 0.5f;
-
-            if (BulletRight)
-            {
-                bRotation += 45 - 180;
-            }
-            if (BulletLeft)
-            {
-                bRotation += 45;
-            }
-            else
-            {
-                bRotation += 90;
-            }
-
         }
-        else if (BulletDown)
+        else if (_bulletDown)
         {
             bYSpeed = -BulletSpeed;
             bYPos = -0.5f;
-
-            if (BulletRight)
-            {
-                bRotation += 45 + 90;
-            }
-            if (BulletLeft)
-            {
-                bRotation += 45 - 90;
-            }
-            else
-            {
-                bRotation -= 90;
-            }
         }
 
         shotTransform.position = new Vector3(transform.position.x + bXPos, transform.position.y + bYPos, transform.position.z);
@@ -759,12 +752,12 @@ public class playerControl : MonoBehaviour
         _audio.PlayOneShot(GunShot);
         GunLight.enabled = true;
         _gunLight = true;
-        Ammo--;
+        _ammo--;
     }
 
     void CheckHealth(Collider2D other)
     {
-        if (Health <= 0)
+        if (_health <= 0)
         {
             Die(other);
         }
@@ -796,16 +789,16 @@ public class playerControl : MonoBehaviour
         Control = _localPlayers[num - 1].Control;
         _playerClass = _localPlayers[num - 1].Class;
 
-        SlashCol.SendMessage("GetPlayerNum", playerNum);
+        _slashCol.SendMessage("GetPlayerNum", playerNum);
     }
 
     void Pause()
     {
-        paused = true;
+        _paused = true;
     }
 
     void UnPause()
     {
-        paused = false;
+        _paused = false;
     }
 }
