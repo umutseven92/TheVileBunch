@@ -11,6 +11,10 @@ public class loadOnClick : MonoBehaviour
         Application.LoadLevel(level);
     }
 
+    public void LoadScene(string levelName)
+    {
+        Application.LoadLevel(levelName);
+    }
 
     public void ResetPlayers()
     {
