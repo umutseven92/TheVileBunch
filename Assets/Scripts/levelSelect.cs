@@ -9,10 +9,13 @@ public class levelSelect : MonoBehaviour
     private int _pos = 0;
     private Sprite _dunesImage;
     private Sprite _cavesImage;
+    private bool delay = true;
 
     public Text txtLevel;
     public Image imgLevel;
 
+    private double delayCounter = 0.000d;
+    private double delayMs = 0.2d;
 
     void Start()
     {
@@ -22,9 +25,41 @@ public class levelSelect : MonoBehaviour
         SetLevelText(_levels[0]);
     }
 
+
+    void Update()
+    {
+        CheckDelayTimer();
+        if (delay)
+        {
+            if (Input.GetAxis("Horizontal") > 0.5)
+            {
+                SetLevel(1);
+            }
+            else if (Input.GetAxis("Horizontal") < -0.5)
+            {
+                SetLevel(-1);
+            }
+
+            delay = false;
+        }
+
+    }
+
+    private void CheckDelayTimer()
+    {
+        if (!delay)
+        {
+            delayCounter += Time.deltaTime;
+            if (delayCounter > delayMs)
+            {
+                delayCounter = 0.000d;
+                delay = true;
+            }
+        }
+    }
+
     public void LoadLevel()
     {
-
         foreach (var p in playerSelect.PlayerList)
         {
             if (!p.Set)

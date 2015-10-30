@@ -104,6 +104,7 @@ public class playerControl : MonoBehaviour
     private bool _softAim;
     private double _aimCounter;
     private bool _aimCanceled;
+    private Color _playerColor;
 
     #endregion
 
@@ -159,6 +160,8 @@ public class playerControl : MonoBehaviour
             if (playerNum == 2 || playerNum == 4)
             {
                 Flip();
+                _playerColor = new Color(0, 63 * playerNum, 20 * playerNum, 50);
+                _sRenderer.color = _playerColor;
             }
             _first = false;
         }
@@ -360,7 +363,6 @@ public class playerControl : MonoBehaviour
         }
 
     }
-
 
     void DrawLine()
     {
@@ -772,6 +774,7 @@ public class playerControl : MonoBehaviour
         {
             GameObject deadPlayer = Instantiate(DeadPlayer.gameObject, transform.position, transform.rotation) as GameObject;
 
+            deadPlayer.SendMessage("SetColor", _playerColor);
             deadPlayer.SendMessage("Die", other.transform.position.x < this.transform.position.x ? "left" : "right");
         }
 

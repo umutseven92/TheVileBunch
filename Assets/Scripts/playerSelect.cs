@@ -10,6 +10,7 @@ public class playerSelect : MonoBehaviour
     public AudioClip InvalidClip;
     public AudioClip ReadyClip;
 
+
     public Button Play;
     public Text P1Text;
     public Text P2Text;
@@ -19,6 +20,11 @@ public class playerSelect : MonoBehaviour
     public Image p2Image;
     public Image p3Image;
     public Image p4Image;
+
+    public Image p1Button;
+    public Image p2Button;
+    public Image p3Button;
+    public Image p4Button;
 
     public AudioSource p1Audio;
     public AudioSource p2Audio;
@@ -38,6 +44,11 @@ public class playerSelect : MonoBehaviour
     private Sprite dancerImage;
     private Sprite prospectorImage;
     private Sprite freemanImage;
+
+    public Transform NextButton;
+    private Sprite aButton;
+    private Sprite bButton;
+    private Sprite startButton;
 
     private bool kDelay = false;
     private bool j1Delay = false;
@@ -76,9 +87,10 @@ public class playerSelect : MonoBehaviour
     private SelectStages j3Stage = SelectStages.Disabled;
     private SelectStages j4Stage = SelectStages.Disabled;
 
-    public static List<Player> PlayerList = new List<Player>();
+    public static List<Player> PlayerList;
 
     private List<Image> playerImages = new List<Image>();
+    private List<Image> playerButtons = new List<Image>();
     private List<Text> playerTexts = new List<Text>();
     private List<List<Button>> playerHorizontals = new List<List<Button>>();
 
@@ -89,11 +101,15 @@ public class playerSelect : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        PlayerList = new List<Player>();
         Play.enabled = false;
         cowboyImage = Resources.Load<Sprite>("cowboy");
         dancerImage = Resources.Load<Sprite>("dancer");
         prospectorImage = Resources.Load<Sprite>("prospector");
         freemanImage = Resources.Load<Sprite>("freeman");
+        aButton = Resources.Load<Sprite>("abutton");
+        bButton = Resources.Load<Sprite>("bbutton");
+        startButton = Resources.Load<Sprite>("startbutton");
 
         _classes.Add("The Cowboy");
         _classes.Add("The Dancer");
@@ -110,10 +126,22 @@ public class playerSelect : MonoBehaviour
         playerImages.Add(p3Image);
         playerImages.Add(p4Image);
 
+        playerButtons.Add(p1Button);
+        playerButtons.Add(p2Button);
+        playerButtons.Add(p3Button);
+        playerButtons.Add(p4Button);
+
         playerTexts.Add(P1Text);
         playerTexts.Add(P2Text);
         playerTexts.Add(P3Text);
         playerTexts.Add(P4Text);
+
+        p1Button.sprite = startButton;
+        p2Button.sprite = startButton;
+        p3Button.sprite = startButton;
+        p4Button.sprite = startButton;
+
+        NextButton.GetComponent<SpriteRenderer>().enabled = false;
     }
 
     // Update is called once per frame
@@ -609,9 +637,11 @@ public class playerSelect : MonoBehaviour
         {
             SetClassImage(players[i].Class, playerImages[i]);
             playerTexts[i].text = players[i].Class;
-
             if (players[i].Set)
             {
+
+                playerButtons[i].sprite = bButton;
+
                 foreach (var h in playerHorizontals[i])
                 {
                     h.enabled = false;
@@ -621,6 +651,8 @@ public class playerSelect : MonoBehaviour
             }
             else
             {
+                playerButtons[i].sprite = startButton;
+
                 foreach (var h in playerHorizontals[i])
                 {
                     h.enabled = true;
@@ -761,10 +793,12 @@ public class playerSelect : MonoBehaviour
         if (PlayerList.Count(o => o.Set) >= 2)
         {
             Play.enabled = true;
+            NextButton.GetComponent<SpriteRenderer>().enabled = true;
             Play.Select();
         }
         else
         {
+            NextButton.GetComponent<SpriteRenderer>().enabled = false;
             Play.enabled = false;
         }
     }

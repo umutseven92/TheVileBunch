@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Random = System.Random;
 
@@ -19,6 +20,7 @@ public class localController : MonoBehaviour
     public Canvas endGameCanvas;
     public Canvas pauseCanvas;
 
+    public Button btnExit;
     public Text staticRoundText;
     public Text roundText;
     public Text classScoreText;
@@ -41,9 +43,9 @@ public class localController : MonoBehaviour
 
     private bool slowMo = false;
     private double slowMoCounter = 0.000d;
-    private double slowMoMs = 1.500d;
+    public double slowMoMs = 1.500d;
 
-    private double scoreCardMs = 1.500d;
+    public double scoreCardMs = 1.500d;
 
     private Dictionary<string, int> ClassScores = new Dictionary<string, int>();
     private KeyValuePair<string, int> winner;
@@ -64,6 +66,10 @@ public class localController : MonoBehaviour
 
     private bool ammoOnScreen = false;
     private bool healthOnScreen = false;
+
+    private bool roundOver;
+    private double _roundOverCounter;
+    public double _roundOverMs;
 
     // Use this for initialization
     void Start()
@@ -86,7 +92,7 @@ public class localController : MonoBehaviour
         }
 
         CreatePlayers(playerSelect.PlayerList.Count);
-        SetScoreCard(1.ToString(), "Get Ready!", string.Empty);
+        SetScoreCard(1.ToString(), "   Get Ready!", string.Empty);
 
         foreach (var s in pickupSpawns)
         {
@@ -100,12 +106,15 @@ public class localController : MonoBehaviour
 
     void Update()
     {
-
         if (Input.GetButtonDown("Pause"))
         {
             if (paused)
             {
                 UnPauseAllPlayers();
+          
+                GameObject myEventSystem = GameObject.Find("EventSystem");
+                myEventSystem.GetComponent<UnityEngine.EventSystems.EventSystem>().SetSelectedGameObject(null);
+
                 Time.timeScale = 1;
                 pauseCanvas.enabled = false;
                 musicPlayer.UnPause();
@@ -113,6 +122,7 @@ public class localController : MonoBehaviour
             else
             {
                 PauseAllPlayers();
+                btnExit.Select();
                 Time.timeScale = 0;
                 pauseCanvas.enabled = true;
                 musicPlayer.Pause();
@@ -304,6 +314,7 @@ public class localController : MonoBehaviour
         ScoreCardTimer();
         SlowMotionTimer();
         PickupTimers();
+        PlayerSpawnTimer();
     }
 
     void RestartGame(GameObject[] lastPlayers)
@@ -334,7 +345,7 @@ public class localController : MonoBehaviour
         GameObject.FindGameObjectsWithTag("ammoPickup").ToList().ForEach(Destroy);
         GameObject.FindGameObjectsWithTag("healthPickup").ToList().ForEach(Destroy);
 
-        CreatePlayers(playerSelect.PlayerList.Count);
+        roundOver = true;
     }
 
 
@@ -398,6 +409,20 @@ public class localController : MonoBehaviour
                 UnPauseAllPlayers();
                 _counter = 0.000d;
 
+            }
+        }
+    }
+
+    private void PlayerSpawnTimer()
+    {
+        if (roundOver)
+        {
+            _roundOverCounter += Time.deltaTime;
+            if (_roundOverCounter >= _roundOverMs)
+            {
+                roundOver = false;
+                CreatePlayers(playerSelect.PlayerList.Count);
+                _roundOverCounter = 0d;
             }
         }
     }
