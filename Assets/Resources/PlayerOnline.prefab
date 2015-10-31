@@ -127,8 +127,9 @@ GameObject:
   - 114: {fileID: 11414428}
   - 95: {fileID: 9548098}
   - 82: {fileID: 8276650}
+  - 114: {fileID: 11431976}
   m_Layer: 9
-  m_Name: Player
+  m_Name: PlayerOnline
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -367,6 +368,7 @@ MonoBehaviour:
   Control: 
   playerNum: 0
   _playerClass: 
+  Multi: 1
   StartingAmmo: 3
   MaxAmmo: 3
   StartingHealth: 6
@@ -426,6 +428,31 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
+--- !u!114 &11431976
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 170880}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ownerId: 0
+  group: 0
+  prefixBackup: -1
+  observed: {fileID: 0}
+  synchronization: 1
+  onSerializeTransformOption: 3
+  onSerializeRigidBodyOption: 2
+  ownershipTransfer: 0
+  ObservedComponents:
+  - {fileID: 441362}
+  ObservedComponentsFoldoutOpen: 1
+  viewIdField: 0
+  instantiationId: -1
+  isRuntimeInstantiated: 0
 --- !u!114 &11476236
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -725,7 +752,7 @@ Prefab:
       objectReference: {fileID: 9100000, guid: da0585920956b34458f5260e443b46db, type: 2}
     - target: {fileID: 0}
       propertyPath: synchronization
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: ObservedComponents.Array.data[0]
@@ -963,6 +990,14 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: m_LocalPosition.y
       value: -.550000012
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: Multi
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_IsKinematic
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

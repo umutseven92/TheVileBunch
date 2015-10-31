@@ -1,17 +1,18 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class matchmaker : Photon.PunBehaviour {
+public class matchmaker : Photon.PunBehaviour
+{
 
-	// Use this for initialization
-	void Start ()
+    // Use this for initialization
+    void Start()
     {
         GameObject speaker = GameObject.Find("Speaker");
-        speaker.GetComponent<AudioSource>().Stop();
 
-        Debug.Log("Connection to master..");
-	    PhotonNetwork.ConnectUsingSettings("0.1");
-	}
+        if (speaker != null) speaker.GetComponent<AudioSource>().Stop();
+
+        PhotonNetwork.ConnectUsingSettings("0.1");
+    }
 
     void OnGUI()
     {
@@ -20,18 +21,16 @@ public class matchmaker : Photon.PunBehaviour {
 
     public override void OnJoinedLobby()
     {
-        Debug.Log("Trying to join random room..");
         PhotonNetwork.JoinRandomRoom();
     }
 
     void OnPhotonRandomJoinFailed()
     {
-        Debug.Log("Cant join random room. Creating a new room..");
         PhotonNetwork.CreateRoom(null);
     }
 
     public override void OnJoinedRoom()
     {
-        Debug.Log(string.Format("Connected to room {0}",PhotonNetwork.room.name));
+        var player = PhotonNetwork.Instantiate("PlayerOnline", new Vector3(1, 1, 0), Quaternion.identity, 0);
     }
 }

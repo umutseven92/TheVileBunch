@@ -27,6 +27,7 @@ public class playerControl : MonoBehaviour
     [HideInInspector]
     public string _playerClass;
 
+    public bool Multi = false;
     public int StartingAmmo = 3; // Starting ammo
     public int MaxAmmo = 3; // Maximum ammo a player can have
     public int StartingHealth = 3; // Starting health
@@ -150,19 +151,37 @@ public class playerControl : MonoBehaviour
 
         _ammo = StartingAmmo;
         _health = StartingHealth;
-
     }
 
     void Update()
     {
         if (_first)
         {
-            if (playerNum == 2 || playerNum == 4)
+            if (Multi)
+            {
+                MultiSetPlayer();
+            }
+
+            if (playerNum == 1)
+            {
+                _playerColor = new Color(0f, 0.5f, 0.5f, 1f);
+            }
+            else if (playerNum == 2)
             {
                 Flip();
-                _playerColor = new Color(0, 63 * playerNum, 20 * playerNum, 50);
-                _sRenderer.color = _playerColor;
+                _playerColor = new Color(0, 0.5f, 0, 1f);
             }
+            else if (playerNum == 3)
+            {
+                _playerColor = new Color(0, 0.5f, 0.5f, 1f);
+            }
+            else if (playerNum == 4)
+            {
+                Flip();
+                _playerColor = new Color(0.5f, 0.5f, 0.5f, 1f);
+            }
+
+            _sRenderer.color = _playerColor;
             _first = false;
         }
 
@@ -790,8 +809,18 @@ public class playerControl : MonoBehaviour
     {
         playerNum = num;
         Control = _localPlayers[num - 1].Control;
+
         _playerClass = _localPlayers[num - 1].Class;
 
+        _slashCol.SendMessage("GetPlayerNum", playerNum);
+    }
+
+    void MultiSetPlayer()
+    {
+        playerNum = 1;
+        Control = "j1";
+        _playerClass = "The Cowboy";
+        
         _slashCol.SendMessage("GetPlayerNum", playerNum);
     }
 

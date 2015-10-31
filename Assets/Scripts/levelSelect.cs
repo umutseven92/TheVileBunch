@@ -71,10 +71,10 @@ public class levelSelect : MonoBehaviour
         switch (txtLevel.text)
         {
             case "Dunes":
-                Application.LoadLevel("Dunes");
+                Application.LoadLevel("DunesLoading");
                 break;
             case "Caves":
-                Application.LoadLevel("Caves");
+                Application.LoadLevel("CavesLoading");
                 break;
             default:
                 Debug.LogError(txtLevel.text + " not found!");
