@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.UI;
+using XInputDotNetPure;
 
 public class playerControl : MonoBehaviour
 {
@@ -480,6 +481,8 @@ public class playerControl : MonoBehaviour
             if (!_hit)
             {
                 _hit = true;
+
+
                 LowerHealth(BulletDamage);
 
                 // Small push
@@ -592,6 +595,7 @@ public class playerControl : MonoBehaviour
         CheckGunLightTimer();
         CheckHealedTimer();
         CheckAimTimer();
+        CheckVibrationTimer();
     }
 
     private void CheckHealthBar()
@@ -784,6 +788,65 @@ public class playerControl : MonoBehaviour
         GunLight.enabled = true;
         _gunLight = true;
         _ammo--;
+        VibrateGamePad(playerNum);
+
+        Debug.Log(playerNum);
+    }
+
+    private double vibrationCounter = 0.000d;
+    public double vibrationMs = 0.500d;
+    private bool vibrating = false;
+
+    void VibrateGamePad(int player)
+    {
+        switch (player)
+        {
+            case 1:
+                GamePad.SetVibration(PlayerIndex.One, 1f, 1f);
+                break;
+            case 2:
+                GamePad.SetVibration(PlayerIndex.Two, 1f, 1f);
+                break;
+            case 3:
+                GamePad.SetVibration(PlayerIndex.Three, 1f, 1f);
+                break;
+            case 4:
+                GamePad.SetVibration(PlayerIndex.Four, 1f, 1f);
+                break;
+        }
+
+        vibrating = true;
+    }
+
+    void CheckVibrationTimer()
+    {
+        if (vibrating)
+        {
+            vibrationCounter += 1 * Time.deltaTime;
+
+            if (vibrationCounter >= vibrationMs)
+            {
+                vibrationCounter = 0.000d;
+
+                switch (playerNum)
+                {
+                    case 1:
+                        GamePad.SetVibration(PlayerIndex.One, 0f, 0f);
+                        break;
+                    case 2:
+                        GamePad.SetVibration(PlayerIndex.Two, 0f, 0f);
+                        break;
+                    case 3:
+                        GamePad.SetVibration(PlayerIndex.Three, 0f, 0f);
+                        break;
+                    case 4:
+                        GamePad.SetVibration(PlayerIndex.Four, 0f, 0f);
+                        break;
+                }
+
+                vibrating = false;
+            }
+        }
     }
 
     void CheckHealth(Collider2D other)
