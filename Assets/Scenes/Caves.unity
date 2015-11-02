@@ -923,7 +923,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22440032, guid: ec6714ae15dabfe4491a45a7543a60c8, type: 2}
       propertyPath: m_RootOrder
-      value: 15
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 22440032, guid: ec6714ae15dabfe4491a45a7543a60c8, type: 2}
       propertyPath: m_AnchoredPosition.x
@@ -973,6 +973,12 @@ Canvas:
   m_PrefabParentObject: {fileID: 22342752, guid: ec6714ae15dabfe4491a45a7543a60c8,
     type: 2}
   m_PrefabInternal: {fileID: 616365823}
+--- !u!114 &616365825 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 11423584, guid: ec6714ae15dabfe4491a45a7543a60c8,
+    type: 2}
+  m_PrefabInternal: {fileID: 616365823}
+  m_Script: {fileID: 1392445389, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
 --- !u!1 &652182565
 GameObject:
   m_ObjectHideFlags: 0
@@ -1553,6 +1559,7 @@ MonoBehaviour:
   scoreCanvas: {fileID: 1401281292}
   endGameCanvas: {fileID: 1198695969}
   pauseCanvas: {fileID: 616365824}
+  btnExit: {fileID: 616365825}
   staticRoundText: {fileID: 1401281294}
   roundText: {fileID: 1401281290}
   classScoreText: {fileID: 1401281293}
@@ -1565,10 +1572,13 @@ MonoBehaviour:
   pickupSpawns:
   - {fileID: 2116503865}
   - {fileID: 770771047}
+  slowMoMs: 1.5
+  scoreCardMs: 1.5
   ammoMsUpper: 30
   ammoMsLower: 10
   healthMsUpper: 40
   healthMsLower: 20
+  _roundOverMs: 0
 --- !u!4 &1042346985
 Transform:
   m_ObjectHideFlags: 0

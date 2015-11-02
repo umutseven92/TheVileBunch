@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.UI;
+using XInputDotNetPure;
 
 public class playerControl : MonoBehaviour
 {
@@ -27,6 +28,8 @@ public class playerControl : MonoBehaviour
     [HideInInspector]
     public string _playerClass;
 
+    public bool Enabled;
+    public bool Multi = false;
     public int StartingAmmo = 3; // Starting ammo
     public int MaxAmmo = 3; // Maximum ammo a player can have
     public int StartingHealth = 3; // Starting health
@@ -104,6 +107,7 @@ public class playerControl : MonoBehaviour
     private bool _softAim;
     private double _aimCounter;
     private bool _aimCanceled;
+    private Color _playerColor;
 
     #endregion
 
@@ -149,34 +153,55 @@ public class playerControl : MonoBehaviour
 
         _ammo = StartingAmmo;
         _health = StartingHealth;
-
     }
 
     void Update()
     {
+
         if (_first)
         {
-            if (playerNum == 2 || playerNum == 4)
+            if (Multi)
+            {
+                MultiSetPlayer();
+            }
+
+            if (playerNum == 1)
+            {
+                _playerColor = new Color(0f, 0.5f, 0.5f, 1f);
+            }
+            else if (playerNum == 2)
             {
                 Flip();
+                _playerColor = new Color(0, 0.5f, 0, 1f);
             }
+            else if (playerNum == 3)
+            {
+                _playerColor = new Color(0, 0.5f, 0.5f, 1f);
+            }
+            else if (playerNum == 4)
+            {
+                Flip();
+                _playerColor = new Color(0.5f, 0.5f, 0.5f, 1f);
+            }
+
+            _sRenderer.color = _playerColor;
             _first = false;
         }
 
         _grounded = Physics2D.Linecast(transform.position, GroundCheck.position, 1 << LayerMask.NameToLayer("Ground"));
         _grounded2 = Physics2D.Linecast(transform.position, GroundCheck2.position, 1 << LayerMask.NameToLayer("Ground"));
 
-        if (Input.GetButtonDown(Control + "Fire") && !_paused && _ammo > 0)
+        if (Input.GetButtonDown(Control + "Fire") && !_paused && _ammo > 0 && Enabled)
         {
             _softAim = true;
         }
 
-        if (Input.GetButtonDown(Control + "Jump") && ((_grounded || _grounded2) || _inFrontOfLadder) && !_paused && !_aiming)
+        if (Input.GetButtonDown(Control + "Jump") && ((_grounded || _grounded2) || _inFrontOfLadder) && !_paused && !_aiming && Enabled)
         {
             Jump = true;
         }
 
-        if (Input.GetButtonUp(Control + "Fire") && !_paused && _ammo > 0)
+        if (Input.GetButtonUp(Control + "Fire") && !_paused && _ammo > 0 && Enabled)
         {
             if (_aimCanceled)
             {
@@ -190,12 +215,12 @@ public class playerControl : MonoBehaviour
             _softAim = false;
         }
 
-        if (Input.GetButtonDown(Control + "Slash") && !_paused && !_slashing && !_aiming)
+        if (Input.GetButtonDown(Control + "Slash") && !_paused && !_slashing && !_aiming && Enabled)
         {
             Slash();
         }
 
-        if (Input.GetButtonDown(Control + "Slash") && !_paused && !_slashing && _aiming)
+        if (Input.GetButtonDown(Control + "Slash") && !_paused && !_slashing && _aiming && Enabled)
         {
             _aiming = false;
             AimLine.GetComponent<SpriteRenderer>().enabled = false;
@@ -206,9 +231,13 @@ public class playerControl : MonoBehaviour
 
         CheckTimers();
         UpdateSlashColPos();
-        HandleAnimations();
 
-        if (_aiming)
+        if (Enabled)
+        {
+            HandleAnimations();
+        }
+
+        if (_aiming && Enabled)
         {
             DrawLine();
         }
@@ -297,7 +326,7 @@ public class playerControl : MonoBehaviour
             _bulletLeft = false;
         }
 
-        if (_inFrontOfLadder)
+        if (_inFrontOfLadder && Enabled)
         {
             _rb2D.gravityScale = 0;
             _rb2D.velocity = Vector3.zero;
@@ -318,27 +347,31 @@ public class playerControl : MonoBehaviour
         }
         else
         {
-            _rb2D.gravityScale = 4;
-
-            if (!_aiming)
+            if (Enabled)
             {
-                if (h * _rb2D.velocity.x < MaxSpeed)
+                _rb2D.gravityScale = 4;
+
+                if (!_aiming)
                 {
-                    _rb2D.AddForce(Vector2.right * h * MoveForce);
+                    if (h * _rb2D.velocity.x < MaxSpeed)
+                    {
+                        _rb2D.AddForce(Vector2.right * h * MoveForce);
+                    }
+
+                    if (Mathf.Abs(_rb2D.velocity.x) > MaxSpeed)
+                    {
+                        _rb2D.velocity = new Vector2(Mathf.Sign(_rb2D.velocity.x) * MaxSpeed, _rb2D.velocity.y);
+                    }
                 }
 
-                if (Mathf.Abs(_rb2D.velocity.x) > MaxSpeed)
-                {
-                    _rb2D.velocity = new Vector2(Mathf.Sign(_rb2D.velocity.x) * MaxSpeed, _rb2D.velocity.y);
-                }
             }
         }
 
-        if (h > 0 && !FacingRight && !_paused)
+        if (h > 0 && !FacingRight && !_paused && Enabled)
         {
             Flip();
         }
-        else if (h < 0 && FacingRight && !_paused)
+        else if (h < 0 && FacingRight && !_paused && Enabled)
         {
             Flip();
         }
@@ -360,7 +393,6 @@ public class playerControl : MonoBehaviour
         }
 
     }
-
 
     void DrawLine()
     {
@@ -449,6 +481,8 @@ public class playerControl : MonoBehaviour
             if (!_hit)
             {
                 _hit = true;
+
+
                 LowerHealth(BulletDamage);
 
                 // Small push
@@ -561,6 +595,7 @@ public class playerControl : MonoBehaviour
         CheckGunLightTimer();
         CheckHealedTimer();
         CheckAimTimer();
+        CheckVibrationTimer();
     }
 
     private void CheckHealthBar()
@@ -753,6 +788,65 @@ public class playerControl : MonoBehaviour
         GunLight.enabled = true;
         _gunLight = true;
         _ammo--;
+        VibrateGamePad(playerNum);
+
+        Debug.Log(playerNum);
+    }
+
+    private double vibrationCounter = 0.000d;
+    public double vibrationMs = 0.500d;
+    private bool vibrating = false;
+
+    void VibrateGamePad(int player)
+    {
+        switch (player)
+        {
+            case 1:
+                GamePad.SetVibration(PlayerIndex.One, 1f, 1f);
+                break;
+            case 2:
+                GamePad.SetVibration(PlayerIndex.Two, 1f, 1f);
+                break;
+            case 3:
+                GamePad.SetVibration(PlayerIndex.Three, 1f, 1f);
+                break;
+            case 4:
+                GamePad.SetVibration(PlayerIndex.Four, 1f, 1f);
+                break;
+        }
+
+        vibrating = true;
+    }
+
+    void CheckVibrationTimer()
+    {
+        if (vibrating)
+        {
+            vibrationCounter += 1 * Time.deltaTime;
+
+            if (vibrationCounter >= vibrationMs)
+            {
+                vibrationCounter = 0.000d;
+
+                switch (playerNum)
+                {
+                    case 1:
+                        GamePad.SetVibration(PlayerIndex.One, 0f, 0f);
+                        break;
+                    case 2:
+                        GamePad.SetVibration(PlayerIndex.Two, 0f, 0f);
+                        break;
+                    case 3:
+                        GamePad.SetVibration(PlayerIndex.Three, 0f, 0f);
+                        break;
+                    case 4:
+                        GamePad.SetVibration(PlayerIndex.Four, 0f, 0f);
+                        break;
+                }
+
+                vibrating = false;
+            }
+        }
     }
 
     void CheckHealth(Collider2D other)
@@ -772,6 +866,7 @@ public class playerControl : MonoBehaviour
         {
             GameObject deadPlayer = Instantiate(DeadPlayer.gameObject, transform.position, transform.rotation) as GameObject;
 
+            deadPlayer.SendMessage("SetColor", _playerColor);
             deadPlayer.SendMessage("Die", other.transform.position.x < this.transform.position.x ? "left" : "right");
         }
 
@@ -787,7 +882,17 @@ public class playerControl : MonoBehaviour
     {
         playerNum = num;
         Control = _localPlayers[num - 1].Control;
+
         _playerClass = _localPlayers[num - 1].Class;
+
+        _slashCol.SendMessage("GetPlayerNum", playerNum);
+    }
+
+    void MultiSetPlayer()
+    {
+        playerNum = 1;
+        Control = "j1";
+        _playerClass = "The Cowboy";
 
         _slashCol.SendMessage("GetPlayerNum", playerNum);
     }

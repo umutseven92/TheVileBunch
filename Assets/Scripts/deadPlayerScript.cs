@@ -16,6 +16,11 @@ public class deadPlayerScript : MonoBehaviour
         transform.Rotate(Vector3.forward * degreesPerSecond * Time.deltaTime);
     }
 
+    void SetColor(Color color)
+    {
+        this.GetComponent<SpriteRenderer>().color = color;
+    }
+
     void Die(string hit)
     {
         GetComponent<Rigidbody2D>()

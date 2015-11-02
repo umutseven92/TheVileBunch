@@ -5,66 +5,117 @@ using UnityEngine.UI;
 
 public class levelSelect : MonoBehaviour
 {
-	private string[] levels = new[] { "Dunes", "Caves" };
-	private int pos = 0;
+    private readonly string[] _levels = new[] { "Dunes", "Caves" };
+    private int _pos = 0;
+    private Sprite _dunesImage;
+    private Sprite _cavesImage;
+    private bool delay = true;
 
-	public Text txtLevel;
+    public Text txtLevel;
+    public Image imgLevel;
 
-	void Start()
-	{
-		SetLevelText(levels[0]);
-	}
+    private double delayCounter = 0.000d;
+    private double delayMs = 0.2d;
 
-	public void LoadLevel()
-	{
+    void Start()
+    {
+        _dunesImage = Resources.Load<Sprite>("dunes");
+        _cavesImage = Resources.Load<Sprite>("caves");
 
-		foreach (var p in playerSelect.PlayerList)
-		{
-			if (!p.Set)
-			{
-				playerSelect.PlayerList.Remove(p);
-			}
-		}
+        SetLevelText(_levels[0]);
+    }
 
-		switch (txtLevel.text)
-		{
-			case "Dunes":
-				Application.LoadLevel(5);
-				break;
-			case "Caves":
-				Application.LoadLevel(6);
-				break;
-			default:
-				Debug.LogError(txtLevel.text + " not found!");
-				break;
-		}
-	}
 
-	public void SetLevel(int dir)
-	{
-		if (dir == 1)
-		{
-			if (pos == levels.Length - 1)
-			{
-				pos = -1;
-			}
-			pos++;
-			SetLevelText(levels[pos]);
-		}
-		else if (dir == -1)
-		{
-			if (pos == 0)
-			{
-				pos = levels.Length;
-			}
-			pos--;
-			SetLevelText(levels[pos]);
-		}
+    void Update()
+    {
+        CheckDelayTimer();
+        if (delay)
+        {
+            if (Input.GetAxis("Horizontal") > 0.5)
+            {
+                SetLevel(1);
+            }
+            else if (Input.GetAxis("Horizontal") < -0.5)
+            {
+                SetLevel(-1);
+            }
 
-	}
+            delay = false;
+        }
 
-	private void SetLevelText(string text)
-	{
-		txtLevel.text = text;
-	}
+    }
+
+    private void CheckDelayTimer()
+    {
+        if (!delay)
+        {
+            delayCounter += Time.deltaTime;
+            if (delayCounter > delayMs)
+            {
+                delayCounter = 0.000d;
+                delay = true;
+            }
+        }
+    }
+
+    public void LoadLevel()
+    {
+        foreach (var p in playerSelect.PlayerList)
+        {
+            if (!p.Set)
+            {
+                playerSelect.PlayerList.Remove(p);
+            }
+        }
+
+        switch (txtLevel.text)
+        {
+            case "Dunes":
+                Application.LoadLevel("DunesLoading");
+                break;
+            case "Caves":
+                Application.LoadLevel("CavesLoading");
+                break;
+            default:
+                Debug.LogError(txtLevel.text + " not found!");
+                break;
+        }
+    }
+
+    public void SetLevel(int dir)
+    {
+        if (dir == 1)
+        {
+            if (_pos == _levels.Length - 1)
+            {
+                _pos = -1;
+            }
+            _pos++;
+            SetLevelText(_levels[_pos]);
+        }
+        else if (dir == -1)
+        {
+            if (_pos == 0)
+            {
+                _pos = _levels.Length;
+            }
+            _pos--;
+            SetLevelText(_levels[_pos]);
+        }
+
+    }
+
+    private void SetLevelText(string text)
+    {
+        txtLevel.text = text;
+
+        if (text.Equals("Caves"))
+        {
+            imgLevel.sprite = _cavesImage;
+        }
+        else if (text.Equals("Dunes"))
+        {
+            imgLevel.sprite = _dunesImage;
+        }
+    }
 }
