@@ -27,6 +27,7 @@ public class playerControl : MonoBehaviour
     [HideInInspector]
     public string _playerClass;
 
+    public bool Enabled;
     public bool Multi = false;
     public int StartingAmmo = 3; // Starting ammo
     public int MaxAmmo = 3; // Maximum ammo a player can have
@@ -155,6 +156,11 @@ public class playerControl : MonoBehaviour
 
     void Update()
     {
+        if (!enabled)
+        {
+            return;
+        }
+
         if (_first)
         {
             if (Multi)
