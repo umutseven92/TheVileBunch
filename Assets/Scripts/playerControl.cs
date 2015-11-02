@@ -156,10 +156,6 @@ public class playerControl : MonoBehaviour
 
     void Update()
     {
-        if (!enabled)
-        {
-            return;
-        }
 
         if (_first)
         {
@@ -194,17 +190,17 @@ public class playerControl : MonoBehaviour
         _grounded = Physics2D.Linecast(transform.position, GroundCheck.position, 1 << LayerMask.NameToLayer("Ground"));
         _grounded2 = Physics2D.Linecast(transform.position, GroundCheck2.position, 1 << LayerMask.NameToLayer("Ground"));
 
-        if (Input.GetButtonDown(Control + "Fire") && !_paused && _ammo > 0)
+        if (Input.GetButtonDown(Control + "Fire") && !_paused && _ammo > 0 && Enabled)
         {
             _softAim = true;
         }
 
-        if (Input.GetButtonDown(Control + "Jump") && ((_grounded || _grounded2) || _inFrontOfLadder) && !_paused && !_aiming)
+        if (Input.GetButtonDown(Control + "Jump") && ((_grounded || _grounded2) || _inFrontOfLadder) && !_paused && !_aiming && Enabled)
         {
             Jump = true;
         }
 
-        if (Input.GetButtonUp(Control + "Fire") && !_paused && _ammo > 0)
+        if (Input.GetButtonUp(Control + "Fire") && !_paused && _ammo > 0 && Enabled)
         {
             if (_aimCanceled)
             {
@@ -218,12 +214,12 @@ public class playerControl : MonoBehaviour
             _softAim = false;
         }
 
-        if (Input.GetButtonDown(Control + "Slash") && !_paused && !_slashing && !_aiming)
+        if (Input.GetButtonDown(Control + "Slash") && !_paused && !_slashing && !_aiming && Enabled)
         {
             Slash();
         }
 
-        if (Input.GetButtonDown(Control + "Slash") && !_paused && !_slashing && _aiming)
+        if (Input.GetButtonDown(Control + "Slash") && !_paused && !_slashing && _aiming && Enabled)
         {
             _aiming = false;
             AimLine.GetComponent<SpriteRenderer>().enabled = false;
@@ -234,9 +230,13 @@ public class playerControl : MonoBehaviour
 
         CheckTimers();
         UpdateSlashColPos();
-        HandleAnimations();
 
-        if (_aiming)
+        if (Enabled)
+        {
+            HandleAnimations();
+        }
+
+        if (_aiming && Enabled)
         {
             DrawLine();
         }
@@ -325,7 +325,7 @@ public class playerControl : MonoBehaviour
             _bulletLeft = false;
         }
 
-        if (_inFrontOfLadder)
+        if (_inFrontOfLadder && Enabled)
         {
             _rb2D.gravityScale = 0;
             _rb2D.velocity = Vector3.zero;
@@ -346,27 +346,31 @@ public class playerControl : MonoBehaviour
         }
         else
         {
-            _rb2D.gravityScale = 4;
-
-            if (!_aiming)
+            if (Enabled)
             {
-                if (h * _rb2D.velocity.x < MaxSpeed)
+                _rb2D.gravityScale = 4;
+
+                if (!_aiming)
                 {
-                    _rb2D.AddForce(Vector2.right * h * MoveForce);
+                    if (h * _rb2D.velocity.x < MaxSpeed)
+                    {
+                        _rb2D.AddForce(Vector2.right * h * MoveForce);
+                    }
+
+                    if (Mathf.Abs(_rb2D.velocity.x) > MaxSpeed)
+                    {
+                        _rb2D.velocity = new Vector2(Mathf.Sign(_rb2D.velocity.x) * MaxSpeed, _rb2D.velocity.y);
+                    }
                 }
 
-                if (Mathf.Abs(_rb2D.velocity.x) > MaxSpeed)
-                {
-                    _rb2D.velocity = new Vector2(Mathf.Sign(_rb2D.velocity.x) * MaxSpeed, _rb2D.velocity.y);
-                }
             }
         }
 
-        if (h > 0 && !FacingRight && !_paused)
+        if (h > 0 && !FacingRight && !_paused && Enabled)
         {
             Flip();
         }
-        else if (h < 0 && FacingRight && !_paused)
+        else if (h < 0 && FacingRight && !_paused && Enabled)
         {
             Flip();
         }
@@ -826,7 +830,7 @@ public class playerControl : MonoBehaviour
         playerNum = 1;
         Control = "j1";
         _playerClass = "The Cowboy";
-        
+
         _slashCol.SendMessage("GetPlayerNum", playerNum);
     }
 

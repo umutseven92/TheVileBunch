@@ -32,6 +32,6 @@ public class matchmaker : Photon.PunBehaviour
     public override void OnJoinedRoom()
     {
         var player = PhotonNetwork.Instantiate("PlayerOnline", new Vector3(1, 1, 0), Quaternion.identity, 0);
-        player.GetComponent<playerControl>().enabled = true;
+        player.GetComponent<playerControl>().Enabled = true;
     }
 }
