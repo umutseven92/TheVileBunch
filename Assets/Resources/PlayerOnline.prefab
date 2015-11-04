@@ -395,6 +395,7 @@ MonoBehaviour:
   HealthPickup: 3
   DirectionLock: .200000003
   AimMs: .14999999999999999
+  VibrationMs: .5
   GroundCheck: {fileID: 474538}
   GroundCheck2: {fileID: 436820}
   Bullet: {fileID: 456820, guid: 63fe6d9b80059a248b8c801944bb1866, type: 2}
@@ -409,7 +410,6 @@ MonoBehaviour:
   AmmoClip: {fileID: 8300000, guid: 4df9347d248a0964a99c2b77d1254af7, type: 3}
   GunCockClip: {fileID: 8300000, guid: 6292ec40198cd5141a4ea21c3b9dc389, type: 3}
   GunLight: {fileID: 10806822}
-  vibrationMs: .29999999999999999
 --- !u!114 &11417966
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -451,7 +451,7 @@ MonoBehaviour:
   onSerializeRigidBodyOption: 2
   ownershipTransfer: 0
   ObservedComponents:
-  - {fileID: 441362}
+  - {fileID: 11472036}
   ObservedComponentsFoldoutOpen: 1
   viewIdField: 0
   instantiationId: -1
@@ -771,7 +771,7 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: ObservedComponents.Array.data[0]
       value: 
-      objectReference: {fileID: 441362}
+      objectReference: {fileID: 11472036}
     - target: {fileID: 0}
       propertyPath: m_PlayOnAwake
       value: 0

@@ -78,13 +78,10 @@ public class localController : MonoBehaviour
         {
             Time.timeScale = 1f;
         }
-        GameObject speaker = GameObject.Find("Speaker");
 
         scoreCanvas.enabled = false;
         endGameCanvas.enabled = false;
         pauseCanvas.enabled = false;
-
-        if (speaker != null) speaker.GetComponent<AudioSource>().Stop();
 
         foreach (playerSelect.Player t in playerSelect.PlayerList)
         {

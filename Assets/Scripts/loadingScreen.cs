@@ -16,11 +16,14 @@ public class loadingScreen : MonoBehaviour
     private double _loadingTextCounter;
     private const string Loading = "Loading";
     private List<string> _diaries = new List<string>();
-    private System.Random _rand = new System.Random(); 
+    private System.Random _rand = new System.Random();
 
     // Use this for initialization
     void Start()
     {
+        GameObject speaker = GameObject.Find("Speaker");
+        if (speaker != null) speaker.GetComponent<AudioSource>().Stop();
+
         var diaries = Resources.Load("diaries") as TextAsset;
 
         using (var reader = XmlReader.Create(new StringReader(diaries.text)))

@@ -10,7 +10,6 @@ public class playerSelect : MonoBehaviour
     public AudioClip InvalidClip;
     public AudioClip ReadyClip;
 
-
     public Button Play;
     public Text P1Text;
     public Text P2Text;
@@ -142,6 +141,17 @@ public class playerSelect : MonoBehaviour
         p4Button.sprite = startButton;
 
         NextButton.GetComponent<SpriteRenderer>().enabled = false;
+
+        var speaker = GameObject.Find("Speaker");
+
+        if (speaker != null)
+        {
+            var audio = speaker.GetComponent<AudioSource>();
+            if (!audio.isPlaying)
+            {
+                audio.Play();
+            }
+        }
     }
 
     // Update is called once per frame

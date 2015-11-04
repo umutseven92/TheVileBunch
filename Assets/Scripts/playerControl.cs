@@ -54,6 +54,7 @@ public class playerControl : MonoBehaviour
     public int HealthPickup = 3; // How much health does health pickup give
     public float DirectionLock = 0.2f; // Analog direction start value
     public double AimMs = 0.15d; // How long to press before player starts aiming
+    public double VibrationMs = 0.500d; // How long to vibrate after shooting
 
     public Transform GroundCheck;
     public Transform GroundCheck2;
@@ -108,7 +109,8 @@ public class playerControl : MonoBehaviour
     private double _aimCounter;
     private bool _aimCanceled;
     private Color _playerColor;
-
+    private double vibrationCounter = 0.000d;
+    private bool vibrating = false;
     #endregion
 
     #region Properties
@@ -789,13 +791,8 @@ public class playerControl : MonoBehaviour
         _gunLight = true;
         _ammo--;
         VibrateGamePad(playerNum);
-
-        Debug.Log(playerNum);
     }
 
-    private double vibrationCounter = 0.000d;
-    public double vibrationMs = 0.500d;
-    private bool vibrating = false;
 
     void VibrateGamePad(int player)
     {
@@ -824,7 +821,7 @@ public class playerControl : MonoBehaviour
         {
             vibrationCounter += 1 * Time.deltaTime;
 
-            if (vibrationCounter >= vibrationMs)
+            if (vibrationCounter >= VibrationMs)
             {
                 vibrationCounter = 0.000d;
 
