@@ -26,6 +26,34 @@ public class loadOnClick : MonoBehaviour
         Application.Quit();
     }
 
+    public void MuteGame()
+    {
+        var toggle = GameObject.Find("MusicToggle");
+        var scr = GameObject.Find("SettingsScripts");
+
+        if (!scr.GetComponent<settingsScript>().Loaded)
+        {
+            return;
+        }
+        var speaker = GameObject.Find("Speaker");
+        var audio = speaker.GetComponent<AudioSource>();
+
+        int val;
+
+        if (toggle.GetComponent<Toggle>().isOn)
+        {
+            val = 1;
+            audio.mute = false;
+        }
+        else
+        {
+            val = 0;
+            audio.mute = true;
+        }
+
+        PlayerPrefs.SetInt("Music", val);
+    }
+
     public void EndLocalGame()
     {
         playerSelect.PlayerList = new List<playerSelect.Player>();

@@ -21,3 +21,5 @@ EditorBuildSettings:
     path: Assets/Scenes/SceneSelect.unity
   - enabled: 1
     path: Assets/Scenes/DunesOnline.unity
+  - enabled: 1
+    path: Assets/Scenes/Settings.unity

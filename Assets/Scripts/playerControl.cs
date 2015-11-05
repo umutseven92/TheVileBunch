@@ -345,7 +345,6 @@ public class playerControl : MonoBehaviour
                     _rb2D.velocity = new Vector2(_rb2D.velocity.x, Mathf.Sign(_rb2D.velocity.y) * MaxSpeed);
                 }
             }
-
         }
         else
         {
@@ -712,7 +711,7 @@ public class playerControl : MonoBehaviour
 
     #endregion
 
-    void Flip()
+    public void Flip()
     {
         if (FacingRight)
         {

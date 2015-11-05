@@ -12,6 +12,7 @@ public class loadingScreen : MonoBehaviour
     public Text DiaryText;
     public double LoadingMs = 1.500d;
     public int LevelIndex;
+    public Transform AButton;
 
     private double _loadingTextCounter;
     private const string Loading = "Loading";
@@ -46,6 +47,8 @@ public class loadingScreen : MonoBehaviour
         var count = _rand.Next(0, _diaries.Count);
 
         DiaryText.text = _diaries[count];
+
+        AButton.GetComponent<SpriteRenderer>().enabled = false;
     }
 
     // Update is called once per frame
@@ -55,6 +58,8 @@ public class loadingScreen : MonoBehaviour
         if (Application.GetStreamProgressForLevel(LevelIndex) == 1)
         {
             LoadingText.text = "Loaded";
+            AButton.GetComponent<SpriteRenderer>().enabled = false;
+
             if (Input.GetButtonDown("kJump") || Input.GetButtonDown("j1Jump") || Input.GetButtonDown("j2Jump") ||
                 Input.GetButtonDown("j3Jump") || Input.GetButtonDown("j4Jump"))
             {
