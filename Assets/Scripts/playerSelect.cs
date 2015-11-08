@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.UI;
+using XInputDotNetPure;
 
 public class playerSelect : MonoBehaviour
 {
@@ -45,6 +46,7 @@ public class playerSelect : MonoBehaviour
     private Sprite freemanImage;
 
     public Transform NextButton;
+    public Transform BackButton;
     private Sprite aButton;
     private Sprite bButton;
     private Sprite startButton;
@@ -141,6 +143,7 @@ public class playerSelect : MonoBehaviour
         p4Button.sprite = startButton;
 
         NextButton.GetComponent<SpriteRenderer>().enabled = false;
+        BackButton.GetComponent<SpriteRenderer>().enabled = true;
 
         var speaker = GameObject.Find("Speaker");
 
@@ -163,12 +166,37 @@ public class playerSelect : MonoBehaviour
 
     void CheckInputs()
     {
+        if (Input.GetButtonDown("kCancel") || Input.GetButtonDown("j1Cancel") || Input.GetButtonDown("j2Cancel") ||
+            Input.GetButtonDown("j3Cancel") || Input.GetButtonDown("j4Cancel"))
+        {
+            if (kStage == SelectStages.Disabled && j1Stage == SelectStages.Disabled && j2Stage == SelectStages.Disabled && j3Stage == SelectStages.Disabled && j4Stage == SelectStages.Disabled)
+            {
+                Application.LoadLevel("Menu");
+                return;
+            }
+        }
+
         CheckSubmit();
         CheckHorizontal();
         CheckCancel();
         CheckHorizontalCancel();
         CheckSubmitCancel();
         CheckCancelCancel();
+        CheckBackButton();
+
+
+    }
+
+    void CheckBackButton()
+    {
+        if (kStage == SelectStages.Disabled && j1Stage == SelectStages.Disabled && j2Stage == SelectStages.Disabled && j3Stage == SelectStages.Disabled && j4Stage == SelectStages.Disabled)
+        {
+            BackButton.GetComponent<SpriteRenderer>().enabled = true;
+        }
+        else
+        {
+            BackButton.GetComponent<SpriteRenderer>().enabled = false;
+        }
     }
 
     void CheckCancelCancel()
@@ -255,7 +283,7 @@ public class playerSelect : MonoBehaviour
             if (j1Submit)
             {
                 string control = "j1";
-
+                
                 if (j1Stage == SelectStages.Browse)
                 {
                     if (pickedClasses.Count > 0 && pickedClasses.Contains(PlayerList.Find(c => c.Control == control).Class))

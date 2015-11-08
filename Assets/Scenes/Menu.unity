@@ -311,7 +311,7 @@ MonoBehaviour:
   m_SubmitButton: Submit
   m_CancelButton: kCancel
   m_InputActionsPerSecond: 10
-  m_RepeatDelay: .5
+  m_RepeatDelay: .200000003
   m_ForceModuleActive: 0
 --- !u!114 &465981076
 MonoBehaviour:
@@ -770,7 +770,7 @@ RectTransform:
   m_RootOrder: 3
   m_AnchorMin: {x: .5, y: .5}
   m_AnchorMax: {x: .5, y: .5}
-  m_AnchoredPosition: {x: 0, y: -413}
+  m_AnchoredPosition: {x: 0, y: -428}
   m_SizeDelta: {x: 430, y: 84}
   m_Pivot: {x: .5, y: .5}
 --- !u!1 &1130018323
@@ -1195,7 +1195,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: v0.2.2
+  m_Text: v0.2.3
 --- !u!222 &1776293526
 CanvasRenderer:
   m_ObjectHideFlags: 0

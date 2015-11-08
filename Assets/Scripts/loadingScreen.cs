@@ -58,10 +58,9 @@ public class loadingScreen : MonoBehaviour
         if (Application.GetStreamProgressForLevel(LevelIndex) == 1)
         {
             LoadingText.text = "Loaded";
-            AButton.GetComponent<SpriteRenderer>().enabled = false;
+            AButton.GetComponent<SpriteRenderer>().enabled = true;
 
-            if (Input.GetButtonDown("kJump") || Input.GetButtonDown("j1Jump") || Input.GetButtonDown("j2Jump") ||
-                Input.GetButtonDown("j3Jump") || Input.GetButtonDown("j4Jump"))
+            if (Input.GetButtonDown("Submit") )
             {
                 Application.LoadLevel(LevelIndex);
             }
