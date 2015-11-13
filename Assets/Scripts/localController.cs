@@ -1,9 +1,6 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Random = System.Random;
 
@@ -20,6 +17,7 @@ public class localController : MonoBehaviour
     public Canvas endGameCanvas;
     public Canvas pauseCanvas;
 
+    public Button btnEndGameExit;
     public Button btnExit;
     public Text staticRoundText;
     public Text roundText;
@@ -33,13 +31,13 @@ public class localController : MonoBehaviour
     public Transform HealthPickup;
     public Transform[] pickupSpawns; // Spawn objects for pickups
 
+    public int ScoreToReach = 3;
     private int _round = 1;
 
     private bool gameOver = false;
     private double _counter = 0.000d;
     private double gameOverCounter = 0.000d;
     private double gameOverMs = 3.000d;
-    private bool overtime = false;
 
     private bool slowMo = false;
     private double slowMoCounter = 0.000d;
@@ -108,7 +106,7 @@ public class localController : MonoBehaviour
             if (paused)
             {
                 UnPauseAllPlayers();
-          
+
                 GameObject myEventSystem = GameObject.Find("EventSystem");
                 myEventSystem.GetComponent<UnityEngine.EventSystems.EventSystem>().SetSelectedGameObject(null);
 
@@ -130,82 +128,28 @@ public class localController : MonoBehaviour
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player").Where(p => p.transform.position != Vector3.zero).ToArray();
         CheckTimers();
 
-        // Overtime
-        if (players.Length == 1 && !gameOver && overtime)
+        if (players.Length == 1 && !gameOver)
         {
-            ClassScores[players[0].GetComponent<playerControl>()._playerClass]++;
+            var winningClass = players[0].GetComponent<playerControl>()._playerClass;
+            ClassScores[winningClass]++;
 
-            Dictionary<string, int> winners = ClassScores.Where(classScore => classScore.Value == ClassScores.Values.Max()).ToDictionary(classScore => classScore.Key, classScore => classScore.Value);
-            winner = winners.First();
-            slowMo = true;
-            gameOver = true;
-        }
-
-        if (players.Length == 1 && !gameOver && !overtime)
-        {
-            ClassScores[players[0].GetComponent<playerControl>()._playerClass]++;
-
-            switch (_round)
+            if (ClassScores[winningClass] == ScoreToReach)
             {
-                case 1:
-                    _round++;
-                    RestartGame(players);
-                    break;
-                case 2:
-                    _round++;
-                    RestartGame(players);
-                    break;
-                case 3:
-                    Dictionary<string, int> winners = ClassScores.Where(classScore => classScore.Value == ClassScores.Values.Max()).ToDictionary(classScore => classScore.Key, classScore => classScore.Value);
-
-                    if (winners.Count == 1)
-                    {
-                        // One winner
-                        winner = winners.First();
-                        slowMo = true;
-                        gameOver = true;
-                    }
-                    else if (winners.Count == 3)
-                    {
-                        // Three winners, sudden death
-                        overtime = true;
-                        playerSelect.Player loser = new playerSelect.Player();
-                        if (playerSelect.PlayerList.Count > winners.Count)
-                        {
-                            foreach (var p in playerSelect.PlayerList)
-                            {
-                                if (!winners.Keys.Contains(p.Class))
-                                {
-                                    loser = p;
-                                    break;
-                                }
-                            }
-
-                            Debug.Log(loser.Class + " disqualified.");
-                            playerSelect.PlayerList.Remove(loser);
-                        }
-
-                        ClassScores = new Dictionary<string, int>();
-                        foreach (playerSelect.Player t in playerSelect.PlayerList)
-                        {
-                            ClassScores.Add(t.Class, 0);
-                        }
-
-                        RestartGame(players);
-                    }
-                    else
-                    {
-                        Debug.LogError(winners.Count + " players are tied!");
-                    }
-
-                    break;
-                default:
-                    Debug.LogError("Round not between 1 or 4!");
-                    break;
+                // Game Over
+                winner = ClassScores.First(k => k.Value == ScoreToReach);
+                slowMo = true;
+                gameOver = true;
             }
+            else
+            {
+                _round++;
+                RestartGame(players);
+            }
+
         }
 
     }
+
 
     void SpawnRandomAmmo(Transform pickup)
     {
@@ -316,15 +260,7 @@ public class localController : MonoBehaviour
 
     void RestartGame(GameObject[] lastPlayers)
     {
-        if (overtime)
-        {
-            SetScoreCard(string.Empty, "Sudden Death", string.Empty);
-        }
-        else
-        {
-            SetScoreCard(_round.ToString(), lastPlayers[0].GetComponent<playerControl>()._playerClass, ClassScores[lastPlayers[0].GetComponent<playerControl>()._playerClass].ToString());
-        }
-
+        SetScoreCard(_round.ToString(), lastPlayers[0].GetComponent<playerControl>()._playerClass, ClassScores[lastPlayers[0].GetComponent<playerControl>()._playerClass].ToString());
         foreach (var o in lastPlayers)
         {
             Destroy(o);
@@ -368,24 +304,17 @@ public class localController : MonoBehaviour
 
     }
 
-
     void SetEndGameCard(string winner)
     {
         winnerText.text = winner;
         PauseAllPlayers();
         endGameCanvas.enabled = true;
+        btnEndGameExit.Select();
     }
 
     void SetScoreCard(string round, string winner, string score)
     {
-        if (overtime)
-        {
-            staticRoundText.enabled = false;
-        }
-        else
-        {
-            staticRoundText.enabled = true;
-        }
+        staticRoundText.enabled = true;
         roundText.text = round;
         classScoreText.text = winner;
         scoreScoreText.text = score;

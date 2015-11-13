@@ -1,23 +1,28 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class menuScript : MonoBehaviour
 {
-	// Use this for initialization
-	void Start()
-	{
-		if (!PlayerPrefs.HasKey("Music"))
-		{
-			PlayerPrefs.SetInt("Music", 1);
-		}
+    public Text Version;
 
-		SetPrefs();
-	}
+    // Use this for initialization
+    void Start()
+    {
+        if (!PlayerPrefs.HasKey("Music"))
+        {
+            PlayerPrefs.SetInt("Music", 1);
+        }
 
-	private void SetPrefs()
-	{
-		var audioSource = GameObject.Find("Speaker").GetComponent<AudioSource>();
+        SetPrefs();
 
-		audioSource.mute = PlayerPrefs.GetInt("Music") != 1;
-	}
+        Version.text = "v" + global.GameVersion;
+    }
+
+    private void SetPrefs()
+    {
+        var audioSource = GameObject.Find("Speaker").GetComponent<AudioSource>();
+
+        audioSource.mute = PlayerPrefs.GetInt("Music") != 1;
+    }
 }
