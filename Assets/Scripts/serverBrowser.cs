@@ -5,29 +5,22 @@ public class serverBrowser : Photon.PunBehaviour
 {
     public string LobbyName { get; set; }
 
-    // Use this for initialization
-    void Start()
-    {
-    }
-
     public void JoinRoom()
     {
-        var rooms = PhotonNetwork.GetRoomList();
-
-        foreach (var r in rooms.Where(r => r.name.Equals(LobbyName)))
-        {
-            PhotonNetwork.ConnectUsingSettings(global.GameVersion);
-        }
+        PhotonNetwork.ConnectUsingSettings(global.GameVersion);
+        Debug.Log("Connecting..");
     }
 
     public void SetLobbyName(string _lobbyName)
     {
         LobbyName = _lobbyName;
+        Debug.Log(LobbyName);
     }
 
     public override void OnJoinedLobby()
     {
         PhotonNetwork.JoinRoom(LobbyName);
+        Debug.Log("Joining Room..");
     }
 
     void OnPhotonRandomJoinFailed()
@@ -37,6 +30,7 @@ public class serverBrowser : Photon.PunBehaviour
 
     public override void OnJoinedRoom()
     {
+        Debug.Log("Loading level");
         Application.LoadLevel("DunesOnline");
     }
 }

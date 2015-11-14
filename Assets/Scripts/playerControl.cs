@@ -43,6 +43,7 @@ public class playerControl : MonoBehaviour
     public float MovementLock = 0.2f; // Analog stick movement start value
     public float GunLightSpeed = 0.30f; // How fast does gun light appear
     public float SlashOffset = 0.8f; // How far the player slashes
+    public float GunOffset = 0.1f; // How far the player shoots 
     public double SlashingMs = 0.3d; // How long does slashing take
     public double HitMs = 2.000d; // Invulnerability timer after getting hit
     public double HealedMs = 2.000d; // Health bar visibility after healed
@@ -160,7 +161,6 @@ public class playerControl : MonoBehaviour
 
     void Update()
     {
-
         if (_first)
         {
             if (Multi)
@@ -423,17 +423,17 @@ public class playerControl : MonoBehaviour
 
             if (_bulletRight)
             {
-                bXPos = 0.5f;
+                bXPos = GunOffset;
                 bRotation += 180;
             }
             else if (_bulletLeft)
             {
-                bXPos = -0.5f;
+                bXPos = -GunOffset;
             }
 
             if (_bulletUp)
             {
-                bYPos = 0.5f;
+                bYPos = GunOffset;
 
                 if (_bulletRight)
                 {
@@ -451,7 +451,7 @@ public class playerControl : MonoBehaviour
             }
             else if (_bulletDown)
             {
-                bYPos = -0.5f;
+                bYPos = -GunOffset;
 
                 if (_bulletRight)
                 {
@@ -480,7 +480,7 @@ public class playerControl : MonoBehaviour
                 {
                     Flip();
                 }
-                bXPos = -0.5f;
+                bXPos = -GunOffset;
 
                 if (mousePos.y < playerPos.y - MouseAimDeadZone || mousePos.y < playerPos.y + MouseAimDeadZone)
                 {
@@ -490,13 +490,13 @@ public class playerControl : MonoBehaviour
                 if (playerPos.y - MouseAimDeadZone > mousePos.y)
                 {
                     // Left - Down
-                    bYPos = -0.5f;
+                    bYPos = -GunOffset;
                     bRotation += 45 + 180 + 90;
                 }
                 else if (playerPos.y + MouseAimDeadZone < mousePos.y)
                 {
                     // Left - Up
-                    bYPos = 0.5f;
+                    bYPos = GunOffset;
                     bRotation -= -45;
                 }
             }
@@ -508,7 +508,7 @@ public class playerControl : MonoBehaviour
                     Flip();
                 }
                 bRotation += 180;
-                bXPos = 0.5f;
+                bXPos = GunOffset;
 
                 if (mousePos.y < playerPos.y - MouseAimDeadZone || mousePos.y < playerPos.y + MouseAimDeadZone)
                 {
@@ -518,13 +518,13 @@ public class playerControl : MonoBehaviour
                 if (playerPos.y - MouseAimDeadZone > mousePos.y)
                 {
                     // Right - Down
-                    bYPos = -0.5f;
+                    bYPos = -GunOffset;
                     bRotation += 45;
                 }
                 else if (playerPos.y + MouseAimDeadZone < mousePos.y)
                 {
                     // Right - Up
-                    bYPos = 0.5f;
+                    bYPos = GunOffset;
                     bRotation -= 45;
                 }
             }
@@ -533,12 +533,12 @@ public class playerControl : MonoBehaviour
             {
                 if (playerPos.y > mousePos.y)
                 {
-                    bYPos = -0.5f;
+                    bYPos = -GunOffset;
                     bRotation -= 90;
                 }
                 else
                 {
-                    bYPos = 0.5f;
+                    bYPos = GunOffset;
                     bRotation += 90;
                 }
             }
@@ -847,23 +847,23 @@ public class playerControl : MonoBehaviour
             if (_bulletRight)
             {
                 bXSpeed = BulletSpeed;
-                bXPos = 0.5f;
+                bXPos = GunOffset;
             }
             else if (_bulletLeft)
             {
                 bXSpeed = -BulletSpeed;
-                bXPos = -0.5f;
+                bXPos = -GunOffset;
             }
 
             if (_bulletUp)
             {
                 bYSpeed = BulletSpeed;
-                bYPos = 0.5f;
+                bYPos = GunOffset;
             }
             else if (_bulletDown)
             {
                 bYSpeed = -BulletSpeed;
-                bYPos = -0.5f;
+                bYPos = -GunOffset;
             }
         }
         else
@@ -873,7 +873,7 @@ public class playerControl : MonoBehaviour
 
             if (playerPos.x - MouseAimDeadZone > mousePos.x)
             {
-                bXPos = -0.5f;
+                bXPos = -GunOffset;
 
                 if (mousePos.y < playerPos.y - MouseAimDeadZone || mousePos.y < playerPos.y + MouseAimDeadZone)
                 {
@@ -884,14 +884,14 @@ public class playerControl : MonoBehaviour
                 if (playerPos.y - MouseAimDeadZone > mousePos.y)
                 {
                     // Left - Down
-                    bYPos = -0.5f;
+                    bYPos = -GunOffset;
                     bYSpeed = -BulletSpeed;
 
                 }
                 else if (playerPos.y + MouseAimDeadZone < mousePos.y)
                 {
                     // Left - Up
-                    bYPos = 0.5f;
+                    bYPos = GunOffset;
                     bYSpeed = BulletSpeed;
                     bXSpeed = -BulletSpeed;
 
@@ -900,7 +900,7 @@ public class playerControl : MonoBehaviour
 
             else if (playerPos.x + MouseAimDeadZone < mousePos.x)
             {
-                bXPos = 0.5f;
+                bXPos = GunOffset;
 
                 if (mousePos.y < playerPos.y - MouseAimDeadZone || mousePos.y < playerPos.y + MouseAimDeadZone)
                 {
@@ -911,14 +911,14 @@ public class playerControl : MonoBehaviour
                 if (playerPos.y - MouseAimDeadZone > mousePos.y)
                 {
                     // Right - Down
-                    bYPos = -0.5f;
+                    bYPos = -GunOffset;
                     bYSpeed = -BulletSpeed;
 
                 }
                 else if (playerPos.y + MouseAimDeadZone < mousePos.y)
                 {
                     // Right - Up
-                    bYPos = 0.5f;
+                    bYPos = GunOffset;
                     bYSpeed = BulletSpeed;
                     bXSpeed = BulletSpeed;
 
@@ -929,13 +929,13 @@ public class playerControl : MonoBehaviour
             {
                 if (playerPos.y > mousePos.y)
                 {
-                    bYPos = -0.5f;
+                    bYPos = -GunOffset;
                     bYSpeed = -BulletSpeed;
 
                 }
                 else
                 {
-                    bYPos = 0.5f;
+                    bYPos = GunOffset;
                     bYSpeed = BulletSpeed;
 
                 }
