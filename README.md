@@ -24,8 +24,8 @@ The game is set in 1873, in the the Western United States. A new cholera strain 
   * As a saloon dancer and a single mother, The Dancer would do anything to save his son -even if it means others have to die.
 * The Prospector
   * Now that the gold he spent his entire life searching for is worthless with the incoming apocalypse, The Prospector has nothing to lose.
-* The Indian
-  * With his whole village dead with the new strain, The Indian questions everything he believed in as he hurries to save his own life.
+* The Freeman 
+  * A former slave and a survivor of the Draft Riots, The Freeman wonders around the world, looking for purpose.
 
 
 ###Planned Characters
@@ -65,3 +65,5 @@ Online play will feature character progression and matchmaking according to skil
 [Game Design Documents](https://www.dropbox.com/s/vq6zpal5q5j02xv/FSDesignDocument.docx?dl=0=)
 
 [Scheduling](https://www.dropbox.com/s/dpmncjq4rl9r1jn/FSgantt.pdf?dl=0)
+
+[Character Diaries & Bio](https://docs.google.com/document/d/1WvIpXSU1P47oblb4Adbgr3TqEiLrpzP_BuyZ4dKXFVs/edit)

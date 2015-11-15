@@ -1,6 +1,4 @@
-﻿using System;
-using UnityEngine;
-using System.Collections;
+﻿using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.UI;
@@ -43,6 +41,7 @@ public class playerControl : MonoBehaviour
     public float MovementLock = 0.2f; // Analog stick movement start value
     public float GunLightSpeed = 0.30f; // How fast does gun light appear
     public float SlashOffset = 0.8f; // How far the player slashes
+    public float GunOffset = 0.1f; // How far the player shoots 
     public double SlashingMs = 0.3d; // How long does slashing take
     public double HitMs = 2.000d; // Invulnerability timer after getting hit
     public double HealedMs = 2.000d; // Health bar visibility after healed
@@ -54,6 +53,8 @@ public class playerControl : MonoBehaviour
     public int HealthPickup = 3; // How much health does health pickup give
     public float DirectionLock = 0.2f; // Analog direction start value
     public double AimMs = 0.15d; // How long to press before player starts aiming
+    public double VibrationMs = 0.500d; // How long to vibrate after shooting
+    public int MouseAimDeadZone = 50;
 
     public Transform GroundCheck;
     public Transform GroundCheck2;
@@ -108,7 +109,8 @@ public class playerControl : MonoBehaviour
     private double _aimCounter;
     private bool _aimCanceled;
     private Color _playerColor;
-
+    private double vibrationCounter = 0.000d;
+    private bool vibrating = false;
     #endregion
 
     #region Properties
@@ -157,7 +159,6 @@ public class playerControl : MonoBehaviour
 
     void Update()
     {
-
         if (_first)
         {
             if (Multi)
@@ -241,6 +242,7 @@ public class playerControl : MonoBehaviour
         {
             DrawLine();
         }
+
     }
 
     private void HandleAnimations()
@@ -343,7 +345,6 @@ public class playerControl : MonoBehaviour
                     _rb2D.velocity = new Vector2(_rb2D.velocity.x, Mathf.Sign(_rb2D.velocity.y) * MaxSpeed);
                 }
             }
-
         }
         else
         {
@@ -403,67 +404,147 @@ public class playerControl : MonoBehaviour
         var bYPos = 0f;
         var bRotation = 0f;
 
-        if (!_bulletUp && !_bulletDown && !_bulletRight && !_bulletLeft)
+        // Controller
+        if (!Control.Equals("k"))
         {
-            if (FacingRight)
+            if (!_bulletUp && !_bulletDown && !_bulletRight && !_bulletLeft)
             {
-                _bulletRight = true;
+                if (FacingRight)
+                {
+                    _bulletRight = true;
+                }
+                else
+                {
+                    _bulletLeft = true;
+                }
             }
-            else
-            {
-                _bulletLeft = true;
-            }
-        }
-
-        if (_bulletRight)
-        {
-            bXPos = 0.5f;
-            bRotation += 180;
-        }
-        else if (_bulletLeft)
-        {
-            bXPos = -0.5f;
-        }
-
-        if (_bulletUp)
-        {
-            bYPos = 0.5f;
 
             if (_bulletRight)
             {
-                bRotation += 45 - 180;
+                bXPos = GunOffset;
+                bRotation += 180;
             }
-            if (_bulletLeft)
+            else if (_bulletLeft)
             {
-                bRotation += 45;
+                bXPos = -GunOffset;
             }
-            else
+
+            if (_bulletUp)
             {
-                bRotation += 90;
+                bYPos = GunOffset;
+
+                if (_bulletRight)
+                {
+                    bRotation += 45 - 180;
+                }
+                if (_bulletLeft)
+                {
+                    bRotation += 45;
+                }
+                else
+                {
+                    bRotation += 90;
+                }
+
+            }
+            else if (_bulletDown)
+            {
+                bYPos = -GunOffset;
+
+                if (_bulletRight)
+                {
+                    bRotation += 45 + 90;
+                }
+                if (_bulletLeft)
+                {
+                    bRotation += 45 - 90;
+                }
+                else
+                {
+                    bRotation -= 90;
+                }
             }
 
         }
-        else if (_bulletDown)
+        // Keyboard
+        else
         {
-            bYPos = -0.5f;
+            var mousePos = Input.mousePosition;
+            var playerPos = Camera.main.WorldToScreenPoint(transform.position);
 
-            if (_bulletRight)
+            if (playerPos.x - MouseAimDeadZone > mousePos.x)
             {
-                bRotation += 45 + 90;
+                if (FacingRight)
+                {
+                    Flip();
+                }
+                bXPos = -GunOffset;
+
+                if (mousePos.y < playerPos.y - MouseAimDeadZone || mousePos.y < playerPos.y + MouseAimDeadZone)
+                {
+                    // Left
+                    bRotation = 0;
+                }
+                if (playerPos.y - MouseAimDeadZone > mousePos.y)
+                {
+                    // Left - Down
+                    bYPos = -GunOffset;
+                    bRotation += 45 + 180 + 90;
+                }
+                else if (playerPos.y + MouseAimDeadZone < mousePos.y)
+                {
+                    // Left - Up
+                    bYPos = GunOffset;
+                    bRotation -= -45;
+                }
             }
-            if (_bulletLeft)
+
+            else if (playerPos.x + MouseAimDeadZone < mousePos.x)
             {
-                bRotation += 45 - 90;
+                if (!FacingRight)
+                {
+                    Flip();
+                }
+                bRotation += 180;
+                bXPos = GunOffset;
+
+                if (mousePos.y < playerPos.y - MouseAimDeadZone || mousePos.y < playerPos.y + MouseAimDeadZone)
+                {
+                    // Right 
+                    bRotation = 180;
+                }
+                if (playerPos.y - MouseAimDeadZone > mousePos.y)
+                {
+                    // Right - Down
+                    bYPos = -GunOffset;
+                    bRotation += 45;
+                }
+                else if (playerPos.y + MouseAimDeadZone < mousePos.y)
+                {
+                    // Right - Up
+                    bYPos = GunOffset;
+                    bRotation -= 45;
+                }
             }
-            else
+
+            else if (playerPos.x - MouseAimDeadZone < mousePos.x || playerPos.x - MouseAimDeadZone > mousePos.x)
             {
-                bRotation -= 90;
+                if (playerPos.y > mousePos.y)
+                {
+                    bYPos = -GunOffset;
+                    bRotation -= 90;
+                }
+                else
+                {
+                    bYPos = GunOffset;
+                    bRotation += 90;
+                }
             }
         }
 
         line.position = new Vector3(transform.position.x + bXPos, transform.position.y + bYPos, transform.position.z);
-
         line.eulerAngles = new Vector3(0, 0, -bRotation);
+
     }
 
     // Player collided with..
@@ -481,7 +562,6 @@ public class playerControl : MonoBehaviour
             if (!_hit)
             {
                 _hit = true;
-
 
                 LowerHealth(BulletDamage);
 
@@ -710,7 +790,7 @@ public class playerControl : MonoBehaviour
 
     #endregion
 
-    void Flip()
+    public void Flip()
     {
         if (FacingRight)
         {
@@ -741,44 +821,123 @@ public class playerControl : MonoBehaviour
     void Shoot()
     {
         var shotTransform = Instantiate(Bullet) as Transform;
+        shotTransform.SendMessage("SetOwner", _playerClass);
 
         float bXPos = 0f;
         float bYPos = 0f;
         float bXSpeed = 0f;
         float bYSpeed = 0f;
 
-        if (!_bulletUp && !_bulletDown && !_bulletRight && !_bulletLeft)
+        if (!Control.Equals("k"))
         {
-            if (FacingRight)
+            if (!_bulletUp && !_bulletDown && !_bulletRight && !_bulletLeft)
             {
-                _bulletRight = true;
+                if (FacingRight)
+                {
+                    _bulletRight = true;
+                }
+                else
+                {
+                    _bulletLeft = true;
+                }
             }
-            else
+
+            if (_bulletRight)
             {
-                _bulletLeft = true;
+                bXSpeed = BulletSpeed;
+                bXPos = GunOffset;
+            }
+            else if (_bulletLeft)
+            {
+                bXSpeed = -BulletSpeed;
+                bXPos = -GunOffset;
+            }
+
+            if (_bulletUp)
+            {
+                bYSpeed = BulletSpeed;
+                bYPos = GunOffset;
+            }
+            else if (_bulletDown)
+            {
+                bYSpeed = -BulletSpeed;
+                bYPos = -GunOffset;
             }
         }
+        else
+        {
+            var mousePos = Input.mousePosition;
+            var playerPos = Camera.main.WorldToScreenPoint(transform.position);
 
-        if (_bulletRight)
-        {
-            bXSpeed = BulletSpeed;
-            bXPos = 0.5f;
-        }
-        else if (_bulletLeft)
-        {
-            bXSpeed = -BulletSpeed;
-            bXPos = -0.5f;
-        }
+            if (playerPos.x - MouseAimDeadZone > mousePos.x)
+            {
+                bXPos = -GunOffset;
 
-        if (_bulletUp)
-        {
-            bYSpeed = BulletSpeed;
-            bYPos = 0.5f;
-        }
-        else if (_bulletDown)
-        {
-            bYSpeed = -BulletSpeed;
-            bYPos = -0.5f;
+                if (mousePos.y < playerPos.y - MouseAimDeadZone || mousePos.y < playerPos.y + MouseAimDeadZone)
+                {
+                    // Left
+                    bXSpeed = -BulletSpeed;
+
+                }
+                if (playerPos.y - MouseAimDeadZone > mousePos.y)
+                {
+                    // Left - Down
+                    bYPos = -GunOffset;
+                    bYSpeed = -BulletSpeed;
+
+                }
+                else if (playerPos.y + MouseAimDeadZone < mousePos.y)
+                {
+                    // Left - Up
+                    bYPos = GunOffset;
+                    bYSpeed = BulletSpeed;
+                    bXSpeed = -BulletSpeed;
+
+                }
+            }
+
+            else if (playerPos.x + MouseAimDeadZone < mousePos.x)
+            {
+                bXPos = GunOffset;
+
+                if (mousePos.y < playerPos.y - MouseAimDeadZone || mousePos.y < playerPos.y + MouseAimDeadZone)
+                {
+                    // Right 
+                    bXSpeed = BulletSpeed;
+
+                }
+                if (playerPos.y - MouseAimDeadZone > mousePos.y)
+                {
+                    // Right - Down
+                    bYPos = -GunOffset;
+                    bYSpeed = -BulletSpeed;
+
+                }
+                else if (playerPos.y + MouseAimDeadZone < mousePos.y)
+                {
+                    // Right - Up
+                    bYPos = GunOffset;
+                    bYSpeed = BulletSpeed;
+                    bXSpeed = BulletSpeed;
+
+                }
+            }
+
+            else if (playerPos.x - MouseAimDeadZone < mousePos.x || playerPos.x - MouseAimDeadZone > mousePos.x)
+            {
+                if (playerPos.y > mousePos.y)
+                {
+                    bYPos = -GunOffset;
+                    bYSpeed = -BulletSpeed;
+
+                }
+                else
+                {
+                    bYPos = GunOffset;
+                    bYSpeed = BulletSpeed;
+
+                }
+            }
         }
 
         shotTransform.position = new Vector3(transform.position.x + bXPos, transform.position.y + bYPos, transform.position.z);
@@ -789,28 +948,24 @@ public class playerControl : MonoBehaviour
         _gunLight = true;
         _ammo--;
         VibrateGamePad(playerNum);
-
-        Debug.Log(playerNum);
     }
 
-    private double vibrationCounter = 0.000d;
-    public double vibrationMs = 0.500d;
-    private bool vibrating = false;
 
     void VibrateGamePad(int player)
     {
-        switch (player)
+        return;
+        switch (Control)
         {
-            case 1:
+            case "j1":
                 GamePad.SetVibration(PlayerIndex.One, 1f, 1f);
                 break;
-            case 2:
+            case "j2":
                 GamePad.SetVibration(PlayerIndex.Two, 1f, 1f);
                 break;
-            case 3:
+            case "j3":
                 GamePad.SetVibration(PlayerIndex.Three, 1f, 1f);
                 break;
-            case 4:
+            case "j4":
                 GamePad.SetVibration(PlayerIndex.Four, 1f, 1f);
                 break;
         }
@@ -824,22 +979,22 @@ public class playerControl : MonoBehaviour
         {
             vibrationCounter += 1 * Time.deltaTime;
 
-            if (vibrationCounter >= vibrationMs)
+            if (vibrationCounter >= VibrationMs)
             {
                 vibrationCounter = 0.000d;
 
-                switch (playerNum)
+                switch (Control)
                 {
-                    case 1:
+                    case "j1":
                         GamePad.SetVibration(PlayerIndex.One, 0f, 0f);
                         break;
-                    case 2:
+                    case "j2":
                         GamePad.SetVibration(PlayerIndex.Two, 0f, 0f);
                         break;
-                    case 3:
+                    case "j3":
                         GamePad.SetVibration(PlayerIndex.Three, 0f, 0f);
                         break;
-                    case 4:
+                    case "j4":
                         GamePad.SetVibration(PlayerIndex.Four, 0f, 0f);
                         break;
                 }

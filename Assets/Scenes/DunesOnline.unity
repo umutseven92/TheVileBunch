@@ -1276,6 +1276,7 @@ MonoBehaviour:
   scoreCanvas: {fileID: 0}
   endGameCanvas: {fileID: 0}
   pauseCanvas: {fileID: 0}
+  btnEndGameExit: {fileID: 0}
   btnExit: {fileID: 0}
   staticRoundText: {fileID: 0}
   roundText: {fileID: 0}
@@ -1291,6 +1292,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  ScoreToReach: 3
   slowMoMs: 1.5
   scoreCardMs: 1.5
   ammoMsUpper: 30
@@ -1384,7 +1386,7 @@ Prefab:
     m_Modifications:
     - target: {fileID: 493930, guid: 54a44963800f7b145bca3df1d6626bf0, type: 2}
       propertyPath: m_LocalPosition.x
-      value: -1.95000005
+      value: -1.63
       objectReference: {fileID: 0}
     - target: {fileID: 493930, guid: 54a44963800f7b145bca3df1d6626bf0, type: 2}
       propertyPath: m_LocalPosition.y

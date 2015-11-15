@@ -12,15 +12,19 @@ public class loadingScreen : MonoBehaviour
     public Text DiaryText;
     public double LoadingMs = 1.500d;
     public int LevelIndex;
+    public Transform AButton;
 
     private double _loadingTextCounter;
     private const string Loading = "Loading";
     private List<string> _diaries = new List<string>();
-    private System.Random _rand = new System.Random(); 
+    private System.Random _rand = new System.Random();
 
     // Use this for initialization
     void Start()
     {
+        GameObject speaker = GameObject.Find("Speaker");
+        if (speaker != null) speaker.GetComponent<AudioSource>().Stop();
+
         var diaries = Resources.Load("diaries") as TextAsset;
 
         using (var reader = XmlReader.Create(new StringReader(diaries.text)))
@@ -43,6 +47,8 @@ public class loadingScreen : MonoBehaviour
         var count = _rand.Next(0, _diaries.Count);
 
         DiaryText.text = _diaries[count];
+
+        AButton.GetComponent<SpriteRenderer>().enabled = false;
     }
 
     // Update is called once per frame
@@ -52,8 +58,9 @@ public class loadingScreen : MonoBehaviour
         if (Application.GetStreamProgressForLevel(LevelIndex) == 1)
         {
             LoadingText.text = "Loaded";
-            if (Input.GetButtonDown("kJump") || Input.GetButtonDown("j1Jump") || Input.GetButtonDown("j2Jump") ||
-                Input.GetButtonDown("j3Jump") || Input.GetButtonDown("j4Jump"))
+            AButton.GetComponent<SpriteRenderer>().enabled = true;
+
+            if (Input.GetButtonDown("Submit") )
             {
                 Application.LoadLevel(LevelIndex);
             }

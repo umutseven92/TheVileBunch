@@ -1,17 +1,16 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 public class networkCharacter : Photon.MonoBehaviour
 {
     private Vector3 _correctPlayerPos;
-    private Quaternion _correctPlayerRot;
+    private float _correctLocalScale;
 
     void Update()
     {
         if (!photonView.isMine)
         {
-            transform.position = Vector3.Lerp(transform.position, _correctPlayerPos, Time.deltaTime * 5);
-            transform.rotation = Quaternion.Lerp(transform.rotation, _correctPlayerRot, Time.deltaTime * 5);
+            transform.position = Vector3.Lerp(transform.position, _correctPlayerPos, Time.deltaTime * 20);
+            transform.localScale = new Vector3(_correctLocalScale, transform.localScale.y, transform.localScale.z);
         }
     }
 
@@ -21,13 +20,13 @@ public class networkCharacter : Photon.MonoBehaviour
         {
             // Our player
             stream.SendNext(transform.position);
-            stream.SendNext(transform.position);
+            stream.SendNext(transform.localScale.x);
         }
         else
         {
             // Network player
             _correctPlayerPos = (Vector3)stream.ReceiveNext();
-            _correctPlayerRot = (Quaternion)stream.ReceiveNext();
+            _correctLocalScale = (float)stream.ReceiveNext();
         }
     }
 

@@ -21,3 +21,11 @@ EditorBuildSettings:
     path: Assets/Scenes/SceneSelect.unity
   - enabled: 1
     path: Assets/Scenes/DunesOnline.unity
+  - enabled: 1
+    path: Assets/Scenes/Settings.unity
+  - enabled: 1
+    path: Assets/Scenes/ServerBrowser.unity
+  - enabled: 1
+    path: Assets/Scenes/CreateLobby.unity
+  - enabled: 1
+    path: Assets/Scenes/JoinLobby.unity
