@@ -1,6 +1,4 @@
-﻿using System;
-using UnityEngine;
-using System.Collections;
+﻿using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.UI;
@@ -565,7 +563,6 @@ public class playerControl : MonoBehaviour
             {
                 _hit = true;
 
-
                 LowerHealth(BulletDamage);
 
                 // Small push
@@ -824,6 +821,7 @@ public class playerControl : MonoBehaviour
     void Shoot()
     {
         var shotTransform = Instantiate(Bullet) as Transform;
+        shotTransform.SendMessage("SetOwner", _playerClass);
 
         float bXPos = 0f;
         float bYPos = 0f;

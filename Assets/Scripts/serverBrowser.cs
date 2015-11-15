@@ -7,30 +7,27 @@ public class serverBrowser : Photon.PunBehaviour
 
     public void JoinRoom()
     {
+        if (string.IsNullOrEmpty(LobbyName))
+        {
+            return;
+        }
         PhotonNetwork.ConnectUsingSettings(global.GameVersion);
-        Debug.Log("Connecting..");
     }
 
     public void SetLobbyName(string _lobbyName)
     {
-        LobbyName = _lobbyName;
-        Debug.Log(LobbyName);
+        LobbyName = _lobbyName.ToLower();
     }
 
     public override void OnJoinedLobby()
     {
         PhotonNetwork.JoinRoom(LobbyName);
-        Debug.Log("Joining Room..");
-    }
-
-    void OnPhotonRandomJoinFailed()
-    {
-        Debug.LogError("Could not join room.");
     }
 
     public override void OnJoinedRoom()
     {
-        Debug.Log("Loading level");
-        Application.LoadLevel("DunesOnline");
+        PhotonNetwork.LoadLevel("DunesOnline");
+
+        //Application.LoadLevel("DunesOnline");
     }
 }

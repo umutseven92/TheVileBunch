@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 
-public class BulletScript : MonoBehaviour
+public class bulletScript : MonoBehaviour
 {
-    public int damage = 1;
+    public static string player;
 
     // Use this for initialization
     void Start()
@@ -10,11 +10,16 @@ public class BulletScript : MonoBehaviour
         Destroy(gameObject, 3);
     }
 
+    public void SetOwner(string _player)
+    {
+        player = _player;
+    }
+
     void OnTriggerEnter2D(Collider2D other)
     {
         var colName = other.name;
 
-        if (!colName.Equals("ropeAttached") && !colName.Equals("slash_0(Clone)") && !colName.Contains("Pickup"))
+        if (!colName.StartsWith("ropeAttached") && !colName.StartsWith("slash_0") && !colName.StartsWith("Pickup"))
         {
             Destroy(gameObject);
         }

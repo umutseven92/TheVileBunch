@@ -16,7 +16,7 @@ public class lobbyScript : Photon.PunBehaviour
 
     public void SetLobbyName(string _lobbyName)
     {
-        LobbyName = _lobbyName;
+        LobbyName = _lobbyName.ToLower();
     }
 
     public override void OnJoinedLobby()
@@ -24,13 +24,9 @@ public class lobbyScript : Photon.PunBehaviour
         PhotonNetwork.CreateRoom(LobbyName, new RoomOptions() { maxPlayers = 4 }, null);
     }
 
-    void OnPhotonRandomJoinFailed()
-    {
-        Debug.LogError("Could not join room.");
-    }
-
     public override void OnJoinedRoom()
     {
-        Application.LoadLevel("DunesOnline");
+        PhotonNetwork.LoadLevel("DunesOnline");
+//        Application.LoadLevel("DunesOnline");
     }
 }
