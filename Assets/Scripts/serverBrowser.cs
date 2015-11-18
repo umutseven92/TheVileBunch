@@ -27,7 +27,5 @@ public class serverBrowser : Photon.PunBehaviour
     public override void OnJoinedRoom()
     {
         PhotonNetwork.LoadLevel("DunesOnline");
-
-        //Application.LoadLevel("DunesOnline");
     }
 }

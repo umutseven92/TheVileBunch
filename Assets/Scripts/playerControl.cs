@@ -54,7 +54,7 @@ public class playerControl : MonoBehaviour
     public float DirectionLock = 0.2f; // Analog direction start value
     public double AimMs = 0.15d; // How long to press before player starts aiming
     public double VibrationMs = 0.500d; // How long to vibrate after shooting
-    public int MouseAimDeadZone = 50;
+    public int MouseAimDeadZone = 50; // Mouse deadzone for aimline snapping
 
     public Transform GroundCheck;
     public Transform GroundCheck2;
@@ -157,6 +157,8 @@ public class playerControl : MonoBehaviour
         _health = StartingHealth;
     }
 
+    private bool Grounded;
+
     void Update()
     {
         if (_first)
@@ -192,12 +194,14 @@ public class playerControl : MonoBehaviour
         _grounded = Physics2D.Linecast(transform.position, GroundCheck.position, 1 << LayerMask.NameToLayer("Ground"));
         _grounded2 = Physics2D.Linecast(transform.position, GroundCheck2.position, 1 << LayerMask.NameToLayer("Ground"));
 
+        Grounded = _grounded || _grounded2;
+
         if (Input.GetButtonDown(Control + "Fire") && !_paused && _ammo > 0 && Enabled)
         {
             _softAim = true;
         }
 
-        if (Input.GetButtonDown(Control + "Jump") && ((_grounded || _grounded2) || _inFrontOfLadder) && !_paused && !_aiming && Enabled)
+        if (Input.GetButtonDown(Control + "Jump") && (Grounded || _inFrontOfLadder) && !_paused && !_aiming && Enabled)
         {
             Jump = true;
         }
@@ -242,12 +246,11 @@ public class playerControl : MonoBehaviour
         {
             DrawLine();
         }
-
     }
 
     private void HandleAnimations()
     {
-        var jumping = !_grounded && !_grounded2;
+        var jumping = !Grounded;
 
         if (_aiming)
         {
@@ -821,7 +824,6 @@ public class playerControl : MonoBehaviour
     void Shoot()
     {
         var shotTransform = Instantiate(Bullet) as Transform;
-        shotTransform.SendMessage("SetOwner", _playerClass);
 
         float bXPos = 0f;
         float bYPos = 0f;
