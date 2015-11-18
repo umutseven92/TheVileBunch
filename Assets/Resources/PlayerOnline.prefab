@@ -386,7 +386,7 @@ MonoBehaviour:
   MovementLock: .200000003
   GunLightSpeed: .300000012
   SlashOffset: .5
-  GunOffset: .100000001
+  GunOffset: .300000012
   SlashingMs: .29999999999999999
   HitMs: 2
   HealedMs: 2
@@ -1080,6 +1080,10 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: SlashOffset
       value: .5
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: GunOffset
+      value: .300000012
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
