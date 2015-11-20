@@ -1,34 +1,30 @@
 ﻿using UnityEngine;
+using System.Collections;
 using UnityEngine.UI;
 
-public class lobbyPopulator : Photon.PunBehaviour
-{
+public class serverRefresher : MonoBehaviour {
+
     public RectTransform scrContent;
     public GameObject lobbyButton;
 
-    private bool first = true;
-
-    // Use this for initialization
-    void Start()
-    {
-        PhotonNetwork.ConnectUsingSettings(global.GameVersion);
-    }
-
-    void Update()
+    public void RefreshServerBrowser()
     {
         if (PhotonNetwork.connectionState == ConnectionState.Connected)
         {
-            if (first)
-            {
-                PopulateServerBrowser();
-                first = false;
-            }
+            ClearServerBrowser();
+            PopulateServerBrowser();
         }
     }
 
-    void OnGUI()
+    void ClearServerBrowser()
     {
-        GUILayout.Label(PhotonNetwork.connectionStateDetailed.ToString());
+        for (int i = 0; i < scrContent.childCount; i++)
+        {
+            if (scrContent.GetChild(i).name.StartsWith("lobbyButton"))
+            {
+                Destroy(scrContent.GetChild(i).gameObject);
+            }
+        }
     }
 
     void PopulateServerBrowser()

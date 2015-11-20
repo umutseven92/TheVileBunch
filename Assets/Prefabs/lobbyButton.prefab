@@ -11,6 +11,7 @@ GameObject:
   - 222: {fileID: 22287080}
   - 114: {fileID: 11491352}
   - 114: {fileID: 11481684}
+  - 114: {fileID: 11461326}
   m_Layer: 5
   m_Name: lobbyButton
   m_TagString: Untagged
@@ -35,6 +36,18 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &11461326
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 141262}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 296b5225efad0374b855cbbb88b2db4c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  caller: {fileID: 11481684}
 --- !u!114 &11481684
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -74,7 +87,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 11461326}
         m_MethodName: JoinRoom
         m_Mode: 1
         m_Arguments:
@@ -208,6 +221,22 @@ Prefab:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 11461326}
+    - target: {fileID: 0}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: JoinRoom
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: caller
+      value: 
+      objectReference: {fileID: 11481684}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 141262}
