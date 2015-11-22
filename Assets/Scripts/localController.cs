@@ -81,6 +81,8 @@ public class localController : MonoBehaviour
         endGameCanvas.enabled = false;
         pauseCanvas.enabled = false;
 
+        CheckPlayerPrefs();
+
         foreach (playerSelect.Player t in playerSelect.PlayerList)
         {
             ClassScores.Add(t.Class, 0);
@@ -96,7 +98,11 @@ public class localController : MonoBehaviour
 
         ammoMs = CalculateNewAmmoRange();
         healthMs = CalculateNewHealthRange();
+    }
 
+    private void CheckPlayerPrefs()
+    {
+        musicPlayer.mute = PlayerPrefs.GetInt(global.Music) != 1;
     }
 
     void Update()

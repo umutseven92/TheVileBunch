@@ -54,7 +54,8 @@ public class playerControl : MonoBehaviour
     public float DirectionLock = 0.2f; // Analog direction start value
     public double AimMs = 0.15d; // How long to press before player starts aiming
     public double VibrationMs = 0.500d; // How long to vibrate after shooting
-    public int MouseAimDeadZone = 50;
+    public int MouseAimDeadZone = 50; // Mouse deadzone for aimline snapping
+    public double AmmoMs = 2.000d; // Ammo counter visibility after shooting
 
     public Transform GroundCheck;
     public Transform GroundCheck2;
@@ -70,6 +71,7 @@ public class playerControl : MonoBehaviour
     public AudioClip AmmoClip;
     public AudioClip GunCockClip;
     public Light GunLight;
+    public Text AmmoText;
     #endregion
 
     #region Private Values
@@ -99,6 +101,7 @@ public class playerControl : MonoBehaviour
     private double _flashTimer;
     private bool _gunLight;
     private double _gunLightCounter;
+    private double _ammoCounter;
     private float _horizontal;
     private bool _bulletUp;
     private bool _bulletDown;
@@ -111,6 +114,9 @@ public class playerControl : MonoBehaviour
     private Color _playerColor;
     private double vibrationCounter = 0.000d;
     private bool vibrating = false;
+    private bool Grounded;
+    private bool _ammoChanged;
+
     #endregion
 
     #region Properties
@@ -155,7 +161,10 @@ public class playerControl : MonoBehaviour
 
         _ammo = StartingAmmo;
         _health = StartingHealth;
+
+        AmmoText.enabled = false;
     }
+
 
     void Update()
     {
@@ -189,15 +198,19 @@ public class playerControl : MonoBehaviour
             _first = false;
         }
 
+        AmmoText.text = _ammo.ToString();
+
         _grounded = Physics2D.Linecast(transform.position, GroundCheck.position, 1 << LayerMask.NameToLayer("Ground"));
         _grounded2 = Physics2D.Linecast(transform.position, GroundCheck2.position, 1 << LayerMask.NameToLayer("Ground"));
+
+        Grounded = _grounded || _grounded2;
 
         if (Input.GetButtonDown(Control + "Fire") && !_paused && _ammo > 0 && Enabled)
         {
             _softAim = true;
         }
 
-        if (Input.GetButtonDown(Control + "Jump") && ((_grounded || _grounded2) || _inFrontOfLadder) && !_paused && !_aiming && Enabled)
+        if (Input.GetButtonDown(Control + "Jump") && (Grounded || _inFrontOfLadder) && !_paused && !_aiming && Enabled)
         {
             Jump = true;
         }
@@ -242,12 +255,11 @@ public class playerControl : MonoBehaviour
         {
             DrawLine();
         }
-
     }
 
     private void HandleAnimations()
     {
-        var jumping = !_grounded && !_grounded2;
+        var jumping = !Grounded;
 
         if (_aiming)
         {
@@ -589,6 +601,9 @@ public class playerControl : MonoBehaviour
             {
                 _ammo = MaxAmmo;
             }
+
+            _ammoChanged = true;
+            _ammoCounter = 0.000d;
         }
 
         // Health pickup
@@ -676,6 +691,7 @@ public class playerControl : MonoBehaviour
         CheckHealedTimer();
         CheckAimTimer();
         CheckVibrationTimer();
+        CheckAmmoTimer();
     }
 
     private void CheckHealthBar()
@@ -763,7 +779,22 @@ public class playerControl : MonoBehaviour
                 _healed = false;
                 _healedCounter = 0.000d;
             }
+        }
+    }
 
+
+    private void CheckAmmoTimer()
+    {
+        if (_ammoChanged)
+        {
+            _ammoCounter += 1*Time.deltaTime;
+
+            if (_ammoCounter >= AmmoMs)
+            {
+                _ammoChanged = false;
+                _ammoCounter = 0.000d;
+                AmmoText.enabled = false;
+            }
         }
     }
 
@@ -792,21 +823,26 @@ public class playerControl : MonoBehaviour
 
     public void Flip()
     {
-        if (FacingRight)
-        {
-            _healthSlider.direction = Slider.Direction.RightToLeft;
-        }
-        else
-        {
-            _healthSlider.direction = Slider.Direction.LeftToRight;
-        }
+        FlipSliderLeftRight(_healthSlider);
 
         FacingRight = !FacingRight;
 
-        Vector3 theScale = transform.localScale;
-        theScale.x *= -1;
+        FlipLeftRight(transform);
 
-        transform.localScale = theScale;
+        FlipLeftRight(AmmoText.transform);
+    }
+
+    private void FlipSliderLeftRight(Slider slider)
+    {
+        slider.direction = FacingRight ? Slider.Direction.RightToLeft : Slider.Direction.LeftToRight;
+    }
+
+    private void FlipLeftRight(Transform obj)
+    {
+        var scale = obj.localScale;
+        scale.x *= -1;
+
+        obj.localScale = scale;
     }
 
     void Slash()
@@ -821,7 +857,6 @@ public class playerControl : MonoBehaviour
     void Shoot()
     {
         var shotTransform = Instantiate(Bullet) as Transform;
-        shotTransform.SendMessage("SetOwner", _playerClass);
 
         float bXPos = 0f;
         float bYPos = 0f;
@@ -947,6 +982,11 @@ public class playerControl : MonoBehaviour
         GunLight.enabled = true;
         _gunLight = true;
         _ammo--;
+        _ammoChanged = true;
+        _ammoCounter = 0.000d;
+
+        AmmoText.enabled = true;
+
         VibrateGamePad(playerNum);
     }
 

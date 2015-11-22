@@ -51,7 +51,7 @@ public class loadOnClick : MonoBehaviour
             audio.mute = true;
         }
 
-        PlayerPrefs.SetInt("Music", val);
+        PlayerPrefs.SetInt(global.Music, val);
     }
 
     public void EndLocalGame()

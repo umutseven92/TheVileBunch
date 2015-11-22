@@ -3,33 +3,33 @@ using UnityEngine.UI;
 
 public class settingsScript : MonoBehaviour
 {
-	public Toggle MusicToggle;
+    public Toggle MusicToggle;
+    public InputField NameInput;
 
-	private AudioSource audio;
+    [HideInInspector]
+    public bool Loaded;
 
-	[HideInInspector]
-	public bool Loaded;
+    private string PlayerName;
 
-	// Use this for initialization
-	void Start () {
-		var speaker = GameObject.Find("Speaker");
+    // Use this for initialization
+    void Start()
+    {
+        if (PlayerPrefs.GetInt(global.Music) == 1)
+        {
+            MusicToggle.GetComponent<Toggle>().isOn = true;
+        }
+        else
+        {
+            MusicToggle.GetComponent<Toggle>().isOn = false;
+        }
 
-		audio = speaker.GetComponent<AudioSource>();
+        NameInput.text = PlayerPrefs.GetString(global.PlayerName);
 
-		if (PlayerPrefs.GetInt("Music") == 1)
-		{
-			MusicToggle.GetComponent<Toggle>().isOn = true;
-		}
-		else
-		{
-			MusicToggle.GetComponent<Toggle>().isOn = false;
-		}
+        Loaded = true;
+    }
 
-	    Loaded = true;
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+    public void SetPlayerName(string playerName)
+    {
+        PlayerPrefs.SetString(global.PlayerName, playerName);
+    }
 }

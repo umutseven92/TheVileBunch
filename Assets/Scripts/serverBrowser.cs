@@ -1,33 +1,21 @@
 ﻿using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class serverBrowser : Photon.PunBehaviour
 {
-    public string LobbyName { get; set; }
+    [HideInInspector]
+    public string RoomName;
+    
+    public Button caller;
 
     public void JoinRoom()
     {
-        if (string.IsNullOrEmpty(LobbyName))
-        {
-            return;
-        }
-        PhotonNetwork.ConnectUsingSettings(global.GameVersion);
-    }
-
-    public void SetLobbyName(string _lobbyName)
-    {
-        LobbyName = _lobbyName.ToLower();
-    }
-
-    public override void OnJoinedLobby()
-    {
-        PhotonNetwork.JoinRoom(LobbyName);
+        PhotonNetwork.JoinRoom(RoomName);
     }
 
     public override void OnJoinedRoom()
     {
         PhotonNetwork.LoadLevel("DunesOnline");
-
-        //Application.LoadLevel("DunesOnline");
     }
 }
