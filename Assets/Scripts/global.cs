@@ -3,8 +3,7 @@ using System.Collections;
 
 public class global : MonoBehaviour
 {
-
-    public static string GameVersion = "0.2.4";
+    public static string GameVersion = "0.2.5";
 
     // Player Pref values
     public static string Music = "Music";
