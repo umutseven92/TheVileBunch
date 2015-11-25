@@ -3,8 +3,6 @@ using System.Collections;
 
 public class projectileScript : MonoBehaviour {
 
-    public static string player;
-
     // Use this for initialization
     void Start()
     {
