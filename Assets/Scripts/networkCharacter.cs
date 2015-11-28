@@ -17,11 +17,11 @@ public class networkCharacter : Photon.MonoBehaviour
     {
         if (!photonView.isMine)
         {
-            var net = transform.GetComponent<playerControl>();
+            var net = photonView.transform.GetComponent<playerControl>();
 
             net.AmmoText.enabled = true;
             net.HealthSlider.GetComponentInParent<Canvas>().enabled = true;
-            transform.position = Vector3.Lerp(transform.position, _correctPlayerPos, Time.deltaTime * 20);
+            photonView.transform.position = Vector3.Lerp(transform.position, _correctPlayerPos, Time.deltaTime * 20);
             SetOrientation(net);
             net.OnlineNameText.text = _onlineName;
             net.Health = _health;
