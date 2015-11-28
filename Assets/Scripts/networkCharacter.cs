@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary>
 /// Online Character
@@ -10,6 +11,7 @@ public class networkCharacter : Photon.MonoBehaviour
     private string _onlineName;
     private int _health;
     private int _ammo;
+    private bool _shooting;
 
     void Update()
     {
@@ -24,17 +26,40 @@ public class networkCharacter : Photon.MonoBehaviour
             net.OnlineNameText.text = _onlineName;
             net.Health = _health;
             net.Ammo = _ammo;
+
+            if (_shooting)
+            {
+                net.OnlineShoot();
+                _shooting = false;
+            }
         }
     }
+
     private void SetOrientation(playerControl net)
     {
+        FlipSliderLeftRight(net);
+
         transform.localScale = new Vector3(_correctLocalScale, transform.localScale.y, transform.localScale.z);
         net.OnlineNameText.transform.localScale = new Vector3(_correctLocalScale, transform.localScale.y, transform.localScale.z);
         net.AmmoText.transform.localScale = new Vector3(_correctLocalScale, transform.localScale.y, transform.localScale.z);
     }
 
+    private void FlipSliderLeftRight(playerControl net)
+    {
+        if (_correctLocalScale < 0)
+        {
+            net.HealthSlider.direction = Slider.Direction.RightToLeft;
+
+        }
+        else
+        {
+            net.HealthSlider.direction = Slider.Direction.LeftToRight;
+        }
+    }
+
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
+
         if (stream.isWriting)
         {
             var ply = transform.GetComponent<playerControl>();
@@ -55,6 +80,9 @@ public class networkCharacter : Photon.MonoBehaviour
 
             // Ammo
             stream.SendNext(ply.Ammo);
+
+            // Shooting
+            stream.SendNext(ply.Shooting);
         }
         else
         {
@@ -74,7 +102,9 @@ public class networkCharacter : Photon.MonoBehaviour
 
             // Ammo
             _ammo = (int)stream.ReceiveNext();
+
+            // Shooting
+            _shooting = (bool)stream.ReceiveNext();
         }
     }
-
 }

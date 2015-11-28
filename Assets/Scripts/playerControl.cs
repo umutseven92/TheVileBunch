@@ -35,8 +35,11 @@ public class playerControl : MonoBehaviour
     [HideInInspector]
     public Slider HealthSlider;
 
-    public bool Enabled;
-    public bool Multi = false;
+    [HideInInspector]
+    public bool Shooting;
+
+    public bool Enabled; // Control for online, enable after spawn
+    public bool Multi = false; // Is player online
     public int StartingAmmo = 3; // Starting ammo
     public int MaxAmmo = 3; // Maximum ammo a player can have
     public int StartingHealth = 3; // Starting health
@@ -122,7 +125,6 @@ public class playerControl : MonoBehaviour
     private bool vibrating = false;
     private bool Grounded;
     private bool _ammoChanged;
-
     #endregion
 
     #region Properties
@@ -223,11 +225,11 @@ public class playerControl : MonoBehaviour
 
         if (Input.GetButtonUp(Control + "Fire") && !_paused && Ammo > 0 && Enabled)
         {
+            Shooting = true;
             if (_aimCanceled)
             {
                 _aimCanceled = false;
                 return;
-
             }
             Shoot();
             AimLine.GetComponent<SpriteRenderer>().enabled = false;
@@ -862,11 +864,22 @@ public class playerControl : MonoBehaviour
         _audio.PlayOneShot(SlashClip);
     }
 
+    public void OnlineSlash()
+    {
+        Slash();
+    }
+
+    public void OnlineShoot()
+    {
+        Shooting = false;
+        if (Ammo > 0)
+        {
+            Shoot();
+        }
+    }
 
     void Shoot()
     {
-        var shotTransform = Instantiate(Bullet) as Transform;
-
         float bXPos = 0f;
         float bYPos = 0f;
         float bXSpeed = 0f;
@@ -983,8 +996,17 @@ public class playerControl : MonoBehaviour
                 }
             }
         }
+        Transform shotTransform;
 
+        /*
+        if (Multi)
+        {
+            shotTransform = PhotonNetwork.Instantiate("BulletOnline", new Vector3(transform.position.x + bXPos, transform.position.y + bYPos, transform.position.z), Quaternion.identity, 0).transform;
+        }
+        */
+        shotTransform = Instantiate(Bullet) as Transform;
         shotTransform.position = new Vector3(transform.position.x + bXPos, transform.position.y + bYPos, transform.position.z);
+
         shotTransform.GetComponent<Rigidbody2D>().velocity = new Vector2(bXSpeed, bYSpeed);
 
         _audio.PlayOneShot(GunShot);

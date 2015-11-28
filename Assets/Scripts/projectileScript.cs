@@ -1,7 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class projectileScript : MonoBehaviour {
+public class projectileScript : MonoBehaviour
+{
+    public bool Multi;
 
     // Use this for initialization
     void Start()

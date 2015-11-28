@@ -12,7 +12,7 @@ public class networkProjectile : Photon.MonoBehaviour
     {
         if (!photonView.isMine)
         {
-            transform.position = Vector3.Lerp(transform.position, _correctBulletPos, Time.deltaTime * 20);
+            transform.position = Vector3.Lerp(transform.position, _correctBulletPos, Time.deltaTime * 50);
         }
     }
 
@@ -24,6 +24,17 @@ public class networkProjectile : Photon.MonoBehaviour
 
             // Position
             stream.SendNext(transform.position);
+            
+            /* Destroyed
+            if (this.GetComponentInParent<projectileScript>().gameObject == null)
+            {
+                stream.SendNext(true);
+            }
+            else
+            {
+                stream.SendNext(false);
+            }
+            */
         }
         else
         {
@@ -31,6 +42,13 @@ public class networkProjectile : Photon.MonoBehaviour
 
             // Position
             _correctBulletPos = (Vector3)stream.ReceiveNext();
+
+            /*
+            if ((bool) stream.ReceiveNext())
+            {
+                PhotonNetwork.Destroy(gameObject);
+            }
+            */
 
         }
     }
