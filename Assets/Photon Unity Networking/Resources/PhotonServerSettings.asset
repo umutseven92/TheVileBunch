@@ -30,4 +30,6 @@ MonoBehaviour:
   - PunPickupSimple
   - PunRespawn
   - RequestForPickupTimes
+  - SetShooting
+  - OnlineShoot
   DisableAutoOpenWizard: 1

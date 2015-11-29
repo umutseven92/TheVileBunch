@@ -12,6 +12,10 @@ public class networkCharacter : Photon.MonoBehaviour
     private int _health;
     private int _ammo;
     private bool _shooting;
+    private float _bXPos;
+    private float _bYPos;
+    private float _bXSpeed;
+    private float _bYSpeed;
 
     void Update()
     {
@@ -29,7 +33,7 @@ public class networkCharacter : Photon.MonoBehaviour
 
             if (_shooting)
             {
-                net.OnlineShoot();
+                net.OnlineShoot(_bXSpeed, _bYSpeed, _bXPos, _bYPos);
                 _shooting = false;
             }
         }
@@ -57,6 +61,14 @@ public class networkCharacter : Photon.MonoBehaviour
         }
     }
 
+    [PunRPC]
+    public void OnlineShoot(int pId, float bXPos, float bYPos, float bXSpeed, float bYSpeed)
+    {
+        var pView = PhotonView.Find(pId);
+        pView.GetComponentInParent<playerControl>().OnlineShoot(bXSpeed,bYSpeed,bXPos, bYPos);
+        Debug.Log("BANG");
+    }
+
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
 
@@ -82,7 +94,17 @@ public class networkCharacter : Photon.MonoBehaviour
             stream.SendNext(ply.Ammo);
 
             // Shooting
+            /*
             stream.SendNext(ply.Shooting);
+
+            if (ply.Shooting)
+            {
+                stream.SendNext(ply.OnlinebXPos);
+                stream.SendNext(ply.OnlinebYPos);
+                stream.SendNext(ply.OnlinebXSpeed);
+                stream.SendNext(ply.OnlinebYSpeed);
+            }
+            */
         }
         else
         {
@@ -104,7 +126,19 @@ public class networkCharacter : Photon.MonoBehaviour
             _ammo = (int)stream.ReceiveNext();
 
             // Shooting
+            /*
             _shooting = (bool)stream.ReceiveNext();
+
+            Debug.Log(_shooting);
+
+            if (_shooting)
+            {
+                _bXPos = (float)stream.ReceiveNext();
+                _bYPos = (float)stream.ReceiveNext();
+                _bXSpeed = (float)stream.ReceiveNext();
+                _bYSpeed = (float)stream.ReceiveNext();
+            }
+            */
         }
     }
 }

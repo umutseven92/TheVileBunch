@@ -36,7 +36,16 @@ public class playerControl : MonoBehaviour
     public Slider HealthSlider;
 
     [HideInInspector]
-    public bool Shooting;
+    public float OnlinebXSpeed;
+
+    [HideInInspector]
+    public float OnlinebYSpeed;
+
+    [HideInInspector]
+    public float OnlinebXPos;
+
+    [HideInInspector]
+    public float OnlinebYPos;
 
     public bool Enabled; // Control for online, enable after spawn
     public bool Multi = false; // Is player online
@@ -225,7 +234,6 @@ public class playerControl : MonoBehaviour
 
         if (Input.GetButtonUp(Control + "Fire") && !_paused && Ammo > 0 && Enabled)
         {
-            Shooting = true;
             if (_aimCanceled)
             {
                 _aimCanceled = false;
@@ -869,13 +877,32 @@ public class playerControl : MonoBehaviour
         Slash();
     }
 
-    public void OnlineShoot()
+    public void OnlineShoot(float bXSpeed, float bYSpeed, float bXPos, float bYPos)
     {
-        Shooting = false;
         if (Ammo > 0)
         {
-            Shoot();
+            Shoot(bXSpeed, bYSpeed, bXPos, bYPos);
         }
+    }
+
+    void Shoot(float bXSpeed, float bYSpeed, float bXPos, float bYPos)
+    {
+        var shotTransform = Instantiate(Bullet) as Transform;
+
+        shotTransform.position = new Vector3(transform.position.x + bXPos, transform.position.y + bYPos, transform.position.z);
+
+        shotTransform.GetComponent<Rigidbody2D>().velocity = new Vector2(bXSpeed, bYSpeed);
+
+        _audio.PlayOneShot(GunShot);
+        GunLight.enabled = true;
+        _gunLight = true;
+        Ammo--;
+        _ammoChanged = true;
+        _ammoCounter = 0.000d;
+
+        AmmoText.enabled = true;
+
+        VibrateGamePad(playerNum);
     }
 
     void Shoot()
@@ -1008,6 +1035,17 @@ public class playerControl : MonoBehaviour
         shotTransform.position = new Vector3(transform.position.x + bXPos, transform.position.y + bYPos, transform.position.z);
 
         shotTransform.GetComponent<Rigidbody2D>().velocity = new Vector2(bXSpeed, bYSpeed);
+
+        if (Multi)
+        {
+            OnlinebXPos = bXPos;
+            OnlinebYPos = bYPos;
+            OnlinebXSpeed = bXSpeed;
+            OnlinebYSpeed = bYSpeed;
+
+            var pView = GetComponentInParent<PhotonView>();
+            pView.RPC("OnlineShoot", PhotonTargets.All, pView.viewID, bXPos, bYPos, bXSpeed, bYSpeed);
+        }
 
         _audio.PlayOneShot(GunShot);
         GunLight.enabled = true;
