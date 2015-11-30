@@ -9,6 +9,9 @@ public class playerControl : MonoBehaviour
     #region Public Values
 
     [HideInInspector]
+    public string OnlinePlayerName;
+
+    [HideInInspector]
     public bool FacingRight = true;
 
     [HideInInspector]
@@ -26,8 +29,29 @@ public class playerControl : MonoBehaviour
     [HideInInspector]
     public string _playerClass;
 
-    public bool Enabled;
-    public bool Multi = false;
+    [HideInInspector]
+    public int Health;
+
+    [HideInInspector]
+    public int Ammo;
+
+    [HideInInspector]
+    public Slider HealthSlider;
+
+    [HideInInspector]
+    public float OnlinebXSpeed;
+
+    [HideInInspector]
+    public float OnlinebYSpeed;
+
+    [HideInInspector]
+    public float OnlinebXPos;
+
+    [HideInInspector]
+    public float OnlinebYPos;
+
+    public bool Enabled; // Control for online, enable after spawn
+    public bool Multi = false; // Is player online
     public int StartingAmmo = 3; // Starting ammo
     public int MaxAmmo = 3; // Maximum ammo a player can have
     public int StartingHealth = 3; // Starting health
@@ -72,12 +96,10 @@ public class playerControl : MonoBehaviour
     public AudioClip GunCockClip;
     public Light GunLight;
     public Text AmmoText;
+    public Text OnlineNameText;
     #endregion
 
     #region Private Values
-
-    private int _health;
-    private int _ammo;
     private bool _grounded;
     private bool _grounded2;
     private bool _inFrontOfLadder;
@@ -89,7 +111,6 @@ public class playerControl : MonoBehaviour
     private AudioSource _audio;
     private Animator _animator;
     private SpriteRenderer _sRenderer;
-    private Slider _healthSlider;
     private List<playerSelect.Player> _localPlayers;
     private GameObject _slashCol;
     private bool _slashing;
@@ -116,7 +137,6 @@ public class playerControl : MonoBehaviour
     private bool vibrating = false;
     private bool Grounded;
     private bool _ammoChanged;
-
     #endregion
 
     #region Properties
@@ -143,7 +163,7 @@ public class playerControl : MonoBehaviour
         _animator = GetComponent<Animator>();
         _audio = GetComponent<AudioSource>();
         _sRenderer = GetComponent<SpriteRenderer>();
-        _healthSlider = GetComponentInChildren<Slider>();
+        HealthSlider = GetComponentInChildren<Slider>();
 
         _localPlayers = playerSelect.PlayerList;
 
@@ -153,14 +173,14 @@ public class playerControl : MonoBehaviour
                 : new Vector3(transform.position.x - SlashOffset, transform.position.y, transform.position.y),
             transform.rotation) as GameObject;
 
-        _healthSlider.maxValue = MaxHealth;
-        _healthSlider.value = MaxHealth;
+        HealthSlider.maxValue = MaxHealth;
+        HealthSlider.value = MaxHealth;
 
         GunLight.enabled = false;
         GunLight.intensity = 0;
 
-        _ammo = StartingAmmo;
-        _health = StartingHealth;
+        Ammo = StartingAmmo;
+        Health = StartingHealth;
 
         AmmoText.enabled = false;
     }
@@ -198,14 +218,14 @@ public class playerControl : MonoBehaviour
             _first = false;
         }
 
-        AmmoText.text = _ammo.ToString();
+        AmmoText.text = Ammo.ToString();
 
         _grounded = Physics2D.Linecast(transform.position, GroundCheck.position, 1 << LayerMask.NameToLayer("Ground"));
         _grounded2 = Physics2D.Linecast(transform.position, GroundCheck2.position, 1 << LayerMask.NameToLayer("Ground"));
 
         Grounded = _grounded || _grounded2;
 
-        if (Input.GetButtonDown(Control + "Fire") && !_paused && _ammo > 0 && Enabled)
+        if (Input.GetButtonDown(Control + "Fire") && !_paused && Ammo > 0 && Enabled)
         {
             _softAim = true;
         }
@@ -215,13 +235,12 @@ public class playerControl : MonoBehaviour
             Jump = true;
         }
 
-        if (Input.GetButtonUp(Control + "Fire") && !_paused && _ammo > 0 && Enabled)
+        if (Input.GetButtonUp(Control + "Fire") && !_paused && Ammo > 0 && Enabled)
         {
             if (_aimCanceled)
             {
                 _aimCanceled = false;
                 return;
-
             }
             Shoot();
             AimLine.GetComponent<SpriteRenderer>().enabled = false;
@@ -596,10 +615,10 @@ public class playerControl : MonoBehaviour
         if (other.name.StartsWith("Ammo"))
         {
             _audio.PlayOneShot(AmmoClip);
-            _ammo += AmmoPickup;
-            if (_ammo > MaxAmmo)
+            Ammo += AmmoPickup;
+            if (Ammo > MaxAmmo)
             {
-                _ammo = MaxAmmo;
+                Ammo = MaxAmmo;
             }
 
             _ammoChanged = true;
@@ -624,11 +643,15 @@ public class playerControl : MonoBehaviour
                     _hit = true;
                     LowerHealth(SwordDamage);
 
-                    if (_health > 0)
+                    if (Health > 0)
                     {
                         float pX = 0f;
 
                         var go = GameObject.FindGameObjectsWithTag("Player");
+
+                        var gList = new List<GameObject>(go);
+                        gList.RemoveAt(0);
+                        go = gList.ToArray();
 
                         foreach (var g in go.Where(g => g.gameObject.GetComponent<playerControl>().playerNum == other.GetComponent<slashScript>().num))
                         {
@@ -648,22 +671,22 @@ public class playerControl : MonoBehaviour
 
     void LowerHealth(int damage)
     {
-        _health -= damage;
-        _healthSlider.value -= damage;
+        Health -= damage;
+        HealthSlider.value -= damage;
     }
 
     void GiveHealth(int health)
     {
-        _health += health;
+        Health += health;
 
-        if (_health > MaxHealth)
+        if (Health > MaxHealth)
         {
-            _health = MaxHealth;
-            _healthSlider.value = _healthSlider.maxValue;
+            Health = MaxHealth;
+            HealthSlider.value = HealthSlider.maxValue;
         }
         else
         {
-            _healthSlider.value += health;
+            HealthSlider.value += health;
         }
 
     }
@@ -698,11 +721,11 @@ public class playerControl : MonoBehaviour
     {
         if (_hit || _healed)
         {
-            _healthSlider.GetComponentInParent<Canvas>().enabled = true;
+            HealthSlider.GetComponentInParent<Canvas>().enabled = true;
         }
         else
         {
-            _healthSlider.GetComponentInParent<Canvas>().enabled = false;
+            HealthSlider.GetComponentInParent<Canvas>().enabled = false;
         }
     }
 
@@ -787,7 +810,7 @@ public class playerControl : MonoBehaviour
     {
         if (_ammoChanged)
         {
-            _ammoCounter += 1*Time.deltaTime;
+            _ammoCounter += 1 * Time.deltaTime;
 
             if (_ammoCounter >= AmmoMs)
             {
@@ -823,13 +846,16 @@ public class playerControl : MonoBehaviour
 
     public void Flip()
     {
-        FlipSliderLeftRight(_healthSlider);
+        FlipSliderLeftRight(HealthSlider);
 
         FacingRight = !FacingRight;
 
         FlipLeftRight(transform);
-
         FlipLeftRight(AmmoText.transform);
+        if (Multi)
+        {
+            FlipLeftRight(OnlineNameText.transform);
+        }
     }
 
     private void FlipSliderLeftRight(Slider slider)
@@ -853,11 +879,42 @@ public class playerControl : MonoBehaviour
         _audio.PlayOneShot(SlashClip);
     }
 
+    public void OnlineSlash()
+    {
+        Slash();
+    }
 
-    void Shoot()
+
+    public void OnlineShoot(float bXSpeed, float bYSpeed, float bXPos, float bYPos)
+    {
+        if (Ammo > 0)
+        {
+            Shoot(bXSpeed, bYSpeed, bXPos, bYPos);
+        }
+    }
+
+    void Shoot(float bXSpeed, float bYSpeed, float bXPos, float bYPos)
     {
         var shotTransform = Instantiate(Bullet) as Transform;
 
+        shotTransform.position = new Vector3(transform.position.x + bXPos, transform.position.y + bYPos, transform.position.z);
+
+        shotTransform.GetComponent<Rigidbody2D>().velocity = new Vector2(bXSpeed, bYSpeed);
+
+        _audio.PlayOneShot(GunShot);
+        GunLight.enabled = true;
+        _gunLight = true;
+        Ammo--;
+        _ammoChanged = true;
+        _ammoCounter = 0.000d;
+
+        AmmoText.enabled = true;
+
+        VibrateGamePad(playerNum);
+    }
+
+    void Shoot()
+    {
         float bXPos = 0f;
         float bYPos = 0f;
         float bXSpeed = 0f;
@@ -975,13 +1032,27 @@ public class playerControl : MonoBehaviour
             }
         }
 
+        if (Multi)
+        {
+            OnlinebXPos = bXPos;
+            OnlinebYPos = bYPos;
+            OnlinebXSpeed = bXSpeed;
+            OnlinebYSpeed = bYSpeed;
+
+            var pView = GetComponentInParent<PhotonView>();
+            pView.RPC("OnlineShoot", PhotonTargets.All, pView.viewID, bXPos, bYPos, bXSpeed, bYSpeed);
+        }
+
+        var shotTransform = Instantiate(Bullet) as Transform;
         shotTransform.position = new Vector3(transform.position.x + bXPos, transform.position.y + bYPos, transform.position.z);
+
         shotTransform.GetComponent<Rigidbody2D>().velocity = new Vector2(bXSpeed, bYSpeed);
+
 
         _audio.PlayOneShot(GunShot);
         GunLight.enabled = true;
         _gunLight = true;
-        _ammo--;
+        Ammo--;
         _ammoChanged = true;
         _ammoCounter = 0.000d;
 
@@ -1046,7 +1117,7 @@ public class playerControl : MonoBehaviour
 
     void CheckHealth(Collider2D other)
     {
-        if (_health <= 0)
+        if (Health <= 0)
         {
             Die(other);
         }
@@ -1088,7 +1159,8 @@ public class playerControl : MonoBehaviour
         playerNum = 1;
         Control = "j1";
         _playerClass = "The Cowboy";
-
+        OnlinePlayerName = PlayerPrefs.GetString(global.PlayerName);
+        OnlineNameText.text = OnlinePlayerName;
         _slashCol.SendMessage("GetPlayerNum", playerNum);
     }
 
