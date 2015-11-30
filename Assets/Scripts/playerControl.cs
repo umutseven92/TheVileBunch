@@ -9,6 +9,9 @@ public class playerControl : MonoBehaviour
     #region Public Values
 
     [HideInInspector]
+    public string OnlinePlayerName;
+
+    [HideInInspector]
     public bool FacingRight = true;
 
     [HideInInspector]
@@ -646,6 +649,10 @@ public class playerControl : MonoBehaviour
 
                         var go = GameObject.FindGameObjectsWithTag("Player");
 
+                        var gList = new List<GameObject>(go);
+                        gList.RemoveAt(0);
+                        go = gList.ToArray();
+
                         foreach (var g in go.Where(g => g.gameObject.GetComponent<playerControl>().playerNum == other.GetComponent<slashScript>().num))
                         {
                             pX = g.transform.position.x;
@@ -877,6 +884,7 @@ public class playerControl : MonoBehaviour
         Slash();
     }
 
+
     public void OnlineShoot(float bXSpeed, float bYSpeed, float bXPos, float bYPos)
     {
         if (Ammo > 0)
@@ -1023,18 +1031,6 @@ public class playerControl : MonoBehaviour
                 }
             }
         }
-        Transform shotTransform;
-
-        /*
-        if (Multi)
-        {
-            shotTransform = PhotonNetwork.Instantiate("BulletOnline", new Vector3(transform.position.x + bXPos, transform.position.y + bYPos, transform.position.z), Quaternion.identity, 0).transform;
-        }
-        */
-        shotTransform = Instantiate(Bullet) as Transform;
-        shotTransform.position = new Vector3(transform.position.x + bXPos, transform.position.y + bYPos, transform.position.z);
-
-        shotTransform.GetComponent<Rigidbody2D>().velocity = new Vector2(bXSpeed, bYSpeed);
 
         if (Multi)
         {
@@ -1046,6 +1042,12 @@ public class playerControl : MonoBehaviour
             var pView = GetComponentInParent<PhotonView>();
             pView.RPC("OnlineShoot", PhotonTargets.All, pView.viewID, bXPos, bYPos, bXSpeed, bYSpeed);
         }
+
+        var shotTransform = Instantiate(Bullet) as Transform;
+        shotTransform.position = new Vector3(transform.position.x + bXPos, transform.position.y + bYPos, transform.position.z);
+
+        shotTransform.GetComponent<Rigidbody2D>().velocity = new Vector2(bXSpeed, bYSpeed);
+
 
         _audio.PlayOneShot(GunShot);
         GunLight.enabled = true;
@@ -1157,7 +1159,8 @@ public class playerControl : MonoBehaviour
         playerNum = 1;
         Control = "j1";
         _playerClass = "The Cowboy";
-        OnlineNameText.text = PlayerPrefs.GetString(global.PlayerName);
+        OnlinePlayerName = PlayerPrefs.GetString(global.PlayerName);
+        OnlineNameText.text = OnlinePlayerName;
         _slashCol.SendMessage("GetPlayerNum", playerNum);
     }
 

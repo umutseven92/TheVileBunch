@@ -453,6 +453,13 @@ MonoBehaviour:
   Control: 
   playerNum: 0
   _playerClass: 
+  Health: 0
+  Ammo: 0
+  HealthSlider: {fileID: 0}
+  OnlinebXSpeed: 0
+  OnlinebYSpeed: 0
+  OnlinebXPos: 0
+  OnlinebYPos: 0
   Enabled: 1
   Multi: 0
   StartingAmmo: 3
@@ -498,6 +505,7 @@ MonoBehaviour:
   GunCockClip: {fileID: 8300000, guid: 6292ec40198cd5141a4ea21c3b9dc389, type: 3}
   GunLight: {fileID: 10806822}
   AmmoText: {fileID: 11416002}
+  OnlineNameText: {fileID: 0}
 --- !u!114 &11416002
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -676,7 +684,9 @@ SpriteRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
+  m_MinimumChartSize: 4
   m_AutoUVMaxDistance: .5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
@@ -702,7 +712,9 @@ SpriteRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
+  m_MinimumChartSize: 4
   m_AutoUVMaxDistance: .5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
@@ -728,7 +740,9 @@ SpriteRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
+  m_MinimumChartSize: 4
   m_AutoUVMaxDistance: .5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
@@ -770,7 +784,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingLayerID: -1530920183
-  m_SortingOrder: 0
+  m_SortingOrder: 1
 --- !u!223 &22369946
 Canvas:
   m_ObjectHideFlags: 1
@@ -787,7 +801,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingLayerID: -1530920183
-  m_SortingOrder: 0
+  m_SortingOrder: 1
 --- !u!224 &22418160
 RectTransform:
   m_ObjectHideFlags: 1
