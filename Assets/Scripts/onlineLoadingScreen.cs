@@ -6,8 +6,9 @@ using System.Linq;
 using System.Xml;
 using UnityEngine.UI;
 
-public class loadingScreen : MonoBehaviour
+public class onlineLoadingScreen : Photon.PunBehaviour
 {
+
     public Text LoadingText;
     public Text DiaryText;
     public double LoadingMs = 1.500d;
@@ -18,6 +19,7 @@ public class loadingScreen : MonoBehaviour
     private const string Loading = "Loading";
     private List<string> _diaries = new List<string>();
     private System.Random _rand = new System.Random();
+    private bool _ready = false;
 
     void Start()
     {
@@ -48,17 +50,39 @@ public class loadingScreen : MonoBehaviour
         DiaryText.text = _diaries[count];
 
         AButton.GetComponent<SpriteRenderer>().enabled = false;
+
+        if (!onlineHelper.Joining)
+        {
+            PhotonNetwork.ConnectUsingSettings(global.GameVersion);
+        }
+        else
+        {
+            PhotonNetwork.JoinRoom(onlineHelper.LobbyName);
+        }
+    }
+    public override void OnJoinedLobby()
+    {
+        if (!onlineHelper.Joining)
+        {
+            PhotonNetwork.CreateRoom(onlineHelper.LobbyName, new RoomOptions() { maxPlayers = 4 }, null);
+
+        }
+    }
+
+    public override void OnJoinedRoom()
+    {
+        _ready = true;
     }
 
     void Update()
     {
         AnimateLoadingText();
-        if (Application.GetStreamProgressForLevel(LevelName) == 1)
+        if (_ready)
         {
             LoadingText.text = "Loaded";
             AButton.GetComponent<SpriteRenderer>().enabled = true;
 
-            if (Input.GetButtonDown("Submit") )
+            if (Input.GetButtonDown("Submit"))
             {
                 PhotonNetwork.LoadLevel(LevelName);
             }
@@ -87,6 +111,5 @@ public class loadingScreen : MonoBehaviour
         {
             LoadingText.text += ".";
         }
-
     }
 }

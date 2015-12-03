@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Globalization;
+using UnityEngine;
 
 public class lobbyScript : Photon.PunBehaviour
 {
@@ -10,15 +11,18 @@ public class lobbyScript : Photon.PunBehaviour
         {
             return;
         }
-        PhotonNetwork.ConnectUsingSettings(global.GameVersion);
 
+        onlineHelper.LobbyName = LobbyName;
+        onlineHelper.Joining = false;
+        Application.LoadLevel("DunesOnlineLoading");
+        //       PhotonNetwork.ConnectUsingSettings(global.GameVersion);
     }
 
-    public void SetLobbyName(string _lobbyName)
+    public void SetLobbyName(string lobbyName)
     {
-        LobbyName = _lobbyName.ToLower();
+        LobbyName = lobbyName.ToLower(CultureInfo.InvariantCulture);
     }
-
+    /*
     public override void OnJoinedLobby()
     {
         PhotonNetwork.CreateRoom(LobbyName, new RoomOptions() { maxPlayers = 4 }, null);
@@ -28,4 +32,5 @@ public class lobbyScript : Photon.PunBehaviour
     {
         PhotonNetwork.LoadLevel("DunesOnline");
     }
+    */
 }

@@ -10,17 +10,17 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/LocalPlayerSelect.unity
   - enabled: 1
-    path: Assets/Scenes/Dunes.unity
+    path: Assets/Scenes/Local/Dunes.unity
   - enabled: 1
-    path: Assets/Scenes/Caves.unity
+    path: Assets/Scenes/Local/Caves.unity
   - enabled: 1
-    path: Assets/Scenes/DunesLoading.unity
+    path: Assets/Scenes/Loading/DunesLoading.unity
   - enabled: 1
-    path: Assets/Scenes/CavesLoading.unity
+    path: Assets/Scenes/Loading/CavesLoading.unity
   - enabled: 1
     path: Assets/Scenes/SceneSelect.unity
   - enabled: 1
-    path: Assets/Scenes/DunesOnline.unity
+    path: Assets/Scenes/Online/DunesOnline.unity
   - enabled: 1
     path: Assets/Scenes/Settings.unity
   - enabled: 1
@@ -29,3 +29,5 @@ EditorBuildSettings:
     path: Assets/Scenes/CreateLobby.unity
   - enabled: 1
     path: Assets/Scenes/JoinLobby.unity
+  - enabled: 1
+    path: Assets/Scenes/Loading/DunesOnlineLoading.unity

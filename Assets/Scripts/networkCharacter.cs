@@ -55,16 +55,6 @@ public class networkCharacter : Photon.MonoBehaviour
         }
     }
 
-    [PunRPC]
-    public void OnlineShoot(int pId, float bXPos, float bYPos, float bXSpeed, float bYSpeed)
-    {
-        if (!photonView.isMine)
-        {
-            var pView = PhotonView.Find(pId);
-            pView.GetComponentInParent<playerControl>().OnlineShoot(bXSpeed, bYSpeed, bXPos, bYPos);
-
-        }
-    }
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
@@ -110,4 +100,24 @@ public class networkCharacter : Photon.MonoBehaviour
             _ammo = (int)stream.ReceiveNext();
         }
     }
+
+    [PunRPC]
+    public void ShootRPC(int pId, float bXPos, float bYPos, float bXSpeed, float bYSpeed)
+    {
+        RPCBase(pId).OnlineShoot(bXSpeed, bYSpeed, bXPos, bYPos);
+    }
+
+    [PunRPC]
+    public void SlashRPC(int pId)
+    {
+        RPCBase(pId).OnlineSlash();
+    }
+
+    private static playerControl RPCBase(int pId)
+    {
+        var pView = PhotonView.Find(pId);
+        return pView.GetComponentInParent<playerControl>();
+    }
+
 }
+

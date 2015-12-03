@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.UI;
@@ -97,9 +98,11 @@ public class playerControl : MonoBehaviour
     public Light GunLight;
     public Text AmmoText;
     public Text OnlineNameText;
+
     #endregion
 
     #region Private Values
+
     private bool _grounded;
     private bool _grounded2;
     private bool _inFrontOfLadder;
@@ -137,11 +140,13 @@ public class playerControl : MonoBehaviour
     private bool vibrating = false;
     private bool Grounded;
     private bool _ammoChanged;
+
     #endregion
 
     #region Properties
 
     private Transform _line;
+
     public Transform AimLine
     {
         get
@@ -250,7 +255,15 @@ public class playerControl : MonoBehaviour
 
         if (Input.GetButtonDown(Control + "Slash") && !_paused && !_slashing && !_aiming && Enabled)
         {
-            Slash();
+            if (Multi)
+            {
+                var pView = GetComponentInParent<PhotonView>();
+                pView.RPC("SlashRPC", PhotonTargets.All, pView.viewID);
+            }
+            else
+            {
+                Slash();
+            }
         }
 
         if (Input.GetButtonDown(Control + "Slash") && !_paused && !_slashing && _aiming && Enabled)
@@ -299,7 +312,9 @@ public class playerControl : MonoBehaviour
             // Idle
             _animator.SetInteger("anim", 0);
         }
-        if (!_slashing && !jumping && ((_horizontal > MovementLock && _horizontal > 0) || (_horizontal < -MovementLock && _horizontal < 0)) && !_aiming)
+        if (!_slashing && !jumping &&
+            ((_horizontal > MovementLock && _horizontal > 0) || (_horizontal < -MovementLock && _horizontal < 0)) &&
+            !_aiming)
         {
             // Running
             _animator.SetInteger("anim", 1);
@@ -653,7 +668,12 @@ public class playerControl : MonoBehaviour
                         gList.RemoveAt(0);
                         go = gList.ToArray();
 
-                        foreach (var g in go.Where(g => g.gameObject.GetComponent<playerControl>().playerNum == other.GetComponent<slashScript>().num))
+                        foreach (
+                            var g in
+                                go.Where(
+                                    g =>
+                                        g.gameObject.GetComponent<playerControl>().playerNum ==
+                                        other.GetComponent<slashScript>().num))
                         {
                             pX = g.transform.position.x;
                         }
@@ -702,7 +722,9 @@ public class playerControl : MonoBehaviour
 
     void UpdateSlashColPos()
     {
-        _slashCol.transform.position = FacingRight ? new Vector3(transform.position.x + SlashOffset, transform.position.y, transform.position.z) : new Vector3(transform.position.x - SlashOffset, transform.position.y, transform.position.z);
+        _slashCol.transform.position = FacingRight
+            ? new Vector3(transform.position.x + SlashOffset, transform.position.y, transform.position.z)
+            : new Vector3(transform.position.x - SlashOffset, transform.position.y, transform.position.z);
     }
 
     private void CheckTimers()
@@ -884,13 +906,9 @@ public class playerControl : MonoBehaviour
         Slash();
     }
 
-
     public void OnlineShoot(float bXSpeed, float bYSpeed, float bXPos, float bYPos)
     {
-        if (Ammo > 0)
-        {
-            Shoot(bXSpeed, bYSpeed, bXPos, bYPos);
-        }
+        Shoot(bXSpeed, bYSpeed, bXPos, bYPos);
     }
 
     void Shoot(float bXSpeed, float bYSpeed, float bXPos, float bYPos)
@@ -1040,14 +1058,15 @@ public class playerControl : MonoBehaviour
             OnlinebYSpeed = bYSpeed;
 
             var pView = GetComponentInParent<PhotonView>();
-            pView.RPC("OnlineShoot", PhotonTargets.All, pView.viewID, bXPos, bYPos, bXSpeed, bYSpeed);
+            pView.RPC("ShootRPC", PhotonTargets.All, pView.viewID, bXPos, bYPos, bXSpeed, bYSpeed);
         }
+        else
+        {
+            var shotTransform = Instantiate(Bullet) as Transform;
+            shotTransform.position = new Vector3(transform.position.x + bXPos, transform.position.y + bYPos, transform.position.z);
 
-        var shotTransform = Instantiate(Bullet) as Transform;
-        shotTransform.position = new Vector3(transform.position.x + bXPos, transform.position.y + bYPos, transform.position.z);
-
-        shotTransform.GetComponent<Rigidbody2D>().velocity = new Vector2(bXSpeed, bYSpeed);
-
+            shotTransform.GetComponent<Rigidbody2D>().velocity = new Vector2(bXSpeed, bYSpeed);
+        }
 
         _audio.PlayOneShot(GunShot);
         GunLight.enabled = true;
