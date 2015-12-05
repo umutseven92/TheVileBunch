@@ -32,4 +32,7 @@ MonoBehaviour:
   - RequestForPickupTimes
   - SetShooting
   - OnlineShoot
+  - ShootRPC
+  - SlideRPC
+  - SlashRPC
   DisableAutoOpenWizard: 1

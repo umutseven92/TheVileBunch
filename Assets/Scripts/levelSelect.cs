@@ -25,7 +25,6 @@ public class levelSelect : MonoBehaviour
         SetLevelText(_levels[0]);
     }
 
-
     void Update()
     {
         CheckDelayTimer();

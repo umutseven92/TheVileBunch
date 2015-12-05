@@ -25,7 +25,7 @@ public class networkCharacter : Photon.MonoBehaviour
 
             net.AmmoText.enabled = true;
             net.HealthSlider.GetComponentInParent<Canvas>().enabled = true;
-            photonView.transform.position = Vector3.Lerp(transform.position, _correctPlayerPos, Time.deltaTime * 20);
+            photonView.transform.position = Vector3.Lerp(transform.position, _correctPlayerPos, Time.deltaTime * 25);
             SetOrientation(net);
             net.OnlineNameText.text = _onlineName;
             net.Health = _health;
@@ -40,6 +40,16 @@ public class networkCharacter : Photon.MonoBehaviour
         transform.localScale = new Vector3(_correctLocalScale, transform.localScale.y, transform.localScale.z);
         net.OnlineNameText.transform.localScale = new Vector3(_correctLocalScale, transform.localScale.y, transform.localScale.z);
         net.AmmoText.transform.localScale = new Vector3(_correctLocalScale, transform.localScale.y, transform.localScale.z);
+
+        if (_correctLocalScale < 0)
+        {
+            net._slashCol.transform.position = new Vector3(transform.position.x - net.SlashOffset, transform.position.y, transform.position.z);
+        }
+        else
+        {
+            net._slashCol.transform.position = new Vector3(transform.position.x + net.SlashOffset, transform.position.y, transform.position.z);
+        }
+
     }
 
     private void FlipSliderLeftRight(playerControl net)
@@ -52,17 +62,6 @@ public class networkCharacter : Photon.MonoBehaviour
         else
         {
             net.HealthSlider.direction = Slider.Direction.LeftToRight;
-        }
-    }
-
-    [PunRPC]
-    public void OnlineShoot(int pId, float bXPos, float bYPos, float bXSpeed, float bYSpeed)
-    {
-        if (!photonView.isMine)
-        {
-            var pView = PhotonView.Find(pId);
-            pView.GetComponentInParent<playerControl>().OnlineShoot(bXSpeed, bYSpeed, bXPos, bYPos);
-
         }
     }
 
@@ -110,4 +109,24 @@ public class networkCharacter : Photon.MonoBehaviour
             _ammo = (int)stream.ReceiveNext();
         }
     }
+
+    [PunRPC]
+    public void ShootRPC(int pId, float bXPos, float bYPos, float bXSpeed, float bYSpeed)
+    {
+        RPCBase(pId).OnlineShoot(bXSpeed, bYSpeed, bXPos, bYPos);
+    }
+
+    [PunRPC]
+    public void SlashRPC(int pId)
+    {
+        RPCBase(pId).OnlineSlash();
+    }
+
+    private static playerControl RPCBase(int pId)
+    {
+        var pView = PhotonView.Find(pId);
+        return pView.GetComponentInParent<playerControl>();
+    }
+
 }
+

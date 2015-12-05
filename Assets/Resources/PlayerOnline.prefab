@@ -437,6 +437,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9db31784e54d8143aebcc9ff5197043, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  OnlinePlayerName: 
   FacingRight: 1
   Jump: 0
   Run: 0
@@ -1426,6 +1427,10 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: GunOffset
       value: .300000012
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: BulletSpeed
+      value: 20
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

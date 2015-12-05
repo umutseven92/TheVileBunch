@@ -12,6 +12,12 @@ public class serverBrowser : Photon.PunBehaviour
     public void JoinRoom()
     {
         PhotonNetwork.JoinRoom(RoomName);
+
+        /*
+        onlineHelper.LobbyName = RoomName;
+        onlineHelper.Joining = true;
+        Application.LoadLevel("DunesOnlineLoading");
+        */
     }
 
     public override void OnJoinedRoom()
