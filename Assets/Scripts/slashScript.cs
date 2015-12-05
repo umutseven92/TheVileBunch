@@ -12,13 +12,13 @@ public class slashScript : MonoBehaviour
     public bool visible = true; // Is the slash hitbox visible
 
     private BoxCollider2D _bCol;
-    private SpriteRenderer sprRenderer;
+    private SpriteRenderer _sprRenderer;
 
     // Use this for initialization
     void Start()
     {
-        sprRenderer = GetComponent<SpriteRenderer>();
-        sprRenderer.enabled = false;
+        _sprRenderer = GetComponent<SpriteRenderer>();
+        _sprRenderer.enabled = false;
 
         _bCol = GetComponent<BoxCollider2D>();
         _bCol.enabled = false;
@@ -32,17 +32,17 @@ public class slashScript : MonoBehaviour
             _bCol.enabled = true;
             if (visible)
             {
-                sprRenderer.enabled = true;
+                _sprRenderer.enabled = true;
             }
             else
             {
-                sprRenderer.enabled = false;
+                _sprRenderer.enabled = false;
             }
         }
         else
         {
             _bCol.enabled = false;
-            sprRenderer.enabled = false;
+            _sprRenderer.enabled = false;
         }
     }
 

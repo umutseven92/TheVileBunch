@@ -50,6 +50,9 @@ public class playerControl : MonoBehaviour
 
     [HideInInspector]
     public float OnlinebYPos;
+    
+    [HideInInspector]
+    public GameObject _slashCol;
 
     public bool Enabled; // Control for online, enable after spawn
     public bool Multi = false; // Is player online
@@ -115,7 +118,6 @@ public class playerControl : MonoBehaviour
     private Animator _animator;
     private SpriteRenderer _sRenderer;
     private List<playerSelect.Player> _localPlayers;
-    private GameObject _slashCol;
     private bool _slashing;
     private double _slashingCounter;
     private bool _hit;
