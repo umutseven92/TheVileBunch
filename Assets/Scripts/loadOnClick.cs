@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class loadOnClick : MonoBehaviour
@@ -59,4 +60,9 @@ public class loadOnClick : MonoBehaviour
         playerSelect.PlayerList = new List<playerSelect.Player>();
         Application.LoadLevel(1);
     }
+    public void FocusOn(Transform item)
+    {
+        EventSystem.current.SetSelectedGameObject(item.gameObject);
+    }
+
 }

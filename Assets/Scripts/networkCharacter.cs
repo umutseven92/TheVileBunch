@@ -11,11 +11,7 @@ public class networkCharacter : Photon.MonoBehaviour
     private string _onlineName;
     private int _health;
     private int _ammo;
-    private bool _shooting;
-    private float _bXPos;
-    private float _bYPos;
-    private float _bXSpeed;
-    private float _bYSpeed;
+    private float _fraction;
 
     void Update()
     {
@@ -25,7 +21,15 @@ public class networkCharacter : Photon.MonoBehaviour
 
             net.AmmoText.enabled = true;
             net.HealthSlider.GetComponentInParent<Canvas>().enabled = true;
-            photonView.transform.position = Vector3.Lerp(transform.position, _correctPlayerPos, Time.deltaTime * 25);
+
+            // We get 10 updates per sec. sometimes a few less or one or two more, depending on variation of lag.
+            // Due to that we want to reach the correct position in a little over 100ms. This way, we usually avoid a stop.
+            // Lerp() gets a fraction value between 0 and 1. This is how far we went from A to B.
+            // Our fraction variable would reach 1 in 100ms if we multiply deltaTime by 10.
+            // We want it to take a bit longer, so we multiply with 9 instead.
+            _fraction = _fraction + Time.deltaTime * 9;
+            photonView.transform.position = Vector3.Lerp(transform.position, _correctPlayerPos, _fraction);
+
             SetOrientation(net);
             net.OnlineNameText.text = _onlineName;
             net.Health = _health;
@@ -107,6 +111,8 @@ public class networkCharacter : Photon.MonoBehaviour
 
             // Ammo
             _ammo = (int)stream.ReceiveNext();
+
+            _fraction = 0;
         }
     }
 

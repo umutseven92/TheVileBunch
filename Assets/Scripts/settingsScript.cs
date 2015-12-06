@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class settingsScript : MonoBehaviour
@@ -26,6 +27,7 @@ public class settingsScript : MonoBehaviour
         NameInput.text = PlayerPrefs.GetString(global.PlayerName);
 
         Loaded = true;
+
     }
 
     public void SetPlayerName(string playerName)
