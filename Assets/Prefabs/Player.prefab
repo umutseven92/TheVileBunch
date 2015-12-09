@@ -444,7 +444,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 170880}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e9db31784e54d8143aebcc9ff5197043, type: 3}
+  m_Script: {fileID: 11500000, guid: 57120bbb883792f4d9867e16d0cd679a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   FacingRight: 1
@@ -460,10 +460,9 @@ MonoBehaviour:
   OnlinebYSpeed: 0
   OnlinebXPos: 0
   OnlinebYPos: 0
-  Enabled: 1
-  Multi: 0
-  StartingAmmo: 3
-  MaxAmmo: 3
+  _slashCol: {fileID: 0}
+  StartingAmmo: 50
+  MaxAmmo: 50
   StartingHealth: 6
   MaxHealth: 6
   BulletDamage: 2
@@ -505,7 +504,6 @@ MonoBehaviour:
   GunCockClip: {fileID: 8300000, guid: 6292ec40198cd5141a4ea21c3b9dc389, type: 3}
   GunLight: {fileID: 10806822}
   AmmoText: {fileID: 11416002}
-  OnlineNameText: {fileID: 0}
 --- !u!114 &11416002
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1164,11 +1162,11 @@ Prefab:
       objectReference: {fileID: 8300000, guid: 4df9347d248a0964a99c2b77d1254af7, type: 3}
     - target: {fileID: 0}
       propertyPath: MaxAmmo
-      value: 3
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: StartingAmmo
-      value: 3
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: m_ReceiveShadows

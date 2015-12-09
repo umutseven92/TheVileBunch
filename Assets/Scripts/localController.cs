@@ -136,7 +136,7 @@ public class localController : MonoBehaviour
 
         if (players.Length == 1 && !gameOver)
         {
-            var winningClass = players[0].GetComponent<playerControl>()._playerClass;
+            var winningClass = players[0].GetComponent<localPlayer>()._playerClass;
             ClassScores[winningClass]++;
 
             if (ClassScores[winningClass] == ScoreToReach)
@@ -266,7 +266,7 @@ public class localController : MonoBehaviour
 
     void RestartGame(GameObject[] lastPlayers)
     {
-        SetScoreCard(_round.ToString(), lastPlayers[0].GetComponent<playerControl>()._playerClass, ClassScores[lastPlayers[0].GetComponent<playerControl>()._playerClass].ToString());
+        SetScoreCard(_round.ToString(), lastPlayers[0].GetComponent<localPlayer>()._playerClass, ClassScores[lastPlayers[0].GetComponent<localPlayer>()._playerClass].ToString());
         foreach (var o in lastPlayers)
         {
             Destroy(o);

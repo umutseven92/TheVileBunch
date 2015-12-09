@@ -17,7 +17,7 @@ public class networkCharacter : Photon.MonoBehaviour
     {
         if (!photonView.isMine)
         {
-            var net = photonView.transform.GetComponent<playerControl>();
+            var net = photonView.transform.GetComponent<onlinePlayer>();
 
             net.AmmoText.enabled = true;
             net.HealthSlider.GetComponentInParent<Canvas>().enabled = true;
@@ -35,9 +35,10 @@ public class networkCharacter : Photon.MonoBehaviour
             net.Health = _health;
             net.Ammo = _ammo;
         }
+        Debug.Log(PhotonNetwork.GetPing());
     }
 
-    private void SetOrientation(playerControl net)
+    private void SetOrientation(onlinePlayer net)
     {
         FlipSliderLeftRight(net);
 
@@ -56,7 +57,7 @@ public class networkCharacter : Photon.MonoBehaviour
 
     }
 
-    private void FlipSliderLeftRight(playerControl net)
+    private void FlipSliderLeftRight(onlinePlayer net)
     {
         if (_correctLocalScale < 0)
         {
@@ -74,7 +75,7 @@ public class networkCharacter : Photon.MonoBehaviour
 
         if (stream.isWriting)
         {
-            var ply = transform.GetComponent<playerControl>();
+            var ply = transform.GetComponent<onlinePlayer>();
 
             // Our player
 
@@ -128,10 +129,10 @@ public class networkCharacter : Photon.MonoBehaviour
         RPCBase(pId).OnlineSlash();
     }
 
-    private static playerControl RPCBase(int pId)
+    private static onlinePlayer RPCBase(int pId)
     {
         var pView = PhotonView.Find(pId);
-        return pView.GetComponentInParent<playerControl>();
+        return pView.GetComponentInParent<onlinePlayer>();
     }
 
 }

@@ -434,7 +434,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 170880}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e9db31784e54d8143aebcc9ff5197043, type: 3}
+  m_Script: {fileID: 11500000, guid: f30534532d1f4e940888ed4b9ce29de3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   OnlinePlayerName: 
@@ -550,7 +550,7 @@ MonoBehaviour:
   group: 0
   prefixBackup: -1
   observed: {fileID: 0}
-  synchronization: 2
+  synchronization: 3
   onSerializeTransformOption: 3
   onSerializeRigidBodyOption: 2
   ownershipTransfer: 0
@@ -1166,7 +1166,7 @@ Prefab:
       objectReference: {fileID: 9100000, guid: da0585920956b34458f5260e443b46db, type: 2}
     - target: {fileID: 0}
       propertyPath: synchronization
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: ObservedComponents.Array.data[0]
