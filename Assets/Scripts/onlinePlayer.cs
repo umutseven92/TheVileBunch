@@ -27,17 +27,17 @@ public class onlinePlayer : playerControl
     {
         base.Update();
 
-        if (Input.GetButtonDown(Control + "Fire") && !_paused && Ammo > 0 && Enabled)
+        if (Input.GetButtonDown(Control + "Fire") && Ammo > 0 && Enabled)
         {
             _softAim = true;
         }
 
-        if (Input.GetButtonDown(Control + "Jump") && (Grounded || _inFrontOfLadder) && !_paused && !_aiming && Enabled)
+        if (Input.GetButtonDown(Control + "Jump") && (Grounded || _inFrontOfLadder) && !_aiming && Enabled)
         {
             Jump = true;
         }
 
-        if (Input.GetButtonUp(Control + "Fire") && !_paused && Ammo > 0 && Enabled)
+        if (Input.GetButtonUp(Control + "Fire") && Ammo > 0 && Enabled)
         {
             if (_aimCanceled)
             {
@@ -50,12 +50,12 @@ public class onlinePlayer : playerControl
             _softAim = false;
         }
 
-        if (Input.GetButtonDown(Control + "Slash") && !_paused && !_slashing && !_aiming && Enabled)
+        if (Input.GetButtonDown(Control + "Slash") && !_slashing && !_aiming && Enabled)
         {
             Slash();
         }
 
-        if (Input.GetButtonDown(Control + "Slash") && !_paused && !_slashing && _aiming && Enabled)
+        if (Input.GetButtonDown(Control + "Slash") && !_slashing && _aiming && Enabled)
         {
             _aiming = false;
             AimLine.GetComponent<SpriteRenderer>().enabled = false;
@@ -120,11 +120,11 @@ public class onlinePlayer : playerControl
             }
         }
 
-        if (_horizontal > 0 && !FacingRight && !_paused && Enabled)
+        if (_horizontal > 0 && !FacingRight && Enabled)
         {
             Flip();
         }
-        else if (_horizontal < 0 && FacingRight && !_paused && Enabled)
+        else if (_horizontal < 0 && FacingRight && Enabled)
         {
             Flip();
         }

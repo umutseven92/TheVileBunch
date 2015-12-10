@@ -3,6 +3,8 @@ using System.Collections;
 
 public class localPlayer : playerControl
 {
+    private bool _paused;
+
     protected override void Update()
     {
         base.Update();
@@ -54,6 +56,11 @@ public class localPlayer : playerControl
 
     protected override void FixedUpdate()
     {
+        if (_paused)
+        {
+            return;
+        }
+
         base.FixedUpdate();
 
         if (_inFrontOfLadder)
@@ -135,4 +142,14 @@ public class localPlayer : playerControl
         _slashCol.SendMessage("GetCol", _slashing);
         _audio.PlayOneShot(SlashClip);
     }
+    void Pause()
+    {
+        _paused = true;
+    }
+
+    void UnPause()
+    {
+        _paused = false;
+    }
+
 }

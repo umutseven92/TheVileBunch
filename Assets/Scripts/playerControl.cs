@@ -106,7 +106,6 @@ public abstract class playerControl : MonoBehaviour
     protected bool _up;
     private bool _dead;
     private bool _first = true;
-    protected bool _paused;
     protected Rigidbody2D _rb2D;
     protected AudioSource _audio;
     private Animator _animator;
@@ -282,11 +281,6 @@ public abstract class playerControl : MonoBehaviour
 
         _horizontal = h;
         _vertical = v;
-
-        if (_paused)
-        {
-            return;
-        }
 
         // Stop movement if value is below movement lock
         if ((h < MovementLock && h > 0) || (h > -MovementLock && h < 0))
@@ -875,13 +869,4 @@ public abstract class playerControl : MonoBehaviour
     }
 
 
-    void Pause()
-    {
-        _paused = true;
-    }
-
-    void UnPause()
-    {
-        _paused = false;
-    }
 }
