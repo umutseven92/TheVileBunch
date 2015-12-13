@@ -81,7 +81,6 @@ public abstract class playerControl : MonoBehaviour
     public double AmmoMs = 2.000d; // Ammo counter visibility after shooting
 
     public Transform GroundCheck;
-    public Transform GroundCheck2;
     public Transform Bullet;
     public Transform Explosion;
     public Transform BloodSplatter;
@@ -100,8 +99,6 @@ public abstract class playerControl : MonoBehaviour
 
     #region Private Values
 
-    private bool _grounded;
-    private bool _grounded2;
     protected bool _inFrontOfLadder;
     protected bool _up;
     private bool _dead;
@@ -222,10 +219,15 @@ public abstract class playerControl : MonoBehaviour
 
     private void SetGrounded()
     {
-        _grounded = Physics2D.Linecast(transform.position, GroundCheck.position, 1 << LayerMask.NameToLayer("Ground"));
-        _grounded2 = Physics2D.Linecast(transform.position, GroundCheck2.position, 1 << LayerMask.NameToLayer("Ground"));
+        /*
+        var _grounded = Physics2D.Linecast(transform.position, GroundCheck.position, 1 << LayerMask.NameToLayer("Ground"));
+        var _grounded2 = Physics2D.Linecast(transform.position, GroundCheck2.position, 1 << LayerMask.NameToLayer("Ground"));
 
         Grounded = _grounded || _grounded2;
+        */
+        var groundedLeft = GroundCheck.GetComponent<BoxCollider2D>().IsTouchingLayers(1 << LayerMask.NameToLayer("Ground"));
+
+        Grounded = groundedLeft;
     }
 
     protected virtual void Update()
@@ -279,14 +281,14 @@ public abstract class playerControl : MonoBehaviour
         float h = Input.GetAxis(Control + "Horizontal");
         float v = Input.GetAxis(Control + "Vertical");
 
-        _horizontal = h;
-        _vertical = v;
-
         // Stop movement if value is below movement lock
         if ((h < MovementLock && h > 0) || (h > -MovementLock && h < 0))
         {
             h = 0;
         }
+
+        _horizontal = h;
+        _vertical = v;
 
         if (v > DirectionLock && v > 0)
         {
