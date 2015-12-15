@@ -11,7 +11,10 @@ public class lobbyPopulator : Photon.PunBehaviour
     // Use this for initialization
     void Start()
     {
-        PhotonNetwork.ConnectUsingSettings(global.GameVersion);
+        if (PhotonNetwork.connectionState != ConnectionState.Connected)
+        {
+            PhotonNetwork.ConnectUsingSettings(global.GameVersion);
+        }
     }
 
     void Update()

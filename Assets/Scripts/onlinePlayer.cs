@@ -89,7 +89,7 @@ public class onlinePlayer : playerControl
             {
                 if (_vertical * _rb2D.velocity.y < MaxSpeed)
                 {
-                    _rb2D.AddForce(Vector2.up * _vertical * MoveForce);
+                    _rb2D.velocity = (Vector2.up * _vertical * MoveForce);
                 }
 
                 if (Mathf.Abs(_rb2D.velocity.y) > MaxSpeed)
@@ -108,7 +108,9 @@ public class onlinePlayer : playerControl
                 {
                     if (_horizontal * _rb2D.velocity.x < MaxSpeed)
                     {
-                        _rb2D.AddForce(Vector2.right * _horizontal * MoveForce);
+                        _rb2D.velocity = new Vector2(Mathf.Sign(_rb2D.velocity.x) * MaxSpeed, _rb2D.velocity.y);
+
+                        //_rb2D.AddForce(Vector2.right * _horizontal * MoveForce);
                     }
 
                     if (Mathf.Abs(_rb2D.velocity.x) > MaxSpeed)

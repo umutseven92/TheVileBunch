@@ -53,7 +53,10 @@ public class onlineLoadingScreen : Photon.PunBehaviour
 
         if (!onlineHelper.Joining)
         {
-            PhotonNetwork.ConnectUsingSettings(global.GameVersion);
+            if (PhotonNetwork.connectionState != ConnectionState.Connected)
+            {
+                PhotonNetwork.ConnectUsingSettings(global.GameVersion);
+            }
         }
         else
         {
