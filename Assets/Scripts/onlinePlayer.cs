@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class onlinePlayer : playerControl
@@ -10,6 +12,11 @@ public class onlinePlayer : playerControl
     public bool Enabled; // Control for online, enable after spawn
 
     public Text OnlineNameText;
+
+    void Start()
+    {
+        pView = GetComponentInParent<PhotonView>();
+    }
 
     public override void Flip()
     {
@@ -85,51 +92,6 @@ public class onlinePlayer : playerControl
 
         base.FixedUpdate();
 
-        if (_inFrontOfLadder)
-        {
-            _rb2D.gravityScale = 0;
-            _rb2D.velocity = Vector3.zero;
-
-            if (!_aiming)
-            {
-                if (_vertical * _rb2D.velocity.y < MaxSpeed)
-                {
-                    _rb2D.AddForce(Vector2.up * _vertical * MoveForce);
-                }
-
-                if (Mathf.Abs(_rb2D.velocity.y) > MaxSpeed)
-                {
-                    _rb2D.velocity = new Vector2(_rb2D.velocity.x, Mathf.Sign(_rb2D.velocity.y) * MaxSpeed);
-                }
-            }
-        }
-        else
-        {
-            _rb2D.gravityScale = base.GravityScale;
-
-            if (!_aiming)
-            {
-                if (_horizontal * _rb2D.velocity.x < MaxSpeed)
-                {
-                    _rb2D.AddForce(Vector2.right * _horizontal * MoveForce);
-                }
-
-                if (Mathf.Abs(_rb2D.velocity.x) > MaxSpeed)
-                {
-                    _rb2D.velocity = new Vector2(Mathf.Sign(_rb2D.velocity.x) * MaxSpeed, _rb2D.velocity.y);
-                }
-            }
-
-        }
-
-        if (_horizontal > 0 && !FacingRight)
-        {
-            Flip();
-        }
-        else if (_horizontal < 0 && FacingRight)
-        {
-            Flip();
-        }
     }
 
     private void MultiSetPlayer()
@@ -150,6 +112,119 @@ public class onlinePlayer : playerControl
     public void OnlineSlash()
     {
         Slash(5);
+    }
+
+    public void HitByBullet()
+    {
+        _hit = true;
+
+        LowerHealth(BulletDamage);
+
+        // Small push
+        _rb2D.AddForce(Other.gameObject.transform.position.x < this.transform.position.x
+            ? new Vector2(PushX, PushY)
+            : new Vector2(-PushY, PushY));
+
+        CheckHealth(Other);
+
+    }
+
+    public void HitBySlash()
+    {
+
+        _hit = true;
+        LowerHealth(SwordDamage);
+
+        if (Health > 0)
+        {
+            float pX = 0f;
+
+            var go = GameObject.FindGameObjectsWithTag("Player");
+
+            var gList = new List<GameObject>(go);
+            gList.RemoveAt(0);
+            go = gList.ToArray();
+
+            foreach (
+                var g in
+                    go.Where(
+                        g =>
+                            g.gameObject.GetComponent<playerControl>().playerNum ==
+                            Other.GetComponent<slashScript>().num))
+            {
+                pX = g.transform.position.x;
+            }
+
+            // Small push
+            _rb2D.AddForce(pX < transform.position.x
+                ? new Vector2(PushX, PushY)
+                : new Vector2(-PushX, PushY));
+        }
+        CheckHealth(Other);
+    }
+
+    private Collider2D Other;
+    private PhotonView pView;
+
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        Other = other;
+
+        // Rope
+        if (other.name.StartsWith("ropeAttached") && _up)
+        {
+            _inFrontOfLadder = true;
+        }
+
+        // Bullet
+        if (other.name.StartsWith("Bullet(Clone)"))
+        {
+            if (!_hit)
+            {
+                pView.RPC("BulletHitRPC", PhotonTargets.All, pView.viewID);
+            }
+        }
+
+        // Sword slash
+        if (other.name.StartsWith("slash"))
+        {
+            if (other.GetComponent<slashScript>().num != playerNum && other.GetComponent<slashScript>().slashing)
+            {
+                if (!_hit)
+                {
+                    pView.RPC("SlashHitRPC", PhotonTargets.All, pView.viewID);
+                }
+            }
+        }
+
+        // Fall
+        if (other.name.StartsWith("FallCollider"))
+        {
+            Die(other);
+        }
+
+        // Ammo pickup
+        if (other.name.StartsWith("Ammo"))
+        {
+            _audio.PlayOneShot(AmmoClip);
+            Ammo += AmmoPickup;
+            if (Ammo > MaxAmmo)
+            {
+                Ammo = MaxAmmo;
+            }
+
+            _ammoChanged = true;
+            _ammoCounter = 0.000d;
+        }
+
+        // Health pickup
+        if (other.name.StartsWith("Health"))
+        {
+            _audio.PlayOneShot(HealthClip);
+            _healed = true;
+            GiveHealth(HealthPickup);
+        }
+
     }
 
     protected override void Shoot()

@@ -28,7 +28,8 @@ public class networkCharacter : Photon.MonoBehaviour
             // Our fraction variable would reach 1 in 100ms if we multiply deltaTime by 10.
             // We want it to take a bit longer, so we multiply with 9 instead.
             _fraction = _fraction + Time.deltaTime * 9;
-            photonView.GetComponent<Rigidbody2D>().position = Vector3.Lerp(transform.position, _correctPlayerPos, _fraction);
+            //photonView.GetComponent<Rigidbody2D>().position = Vector3.Lerp(transform.position, _correctPlayerPos, _fraction);
+            photonView.transform.position = Vector3.Lerp(transform.position, _correctPlayerPos, Time.deltaTime * 20);
 
             SetOrientation(net);
             net.OnlineNameText.text = _onlineName;
@@ -127,6 +128,18 @@ public class networkCharacter : Photon.MonoBehaviour
     public void SlashRPC(int pId)
     {
         RPCBase(pId).OnlineSlash();
+    }
+
+    [PunRPC]
+    public void SlashHitRPC(int pId)
+    {
+        RPCBase(pId).HitBySlash();
+    }
+
+    [PunRPC]
+    public void BulletHitRPC(int pId)
+    {
+        RPCBase(pId).HitByBullet();
     }
 
     private static onlinePlayer RPCBase(int pId)

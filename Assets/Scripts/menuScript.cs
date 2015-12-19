@@ -13,7 +13,7 @@ public class menuScript : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        Application.targetFrameRate = global.FrameRateLimit;
+        //Application.targetFrameRate = global.FrameRateLimit;
         CheckPlayerPrefs();
         SetMusic();
 

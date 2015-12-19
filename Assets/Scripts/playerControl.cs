@@ -63,8 +63,8 @@ public abstract class playerControl : MonoBehaviour
     public float BulletSpeed = 20f; // Speed of the bullet
     public float MovementLock = 0.2f; // Analog stick movement start value
     public float GunLightSpeed = 0.30f; // How fast does gun light appear
-    public float SlashOffset = 0.8f; // How far the player slashes
-    public float GunOffset = 0.1f; // How far the player shoots 
+    public float SlashOffset = 0.5f; // How far the player slashes
+    public float GunOffset = 0.5f; // How far the player shoots 
     public double SlashingMs = 0.3d; // How long does slashing take
     public double HitMs = 2.000d; // Invulnerability timer after getting hit
     public double HealedMs = 2.000d; // Health bar visibility after healed
@@ -111,8 +111,8 @@ public abstract class playerControl : MonoBehaviour
     private List<playerSelect.Player> _localPlayers;
     protected bool _slashing;
     private double _slashingCounter;
-    private bool _hit;
-    private bool _healed;
+    protected bool _hit;
+    protected bool _healed;
     private double _hitCounter;
     private double _healedCounter;
     private double _flashTimer;
@@ -220,12 +220,6 @@ public abstract class playerControl : MonoBehaviour
 
     private void SetGrounded()
     {
-        /*
-        var _grounded = Physics2D.Linecast(transform.position, GroundCheck.position, 1 << LayerMask.NameToLayer("Ground"));
-        var _grounded2 = Physics2D.Linecast(transform.position, GroundCheck2.position, 1 << LayerMask.NameToLayer("Ground"));
-
-        Grounded = _grounded || _grounded2;
-        */
         var groundedLeft = GroundCheck.GetComponent<BoxCollider2D>().IsTouchingLayers(1 << LayerMask.NameToLayer("Ground"));
 
         Grounded = groundedLeft;
@@ -341,6 +335,50 @@ public abstract class playerControl : MonoBehaviour
             _rb2D.velocity = new Vector2(0, _rb2D.velocity.y);
         }
 
+        if (_inFrontOfLadder)
+        {
+            _rb2D.gravityScale = 0;
+            _rb2D.velocity = Vector3.zero;
+
+            if (!_aiming)
+            {
+                if (_vertical * _rb2D.velocity.y < MaxSpeed)
+                {
+                    _rb2D.AddForce(Vector2.up * _vertical * MoveForce);
+                }
+
+                if (Mathf.Abs(_rb2D.velocity.y) > MaxSpeed)
+                {
+                    _rb2D.velocity = new Vector2(_rb2D.velocity.x, Mathf.Sign(_rb2D.velocity.y) * MaxSpeed);
+                }
+            }
+        }
+        else
+        {
+            _rb2D.gravityScale = GravityScale;
+
+            if (!_aiming)
+            {
+                if (_horizontal * _rb2D.velocity.x < MaxSpeed)
+                {
+                    _rb2D.AddForce(Vector2.right * _horizontal * MoveForce);
+                }
+
+                if (Mathf.Abs(_rb2D.velocity.x) > MaxSpeed)
+                {
+                    _rb2D.velocity = new Vector2(Mathf.Sign(_rb2D.velocity.x) * MaxSpeed, _rb2D.velocity.y);
+                }
+            }
+        }
+
+        if (_horizontal > 0 && !FacingRight)
+        {
+            Flip();
+        }
+        else if (_horizontal < 0 && FacingRight)
+        {
+            Flip();
+        }
     }
 
     protected void DrawLine()
@@ -415,109 +453,13 @@ public abstract class playerControl : MonoBehaviour
 
     }
 
-    // Player collided with..
-    void OnTriggerEnter2D(Collider2D other)
-    {
-        // Rope
-        if (other.name.StartsWith("ropeAttached") && _up)
-        {
-            _inFrontOfLadder = true;
-        }
-
-        // Bullet
-        if (other.name.StartsWith("Bullet(Clone)"))
-        {
-            if (!_hit)
-            {
-                _hit = true;
-
-                LowerHealth(BulletDamage);
-
-                // Small push
-                _rb2D.AddForce(other.gameObject.transform.position.x < this.transform.position.x
-                    ? new Vector2(PushX, PushY)
-                    : new Vector2(-PushY, PushY));
-
-                CheckHealth(other);
-            }
-        }
-
-        // Fall
-        if (other.name.StartsWith("FallCollider"))
-        {
-            Die(other);
-        }
-
-        // Ammo pickup
-        if (other.name.StartsWith("Ammo"))
-        {
-            _audio.PlayOneShot(AmmoClip);
-            Ammo += AmmoPickup;
-            if (Ammo > MaxAmmo)
-            {
-                Ammo = MaxAmmo;
-            }
-
-            _ammoChanged = true;
-            _ammoCounter = 0.000d;
-        }
-
-        // Health pickup
-        if (other.name.StartsWith("Health"))
-        {
-            _audio.PlayOneShot(HealthClip);
-            _healed = true;
-            GiveHealth(HealthPickup);
-        }
-
-        // Sword slash
-        if (other.name.StartsWith("slash"))
-        {
-            if (other.GetComponent<slashScript>().num != playerNum && other.GetComponent<slashScript>().slashing)
-            {
-                if (!_hit)
-                {
-                    _hit = true;
-                    LowerHealth(SwordDamage);
-
-                    if (Health > 0)
-                    {
-                        float pX = 0f;
-
-                        var go = GameObject.FindGameObjectsWithTag("Player");
-
-                        var gList = new List<GameObject>(go);
-                        gList.RemoveAt(0);
-                        go = gList.ToArray();
-
-                        foreach (
-                            var g in
-                                go.Where(
-                                    g =>
-                                        g.gameObject.GetComponent<playerControl>().playerNum ==
-                                        other.GetComponent<slashScript>().num))
-                        {
-                            pX = g.transform.position.x;
-                        }
-
-                        // Small push
-                        _rb2D.AddForce(pX < transform.position.x
-                            ? new Vector2(PushX, PushY)
-                            : new Vector2(-PushX, PushY));
-                    }
-                    CheckHealth(other);
-                }
-            }
-        }
-    }
-
-    void LowerHealth(int damage)
+    protected void LowerHealth(int damage)
     {
         Health -= damage;
         HealthSlider.value -= damage;
     }
 
-    void GiveHealth(int health)
+    protected void GiveHealth(int health)
     {
         Health += health;
 
@@ -832,7 +774,7 @@ public abstract class playerControl : MonoBehaviour
         }
     }
 
-    void CheckHealth(Collider2D other)
+    protected void CheckHealth(Collider2D other)
     {
         if (Health <= 0)
         {
@@ -840,7 +782,7 @@ public abstract class playerControl : MonoBehaviour
         }
     }
 
-    void Die(Collider2D other)
+    protected void Die(Collider2D other)
     {
         _dead = true;
         Instantiate(BloodSplatter, transform.position, transform.rotation);

@@ -26,15 +26,15 @@ public class onlineLoadingScreen : Photon.PunBehaviour
         GameObject speaker = GameObject.Find("Speaker");
         if (speaker != null) speaker.GetComponent<AudioSource>().Stop();
 
-        var diaries = Resources.Load("diaries") as TextAsset;
+        var tips = Resources.Load("tips") as TextAsset;
 
-        using (var reader = XmlReader.Create(new StringReader(diaries.text)))
+        using (var reader = XmlReader.Create(new StringReader(tips.text)))
         {
             while (reader.Read())
             {
                 if (reader.IsStartElement())
                 {
-                    if (reader.Name.Equals("entry"))
+                    if (reader.Name.Equals("tip"))
                     {
                         if (reader.Read())
                         {

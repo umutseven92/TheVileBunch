@@ -35,4 +35,6 @@ MonoBehaviour:
   - ShootRPC
   - SlideRPC
   - SlashRPC
+  - BulletHitRPC
+  - SlashHitRPC
   DisableAutoOpenWizard: 1

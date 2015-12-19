@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 
 public class localPlayer : playerControl
 {
@@ -62,50 +64,102 @@ public class localPlayer : playerControl
         }
 
         base.FixedUpdate();
+    }
 
-        if (_inFrontOfLadder)
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        // Rope
+        if (other.name.StartsWith("ropeAttached") && _up)
         {
-            _rb2D.gravityScale = 0;
-            _rb2D.velocity = Vector3.zero;
-
-            if (!_aiming)
-            {
-                if (_vertical * _rb2D.velocity.y < MaxSpeed)
-                {
-                    _rb2D.AddForce(Vector2.up * _vertical * MoveForce);
-                }
-
-                if (Mathf.Abs(_rb2D.velocity.y) > MaxSpeed)
-                {
-                    _rb2D.velocity = new Vector2(_rb2D.velocity.x, Mathf.Sign(_rb2D.velocity.y) * MaxSpeed);
-                }
-            }
+            _inFrontOfLadder = true;
         }
-        else
-        {
-            _rb2D.gravityScale = base.GravityScale;
 
-            if (!_aiming)
+        // Bullet
+        if (other.name.StartsWith("Bullet(Clone)"))
+        {
+            if (!_hit)
             {
-                if (_horizontal * _rb2D.velocity.x < MaxSpeed)
-                {
-                    _rb2D.AddForce(Vector2.right * _horizontal * MoveForce);
-                }
-                if (Mathf.Abs(_rb2D.velocity.x) > MaxSpeed)
-                {
-                    _rb2D.velocity = new Vector2(Mathf.Sign(_rb2D.velocity.x) * MaxSpeed, _rb2D.velocity.y);
-                }
+                _hit = true;
+
+                LowerHealth(BulletDamage);
+
+                // Small push
+                _rb2D.AddForce(other.gameObject.transform.position.x < this.transform.position.x
+                    ? new Vector2(PushX, PushY)
+                    : new Vector2(-PushY, PushY));
+
+                CheckHealth(other);
             }
         }
 
-        if (_horizontal > 0 && !FacingRight && !_paused)
+        // Fall
+        if (other.name.StartsWith("FallCollider"))
         {
-            Flip();
+            Die(other);
         }
-        else if (_horizontal < 0 && FacingRight && !_paused)
+
+        // Ammo pickup
+        if (other.name.StartsWith("Ammo"))
         {
-            Flip();
+            _audio.PlayOneShot(AmmoClip);
+            Ammo += AmmoPickup;
+            if (Ammo > MaxAmmo)
+            {
+                Ammo = MaxAmmo;
+            }
+
+            _ammoChanged = true;
+            _ammoCounter = 0.000d;
         }
+
+        // Health pickup
+        if (other.name.StartsWith("Health"))
+        {
+            _audio.PlayOneShot(HealthClip);
+            _healed = true;
+            GiveHealth(HealthPickup);
+        }
+
+        // Sword slash
+        if (other.name.StartsWith("slash"))
+        {
+            if (other.GetComponent<slashScript>().num != playerNum &&  other.GetComponent<slashScript>().slashing)
+            {
+                if (!_hit)
+                {
+                    _hit = true;
+                    LowerHealth(SwordDamage);
+
+                    if (Health > 0)
+                    {
+                        float pX = 0f;
+
+                        var go = GameObject.FindGameObjectsWithTag("Player");
+
+                        var gList = new List<GameObject>(go);
+                        gList.RemoveAt(0);
+                        go = gList.ToArray();
+
+                        foreach (
+                            var g in
+                                go.Where(
+                                    g =>
+                                        g.gameObject.GetComponent<playerControl>().playerNum ==
+                                        other.GetComponent<slashScript>().num))
+                        {
+                            pX = g.transform.position.x;
+                        }
+
+                        // Small push
+                        _rb2D.AddForce(pX < transform.position.x
+                            ? new Vector2(PushX, PushY)
+                            : new Vector2(-PushX, PushY));
+                    }
+                    CheckHealth(other);
+                }
+            }
+        }
+
     }
 
     protected override void Shoot()
