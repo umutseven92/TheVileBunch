@@ -78,9 +78,14 @@ public class onlinePlayer : playerControl
 
     protected override void FixedUpdate()
     {
+        if (!Enabled)
+        {
+            return;
+        }
+
         base.FixedUpdate();
 
-        if (_inFrontOfLadder && Enabled)
+        if (_inFrontOfLadder)
         {
             _rb2D.gravityScale = 0;
             _rb2D.velocity = Vector3.zero;
@@ -89,7 +94,7 @@ public class onlinePlayer : playerControl
             {
                 if (_vertical * _rb2D.velocity.y < MaxSpeed)
                 {
-                    _rb2D.velocity = (Vector2.up * _vertical * MoveForce);
+                    _rb2D.AddForce(Vector2.up * _vertical * MoveForce);
                 }
 
                 if (Mathf.Abs(_rb2D.velocity.y) > MaxSpeed)
@@ -100,33 +105,28 @@ public class onlinePlayer : playerControl
         }
         else
         {
-            if (Enabled)
+            _rb2D.gravityScale = base.GravityScale;
+
+            if (!_aiming)
             {
-                _rb2D.gravityScale = 4;
-
-                if (!_aiming)
+                if (_horizontal * _rb2D.velocity.x < MaxSpeed)
                 {
-                    if (_horizontal * _rb2D.velocity.x < MaxSpeed)
-                    {
-                        _rb2D.velocity = new Vector2(Mathf.Sign(_rb2D.velocity.x) * MaxSpeed, _rb2D.velocity.y);
-
-                        //_rb2D.AddForce(Vector2.right * _horizontal * MoveForce);
-                    }
-
-                    if (Mathf.Abs(_rb2D.velocity.x) > MaxSpeed)
-                    {
-                        _rb2D.velocity = new Vector2(Mathf.Sign(_rb2D.velocity.x) * MaxSpeed, _rb2D.velocity.y);
-                    }
+                    _rb2D.AddForce(Vector2.right * _horizontal * MoveForce);
                 }
 
+                if (Mathf.Abs(_rb2D.velocity.x) > MaxSpeed)
+                {
+                    _rb2D.velocity = new Vector2(Mathf.Sign(_rb2D.velocity.x) * MaxSpeed, _rb2D.velocity.y);
+                }
             }
+
         }
 
-        if (_horizontal > 0 && !FacingRight && Enabled)
+        if (_horizontal > 0 && !FacingRight)
         {
             Flip();
         }
-        else if (_horizontal < 0 && FacingRight && Enabled)
+        else if (_horizontal < 0 && FacingRight)
         {
             Flip();
         }

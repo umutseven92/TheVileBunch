@@ -79,6 +79,7 @@ public abstract class playerControl : MonoBehaviour
     public double VibrationMs = 0.500d; // How long to vibrate after shooting
     public int MouseAimDeadZone = 50; // Mouse deadzone for aimline snapping
     public double AmmoMs = 2.000d; // Ammo counter visibility after shooting
+    public float GravityScale = 4;
 
     public Transform GroundCheck;
     public Transform Bullet;

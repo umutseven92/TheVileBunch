@@ -83,7 +83,7 @@ public class localPlayer : playerControl
         }
         else
         {
-            _rb2D.gravityScale = 4;
+            _rb2D.gravityScale = base.GravityScale;
 
             if (!_aiming)
             {
@@ -91,7 +91,6 @@ public class localPlayer : playerControl
                 {
                     _rb2D.AddForce(Vector2.right * _horizontal * MoveForce);
                 }
-
                 if (Mathf.Abs(_rb2D.velocity.x) > MaxSpeed)
                 {
                     _rb2D.velocity = new Vector2(Mathf.Sign(_rb2D.velocity.x) * MaxSpeed, _rb2D.velocity.y);
