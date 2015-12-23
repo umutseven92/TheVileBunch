@@ -31,3 +31,7 @@ EditorBuildSettings:
     path: Assets/Scenes/Online/JoinLobby.unity
   - enabled: 1
     path: Assets/Scenes/Loading/DunesOnlineLoading.unity
+  - enabled: 1
+    path: Assets/Scenes/Online/OnlinePlayerSelect.unity
+  - enabled: 1
+    path: Assets/Scenes/Loading/OnlineLoading.unity

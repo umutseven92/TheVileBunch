@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine.UI;
 using XInputDotNetPure;
 
-public class playerSelect : MonoBehaviour
+public class playerSelect : Photon.PunBehaviour
 {
     public AudioClip Clip;
     public AudioClip DirClip;
@@ -57,11 +57,11 @@ public class playerSelect : MonoBehaviour
     private bool j3Delay = false;
     private bool j4Delay = false;
 
-    private bool kSubmit = true;
-    private bool j1Submit = true;
-    private bool j2Submit = true;
-    private bool j3Submit = true;
-    private bool j4Submit = true;
+    protected bool kSubmit = true;
+    protected bool j1Submit = true;
+    protected bool j2Submit = true;
+    protected bool j3Submit = true;
+    protected bool j4Submit = true;
 
     private bool kCancel = true;
     private bool j1Cancel = true;
@@ -69,40 +69,39 @@ public class playerSelect : MonoBehaviour
     private bool j3Cancel = true;
     private bool j4Cancel = true;
 
-    private bool kCanHorizontal = false;
-    private bool j1CanHorizontal = false;
-    private bool j2CanHorizontal = false;
-    private bool j3CanHorizontal = false;
-    private bool j4CanHorizontal = false;
+    protected bool kCanHorizontal = false;
+    protected bool j1CanHorizontal = false;
+    protected bool j2CanHorizontal = false;
+    protected bool j3CanHorizontal = false;
+    protected bool j4CanHorizontal = false;
 
-    private enum SelectStages
+    protected enum SelectStages
     {
         Browse,
         Chosen,
         Disabled
     }
 
-    private SelectStages kStage = SelectStages.Disabled;
-    private SelectStages j1Stage = SelectStages.Disabled;
-    private SelectStages j2Stage = SelectStages.Disabled;
-    private SelectStages j3Stage = SelectStages.Disabled;
-    private SelectStages j4Stage = SelectStages.Disabled;
+    protected SelectStages kStage = SelectStages.Disabled;
+    protected SelectStages j1Stage = SelectStages.Disabled;
+    protected SelectStages j2Stage = SelectStages.Disabled;
+    protected SelectStages j3Stage = SelectStages.Disabled;
+    protected SelectStages j4Stage = SelectStages.Disabled;
 
-    public static List<Player> PlayerList;
+    public static List<Player> PlayerList = new List<Player>();
 
     private List<Image> playerImages = new List<Image>();
     private List<Image> playerButtons = new List<Image>();
     private List<Text> playerTexts = new List<Text>();
     private List<List<Button>> playerHorizontals = new List<List<Button>>();
 
-    private List<string> pickedClasses = new List<string>();
-    private List<string> _classes = new List<string>();
+    protected List<string> pickedClasses = new List<string>();
+    protected List<string> _classes = new List<string>();
     private const string SelectText = "Press Start\n(Space)";
 
     // Use this for initialization
     void Start()
     {
-        PlayerList = new List<Player>();
         Play.enabled = false;
         cowboyImage = Resources.Load<Sprite>("cowboy");
         dancerImage = Resources.Load<Sprite>("dancer");
@@ -164,27 +163,15 @@ public class playerSelect : MonoBehaviour
         UpdatePlayButton();
     }
 
-    void CheckInputs()
+    public virtual void CheckInputs()
     {
-        if (Input.GetButtonDown("kCancel") || Input.GetButtonDown("j1Cancel") || Input.GetButtonDown("j2Cancel") ||
-            Input.GetButtonDown("j3Cancel") || Input.GetButtonDown("j4Cancel"))
-        {
-            if (kStage == SelectStages.Disabled && j1Stage == SelectStages.Disabled && j2Stage == SelectStages.Disabled && j3Stage == SelectStages.Disabled && j4Stage == SelectStages.Disabled)
-            {
-                Application.LoadLevel("Menu");
-                return;
-            }
-        }
 
-        CheckSubmit();
         CheckHorizontal();
         CheckCancel();
         CheckHorizontalCancel();
         CheckSubmitCancel();
         CheckCancelCancel();
         CheckBackButton();
-
-
     }
 
     void CheckBackButton()
@@ -249,152 +236,6 @@ public class playerSelect : MonoBehaviour
 
     }
 
-    void CheckSubmit()
-    {
-        if (Input.GetButton("kStart"))
-        {
-            if (kSubmit)
-            {
-                string control = "k";
-                if (kStage == SelectStages.Browse)
-                {
-                    if (pickedClasses.Count > 0 && pickedClasses.Contains(PlayerList.Find(c => c.Control == control).Class))
-                    {
-                        PlayPlayersAudio(InvalidClip, control);
-                        return;
-                    }
-
-                    AddPlayer(control);
-                    kStage = SelectStages.Chosen;
-                    kCanHorizontal = false;
-                }
-                if (kStage == SelectStages.Disabled)
-                {
-                    SelectInitialPlayer(control);
-                    kStage = SelectStages.Browse;
-                    kCanHorizontal = true;
-                }
-                kSubmit = false;
-
-            }
-        }
-        if (Input.GetButton("j1Start"))
-        {
-            if (j1Submit)
-            {
-                string control = "j1";
-                
-                if (j1Stage == SelectStages.Browse)
-                {
-                    if (pickedClasses.Count > 0 && pickedClasses.Contains(PlayerList.Find(c => c.Control == control).Class))
-                    {
-                        PlayPlayersAudio(InvalidClip, control);
-                        return;
-                    }
-                    AddPlayer(control);
-                    j1Stage = SelectStages.Chosen;
-                    j1CanHorizontal = false;
-                }
-                if (j1Stage == SelectStages.Disabled)
-                {
-                    SelectInitialPlayer(control);
-                    j1Stage = SelectStages.Browse;
-                    j1CanHorizontal = true;
-                }
-                j1Submit = false;
-
-            }
-
-        }
-        if (Input.GetButton("j2Start"))
-        {
-            if (j2Submit)
-            {
-                string control = "j2";
-
-                if (j2Stage == SelectStages.Browse)
-                {
-                    if (pickedClasses.Count > 0 && pickedClasses.Contains(PlayerList.Find(c => c.Control == control).Class))
-                    {
-                        PlayPlayersAudio(InvalidClip, control);
-                        return;
-                    }
-
-                    AddPlayer(control);
-                    j2Stage = SelectStages.Chosen;
-                    j2CanHorizontal = false;
-                }
-                if (j2Stage == SelectStages.Disabled)
-                {
-                    SelectInitialPlayer(control);
-                    j2Stage = SelectStages.Browse;
-                    j2CanHorizontal = true;
-                }
-                j2Submit = false;
-
-            }
-
-        }
-        if (Input.GetButton("j3Start"))
-        {
-            if (j3Submit)
-            {
-                string control = "j3";
-
-                if (j3Stage == SelectStages.Browse)
-                {
-                    if (pickedClasses.Count > 0 && pickedClasses.Contains(PlayerList.Find(c => c.Control == control).Class))
-                    {
-                        PlayPlayersAudio(InvalidClip, control);
-                        return;
-                    }
-
-                    AddPlayer(control);
-                    j3Stage = SelectStages.Chosen;
-                    j3CanHorizontal = false;
-                }
-                if (j3Stage == SelectStages.Disabled)
-                {
-                    SelectInitialPlayer(control);
-                    j3Stage = SelectStages.Browse;
-                    j3CanHorizontal = true;
-                }
-                j3Submit = false;
-
-            }
-
-        }
-        if (Input.GetButton("j4Start"))
-        {
-            if (j4Submit)
-            {
-                string control = "j4";
-
-                if (j4Stage == SelectStages.Browse)
-                {
-                    if (pickedClasses.Count > 0 && pickedClasses.Contains(PlayerList.Find(c => c.Control == control).Class))
-                    {
-                        PlayPlayersAudio(InvalidClip, control);
-                        return;
-                    }
-
-                    AddPlayer(control);
-                    j4Stage = SelectStages.Chosen;
-                    j4CanHorizontal = false;
-                }
-                if (j4Stage == SelectStages.Disabled)
-                {
-                    SelectInitialPlayer(control);
-                    j4Stage = SelectStages.Browse;
-                    j4CanHorizontal = true;
-                }
-                j4Submit = false;
-
-            }
-
-        }
-
-    }
 
     void CheckHorizontal()
     {
@@ -543,23 +384,6 @@ public class playerSelect : MonoBehaviour
         }
     }
 
-    private void SelectInitialPlayer(string control)
-    {
-        if (PlayerList.Count >= 4 || PlayerList.Any(player => player.Control == control))
-        {
-            return;
-        }
-
-        string pClass = _classes.FirstOrDefault(c => !pickedClasses.Contains(c));
-
-        if (pClass == string.Empty)
-        {
-            Debug.LogError("Class name null!");
-        }
-
-        AddInitialPlayer(control, pClass);
-    }
-
     void ChangePlayer(string control, int dir)
     {
         bool check = false;
@@ -609,7 +433,7 @@ public class playerSelect : MonoBehaviour
         UpdateSelect(PlayerList);
     }
 
-    void AddPlayer(string control)
+    protected void AddPlayer(string control)
     {
         PlayerList.Find(pl => pl.Control == control).Set = true;
         pickedClasses.Add(PlayerList.Find(p2 => p2.Control == control).Class);
@@ -619,24 +443,8 @@ public class playerSelect : MonoBehaviour
         UpdateSelect(PlayerList);
     }
 
-    void AddInitialPlayer(string control, string pClass)
-    {
-        var p = new Player
-        {
-            Control = control,
-            Class = pClass,
-            Num = PlayerList.Count,
-            Set = false
-        };
 
-        PlayerList.Add(p);
-
-        PlayPlayersAudio(ReadyClip, control);
-
-        UpdateSelect(PlayerList);
-    }
-
-    void PlayPlayersAudio(AudioClip clip, string control)
+    protected void PlayPlayersAudio(AudioClip clip, string control)
     {
         Player p = PlayerList.Find(pl => pl.Control == control);
 
@@ -658,7 +466,7 @@ public class playerSelect : MonoBehaviour
 
     }
 
-    void UpdateSelect(List<Player> players)
+    protected void UpdateSelect(List<Player> players)
     {
         P1Text.text = SelectText;
         P2Text.text = SelectText;

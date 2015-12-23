@@ -14,7 +14,7 @@ public class lobbyScript : Photon.PunBehaviour
 
         onlineHelper.LobbyName = LobbyName;
         onlineHelper.Joining = false;
-        Application.LoadLevel("DunesOnlineLoading");
+        Application.LoadLevel("OnlineLoading");
     }
 
     public void SetLobbyName(string lobbyName)

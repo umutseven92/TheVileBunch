@@ -60,6 +60,7 @@ public class onlineLoadingScreen : Photon.PunBehaviour
         }
         else
         {
+            // Join lobby
             PhotonNetwork.JoinRoom(onlineHelper.LobbyName);
         }
     }
@@ -67,6 +68,7 @@ public class onlineLoadingScreen : Photon.PunBehaviour
     {
         if (!onlineHelper.Joining)
         {
+            // Create lobby
             PhotonNetwork.CreateRoom(onlineHelper.LobbyName, new RoomOptions() { maxPlayers = 4 }, null);
 
         }
