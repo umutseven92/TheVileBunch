@@ -5,6 +5,12 @@ using System.Linq;
 public class onlinePlayerSelect : playerSelect
 {
     private bool chosen = false;
+    private PhotonView pView;
+
+    void Start()
+    {
+        pView = GetComponentInParent<PhotonView>();
+    }
 
     public override void CheckInputs()
     {
@@ -28,18 +34,258 @@ public class onlinePlayerSelect : playerSelect
         }
     }
 
-    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+
+    protected override void AddPlayer(string control)
     {
+        pView.RPC("PlayerAddRPC", PhotonTargets.All, control, pView.viewID);
+    }
+
+    protected override void AddInitialPlayer(string control, string pClass)
+    {
+        pView.RPC("PlayerAddInitialRPC", PhotonTargets.All, control, pClass, pView.viewID);
+    }
+
+    protected override void RemovePlayer(string control)
+    {
+        pView.RPC("PlayerRemoveRPC", PhotonTargets.All, control, pView.viewID);
+    }
+
+    public void OnlineRemovePlayer(string control)
+    {
+        if (PlayerList.All(player => player.Control != control))
+        {
+            return;
+        }
+        Player playerToRemove = PlayerList.First(p => p.Control == control);
+
+        switch (control)
+        {
+            case "k":
+                if (kStage == SelectStages.Browse)
+                {
+                    kStage = SelectStages.Disabled;
+                    kCanHorizontal = false;
+                    PlayerList.Remove(playerToRemove);
+                }
+                if (kStage == SelectStages.Chosen)
+                {
+                    kStage = SelectStages.Browse;
+                    kCanHorizontal = true;
+                    pickedClasses.Remove(playerToRemove.Class);
+                    playerToRemove.Set = false;
+                }
+                break;
+
+            case "j1":
+                if (j1Stage == SelectStages.Browse)
+                {
+                    j1Stage = SelectStages.Disabled;
+                    j1CanHorizontal = false;
+                    PlayerList.Remove(playerToRemove);
+                }
+                if (j1Stage == SelectStages.Chosen)
+                {
+                    j1Stage = SelectStages.Browse;
+                    j1CanHorizontal = true;
+                    pickedClasses.Remove(playerToRemove.Class);
+                    playerToRemove.Set = false;
+                }
+                break;
+
+            case "j2":
+                if (j2Stage == SelectStages.Browse)
+                {
+                    j2Stage = SelectStages.Disabled;
+                    j2CanHorizontal = false;
+                    PlayerList.Remove(playerToRemove);
+                }
+                if (j2Stage == SelectStages.Chosen)
+                {
+                    j2Stage = SelectStages.Browse;
+                    j2CanHorizontal = true;
+                    pickedClasses.Remove(playerToRemove.Class);
+                    playerToRemove.Set = false;
+
+                }
+                break;
+
+            case "j3":
+                if (j3Stage == SelectStages.Browse)
+                {
+                    j3Stage = SelectStages.Disabled;
+                    j3CanHorizontal = false;
+                    PlayerList.Remove(playerToRemove);
+                }
+                if (j3Stage == SelectStages.Chosen)
+                {
+                    j3Stage = SelectStages.Browse;
+                    j3CanHorizontal = true;
+                    pickedClasses.Remove(playerToRemove.Class);
+                    playerToRemove.Set = false;
+                }
+                break;
+
+            case "j4":
+                if (j4Stage == SelectStages.Browse)
+                {
+                    j4Stage = SelectStages.Disabled;
+                    j4CanHorizontal = false;
+                    PlayerList.Remove(playerToRemove);
+                }
+                if (j4Stage == SelectStages.Chosen)
+                {
+                    j4Stage = SelectStages.Browse;
+                    j4CanHorizontal = true;
+                    pickedClasses.Remove(playerToRemove.Class);
+                    playerToRemove.Set = false;
+                }
+                break;
+
+            default:
+                Debug.LogError(control + " not found!");
+                break;
+
+        }
+
+        UpdateSelect(PlayerList);
+    }
+
+    public void OnlineAddInitialPlayer(string control, string pClass)
+    {
+        var p = new Player
+        {
+            Control = control,
+            Class = pClass,
+            Num = PlayerList.Count,
+            Set = false
+        };
+
+        PlayerList.Add(p);
+
+        PlayPlayersAudio(ReadyClip, control);
+
+        UpdateSelect(PlayerList);
+    }
+
+    public void OnlineAddPlayer(string control)
+    {
+        Debug.Log("RPCLOBBY");
+        PlayerList.Find(pl => pl.Control == control).Set = true;
+        pickedClasses.Add(PlayerList.Find(p2 => p2.Control == control).Class);
+
+        PlayPlayersAudio(Clip, control);
+
+        UpdateSelect(PlayerList);
+    }
+
+    void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        /*
         if (stream.isWriting)
         {
             // Our player
-            stream.SendNext(PlayerList);
+            stream.SendNext(PlayerList.Count);
+
+            for (int i = 0; i < PlayerList.Count; i++)
+            {
+                stream.SendNext(PlayerList[i].Class);
+               // stream.SendNext(PlayerList[i].Control);
+                stream.SendNext(PhotonNetwork.player.ID);
+                stream.SendNext(PlayerList[i].Num);
+                stream.SendNext(PlayerList[i].Set);
+            }
         }
         else
         {
             // Network player
-            PlayerList = (List<Player>)stream.ReceiveNext();
+            var count = (int)stream.ReceiveNext();
+
+            var list = new List<Player>();
+
+            for (int i = 0; i < count; i++)
+            {
+
+                var pClass = (string)stream.ReceiveNext();
+                var control = (int)stream.ReceiveNext();
+                var num = (int)stream.ReceiveNext();
+                var set = (bool)stream.ReceiveNext();
+
+                var player = new Player
+                {
+                    Class = pClass,
+                    Control = control.ToString(),
+                    Num = num,
+                    Set = set
+                };
+
+                list.Add(player);
+            }
+
+            PlayerList = list;
         }
+        */
+    }
+
+    public override void Update()
+    {
+        base.Update();
+        UpdateSelect(PlayerList);
+    }
+
+    public override void CheckCancel()
+    {
+        base.CheckCancel();
+        if (Input.GetButton("kCancel"))
+        {
+            if (kCancel)
+            {
+                RemovePlayer("k");
+                kCancel = false;
+                chosen = false;
+            }
+        }
+        if (Input.GetButton("j1Cancel"))
+        {
+            if (j1Cancel)
+            {
+                RemovePlayer("j1");
+                j1Cancel = false;
+                chosen = false;
+            }
+        }
+        if (Input.GetButton("j2Cancel"))
+        {
+            if (j2Cancel)
+            {
+                RemovePlayer("j2");
+                j2Cancel = false;
+                chosen = false;
+            }
+        }
+        if (Input.GetButton("j3Cancel"))
+        {
+            if (j3Cancel)
+            {
+                RemovePlayer("j3");
+                j3Cancel = false;
+                chosen = false;
+            }
+        }
+        if (Input.GetButton("j4Cancel"))
+        {
+            if (j4Cancel)
+            {
+                RemovePlayer("j4");
+                j4Cancel = false;
+                chosen = false;
+            }
+        }
+    }
+
+    void OnGUI()
+    {
+        GUILayout.Label("Online:\t\t" + PhotonNetwork.playerList.Length + "/" + PhotonNetwork.room.maxPlayers + "\n" +
+                        "Player List:\t" + PlayerList.Count + "/" + 4);
     }
 
     void CheckSubmit()
@@ -60,6 +306,7 @@ public class onlinePlayerSelect : playerSelect
                     AddPlayer(control);
                     kStage = SelectStages.Chosen;
                     kCanHorizontal = false;
+                    chosen = true;
                 }
                 if (kStage == SelectStages.Disabled)
                 {
@@ -193,37 +440,6 @@ public class onlinePlayerSelect : playerSelect
         }
     }
 
-    private void SelectInitialPlayer(string control)
-    {
-        if (PlayerList.Count >= 4 || PlayerList.Any(player => player.Control == control))
-        {
-            return;
-        }
 
-        string pClass = _classes.FirstOrDefault(c => !pickedClasses.Contains(c));
 
-        if (pClass == string.Empty)
-        {
-            Debug.LogError("Class name null!");
-        }
-
-        AddInitialPlayer(control, pClass);
-    }
-
-    private void AddInitialPlayer(string control, string pClass)
-    {
-        var p = new Player
-        {
-            Control = control,
-            Class = pClass,
-            Num = PlayerList.Count,
-            Set = false
-        };
-
-        PlayerList.Add(p);
-
-        PlayPlayersAudio(ReadyClip, control);
-
-        UpdateSelect(PlayerList);
-    }
 }

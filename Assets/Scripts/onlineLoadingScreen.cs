@@ -74,6 +74,11 @@ public class onlineLoadingScreen : Photon.PunBehaviour
         }
     }
 
+    void OnGUI()
+    {
+        GUILayout.Label(PhotonNetwork.connectionStateDetailed.ToString());
+    }
+
     public override void OnJoinedRoom()
     {
         _ready = true;

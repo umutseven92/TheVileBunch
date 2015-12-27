@@ -37,4 +37,7 @@ MonoBehaviour:
   - SlashRPC
   - BulletHitRPC
   - SlashHitRPC
+  - PlayerAddRPC
+  - PlayerAddInitialRPC
+  - PlayerRemoveRPC
   DisableAutoOpenWizard: 1

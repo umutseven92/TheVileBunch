@@ -73,7 +73,6 @@ public class networkCharacter : Photon.MonoBehaviour
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
-
         if (stream.isWriting)
         {
             var ply = transform.GetComponent<onlinePlayer>();

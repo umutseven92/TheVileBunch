@@ -20,6 +20,51 @@ public class localPlayerSelect : playerSelect
         CheckSubmit();
     }
 
+    public override void CheckCancel()
+    {
+        base.CheckCancel();
+        if (Input.GetButton("kCancel"))
+        {
+            if (kCancel)
+            {
+                RemovePlayer("k");
+                kCancel = false;
+            }
+        }
+        if (Input.GetButton("j1Cancel"))
+        {
+            if (j1Cancel)
+            {
+                RemovePlayer("j1");
+                j1Cancel = false;
+            }
+        }
+        if (Input.GetButton("j2Cancel"))
+        {
+            if (j2Cancel)
+            {
+                RemovePlayer("j2");
+                j2Cancel = false;
+            }
+        }
+        if (Input.GetButton("j3Cancel"))
+        {
+            if (j3Cancel)
+            {
+                RemovePlayer("j3");
+                j3Cancel = false;
+            }
+        }
+        if (Input.GetButton("j4Cancel"))
+        {
+            if (j4Cancel)
+            {
+                RemovePlayer("j4");
+                j4Cancel = false;
+            }
+        }
+    }
+
     void CheckSubmit()
     {
         if (Input.GetButton("kStart"))
@@ -166,38 +211,5 @@ public class localPlayerSelect : playerSelect
         }
     }
 
-    private void SelectInitialPlayer(string control)
-    {
-        if (PlayerList.Count >= 4 || PlayerList.Any(player => player.Control == control))
-        {
-            return;
-        }
-
-        string pClass = _classes.FirstOrDefault(c => !pickedClasses.Contains(c));
-
-        if (pClass == string.Empty)
-        {
-            Debug.LogError("Class name null!");
-        }
-
-        AddInitialPlayer(control, pClass);
-    }
-
-    private void AddInitialPlayer(string control, string pClass)
-    {
-        var p = new Player
-        {
-            Control = control,
-            Class = pClass,
-            Num = PlayerList.Count,
-            Set = false
-        };
-
-        PlayerList.Add(p);
-
-        PlayPlayersAudio(ReadyClip, control);
-
-        UpdateSelect(PlayerList);
-    }
 
 }

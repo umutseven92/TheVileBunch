@@ -11,11 +11,8 @@ public class serverBrowser : Photon.PunBehaviour
 
     public void JoinRoom()
     {
-        PhotonNetwork.JoinRoom(RoomName);
-    }
-
-    public override void OnJoinedRoom()
-    {
+        onlineHelper.Joining = true;
+        onlineHelper.LobbyName = RoomName;
         PhotonNetwork.LoadLevel("OnlineLoading");
     }
 }

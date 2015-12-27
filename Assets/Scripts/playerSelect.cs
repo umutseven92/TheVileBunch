@@ -63,11 +63,11 @@ public class playerSelect : Photon.PunBehaviour
     protected bool j3Submit = true;
     protected bool j4Submit = true;
 
-    private bool kCancel = true;
-    private bool j1Cancel = true;
-    private bool j2Cancel = true;
-    private bool j3Cancel = true;
-    private bool j4Cancel = true;
+    protected bool kCancel = true;
+    protected bool j1Cancel = true;
+    protected bool j2Cancel = true;
+    protected bool j3Cancel = true;
+    protected bool j4Cancel = true;
 
     protected bool kCanHorizontal = false;
     protected bool j1CanHorizontal = false;
@@ -157,7 +157,7 @@ public class playerSelect : Photon.PunBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    public virtual void Update()
     {
         CheckInputs();
         UpdatePlayButton();
@@ -165,7 +165,6 @@ public class playerSelect : Photon.PunBehaviour
 
     public virtual void CheckInputs()
     {
-
         CheckHorizontal();
         CheckCancel();
         CheckHorizontalCancel();
@@ -234,6 +233,38 @@ public class playerSelect : Photon.PunBehaviour
             j4Submit = true;
         }
 
+    }
+    protected virtual void SelectInitialPlayer(string control)
+    {
+        if (PlayerList.Count >= 4 || PlayerList.Any(player => player.Control == control))
+        {
+            return;
+        }
+
+        string pClass = _classes.FirstOrDefault(c => !pickedClasses.Contains(c));
+
+        if (pClass == string.Empty)
+        {
+            Debug.LogError("Class name null!");
+        }
+
+        AddInitialPlayer(control, pClass);
+    }
+    protected virtual void AddInitialPlayer(string control, string pClass)
+    {
+        var p = new Player
+        {
+            Control = control,
+            Class = pClass,
+            Num = PlayerList.Count,
+            Set = false
+        };
+
+        PlayerList.Add(p);
+
+        PlayPlayersAudio(ReadyClip, control);
+
+        UpdateSelect(PlayerList);
     }
 
 
@@ -315,48 +346,8 @@ public class playerSelect : Photon.PunBehaviour
         }
     }
 
-    void CheckCancel()
+    public virtual void CheckCancel()
     {
-        if (Input.GetButton("kCancel"))
-        {
-            if (kCancel)
-            {
-                RemovePlayer("k");
-                kCancel = false;
-            }
-        }
-        if (Input.GetButton("j1Cancel"))
-        {
-            if (j1Cancel)
-            {
-                RemovePlayer("j1");
-                j1Cancel = false;
-            }
-        }
-        if (Input.GetButton("j2Cancel"))
-        {
-            if (j2Cancel)
-            {
-                RemovePlayer("j2");
-                j2Cancel = false;
-            }
-        }
-        if (Input.GetButton("j3Cancel"))
-        {
-            if (j3Cancel)
-            {
-                RemovePlayer("j3");
-                j3Cancel = false;
-            }
-        }
-        if (Input.GetButton("j4Cancel"))
-        {
-            if (j4Cancel)
-            {
-                RemovePlayer("j4");
-                j4Cancel = false;
-            }
-        }
 
     }
 
@@ -433,7 +424,7 @@ public class playerSelect : Photon.PunBehaviour
         UpdateSelect(PlayerList);
     }
 
-    protected void AddPlayer(string control)
+    protected virtual void AddPlayer(string control)
     {
         PlayerList.Find(pl => pl.Control == control).Set = true;
         pickedClasses.Add(PlayerList.Find(p2 => p2.Control == control).Class);
@@ -442,7 +433,6 @@ public class playerSelect : Photon.PunBehaviour
 
         UpdateSelect(PlayerList);
     }
-
 
     protected void PlayPlayersAudio(AudioClip clip, string control)
     {
@@ -533,9 +523,8 @@ public class playerSelect : Photon.PunBehaviour
     }
 
 
-    private void RemovePlayer(string control)
+    protected virtual void RemovePlayer(string control)
     {
-
         if (PlayerList.All(player => player.Control != control))
         {
             return;

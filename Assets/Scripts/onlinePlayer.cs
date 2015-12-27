@@ -13,9 +13,12 @@ public class onlinePlayer : playerControl
 
     public Text OnlineNameText;
 
+    private Collider2D _other;
+    private PhotonView _pView;
+
     void Start()
     {
-        pView = GetComponentInParent<PhotonView>();
+        _pView = GetComponentInParent<PhotonView>();
     }
 
     public override void Flip()
@@ -121,11 +124,11 @@ public class onlinePlayer : playerControl
         LowerHealth(BulletDamage);
 
         // Small push
-        _rb2D.AddForce(Other.gameObject.transform.position.x < this.transform.position.x
+        _rb2D.AddForce(_other.gameObject.transform.position.x < this.transform.position.x
             ? new Vector2(PushX, PushY)
             : new Vector2(-PushY, PushY));
 
-        CheckHealth(Other);
+        CheckHealth(_other);
 
     }
 
@@ -150,7 +153,7 @@ public class onlinePlayer : playerControl
                     go.Where(
                         g =>
                             g.gameObject.GetComponent<playerControl>().playerNum ==
-                            Other.GetComponent<slashScript>().num))
+                            _other.GetComponent<slashScript>().num))
             {
                 pX = g.transform.position.x;
             }
@@ -160,15 +163,12 @@ public class onlinePlayer : playerControl
                 ? new Vector2(PushX, PushY)
                 : new Vector2(-PushX, PushY));
         }
-        CheckHealth(Other);
+        CheckHealth(_other);
     }
-
-    private Collider2D Other;
-    private PhotonView pView;
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        Other = other;
+        _other = other;
 
         // Rope
         if (other.name.StartsWith("ropeAttached") && _up)
@@ -181,7 +181,7 @@ public class onlinePlayer : playerControl
         {
             if (!_hit)
             {
-                pView.RPC("BulletHitRPC", PhotonTargets.All, pView.viewID);
+                _pView.RPC("BulletHitRPC", PhotonTargets.All, _pView.viewID);
             }
         }
 
@@ -192,7 +192,7 @@ public class onlinePlayer : playerControl
             {
                 if (!_hit)
                 {
-                    pView.RPC("SlashHitRPC", PhotonTargets.All, pView.viewID);
+                    _pView.RPC("SlashHitRPC", PhotonTargets.All, _pView.viewID);
                 }
             }
         }
@@ -236,8 +236,7 @@ public class onlinePlayer : playerControl
         OnlinebXSpeed = bXSpeed;
         OnlinebYSpeed = bYSpeed;
 
-        var pView = GetComponentInParent<PhotonView>();
-        pView.RPC("ShootRPC", PhotonTargets.All, pView.viewID, bXPos, bYPos, bXSpeed, bYSpeed);
+        _pView.RPC("ShootRPC", PhotonTargets.All, _pView.viewID, bXPos, bYPos, bXSpeed, bYSpeed);
 
         bXPos = 0;
         bYPos = 0;
@@ -247,7 +246,6 @@ public class onlinePlayer : playerControl
 
     protected void Slash()
     {
-        var pView = GetComponentInParent<PhotonView>();
-        pView.RPC("SlashRPC", PhotonTargets.All, pView.viewID);
+        _pView.RPC("SlashRPC", PhotonTargets.All, _pView.viewID);
     }
 }

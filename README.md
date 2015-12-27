@@ -1,9 +1,9 @@
-# Frontier Strain (Working Title)
+# The Vile Bunch (Frontier Strain)
 
 
 ## Overview
 
-Frontier Strain is a local & multiplayer arena action game, set in the Wild West also known as the  American Frontier. Four players fight to the death, using guns, swords and even their fists, with unique, different characters. 
+The Vile Bunch is a local & multiplayer arena action game, set in the Wild West, also known as the American Frontier. Four players fight to the death, using guns, swords and even their fists, with unique, different characters. 
 
 ##Story
 
@@ -24,7 +24,7 @@ The game is set in 1873, in the the Western United States. Four outlaws, all fro
 
 ##Gameplay 
 
-Frontier Strain 2D game that can be played locally with four people or online with one player. The game is played on multiple levels (“arenas”) with different layouts, each centered around the Wild West theme. The game ends when a player reaches three wins.
+The Vile Bunch 2D game that can be played locally with four people or online with one player. The game is played on multiple levels (“arenas”) with different layouts, each centered around the Wild West theme. The game ends when a player reaches three wins.
 
 The game is won by eliminating the rest of the players while surviving yourself. All characters can run, jump, shoot and use melee. Each character is the same gameplay wise, with cosmetic changes. Each player can choose one character.
 
