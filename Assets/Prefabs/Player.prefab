@@ -467,7 +467,7 @@ MonoBehaviour:
   MovementLock: 0.2
   GunLightSpeed: 0.3
   SlashOffset: 0.5
-  GunOffset: 0.5
+  GunOffset: 0.6
   SlashingMs: 0.3
   HitMs: 2
   HealedMs: 2
@@ -1182,7 +1182,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: GunOffset
-      value: 0.5
+      value: 0.6
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: BulletSpeed

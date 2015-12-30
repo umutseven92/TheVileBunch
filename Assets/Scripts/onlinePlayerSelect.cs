@@ -1,14 +1,30 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 
 public class onlinePlayerSelect : playerSelect
 {
-    private bool chosen = false;
     private PhotonView pView;
 
-    void Start()
+    private string _playerId;
+
+    [HideInInspector]
+    public string PlayerId
     {
+        get
+        {
+            if (_playerId == null)
+            {
+                _playerId = Guid.NewGuid().ToString();
+            }
+            return _playerId;
+        }
+    }
+
+    protected override void Start()
+    {
+        base.Start();
         pView = GetComponentInParent<PhotonView>();
     }
 
@@ -28,21 +44,142 @@ public class onlinePlayerSelect : playerSelect
 
         base.CheckInputs();
 
-        if (!chosen)
-        {
-            CheckSubmit();
-        }
+        CheckSubmit();
     }
 
+    protected override void CheckHorizontal()
+    {
+        if (kCanHorizontal)
+        {
+            if (Input.GetAxis("kHorizontal") > 0)
+            {
+                ChangePlayer("k", 1, _playerId);
+                kDelay = true;
+            }
+            else if (Input.GetAxis("kHorizontal") < 0)
+            {
+                ChangePlayer("k", -1, _playerId);
+                kDelay = true;
+            }
+
+        }
+        if (j1CanHorizontal)
+        {
+            if (Input.GetAxis("j1Horizontal") > 0)
+            {
+                ChangePlayer("j1", 1, _playerId);
+                j1Delay = true;
+            }
+            else if (Input.GetAxis("j1Horizontal") < 0)
+            {
+                ChangePlayer("j1", -1, _playerId);
+                j1Delay = true;
+            }
+
+        }
+
+        if (j2CanHorizontal)
+        {
+            if (Input.GetAxis("j2Horizontal") > 0)
+            {
+                ChangePlayer("j2", 1, _playerId);
+                j2Delay = true;
+            }
+            else if (Input.GetAxis("j2Horizontal") < 0)
+            {
+                ChangePlayer("j2", -1, _playerId);
+                j2Delay = true;
+            }
+
+        }
+
+        if (j3CanHorizontal)
+        {
+            if (Input.GetAxis("j3Horizontal") > 0)
+            {
+                ChangePlayer("j3", 1, _playerId);
+                j3Delay = true;
+            }
+            else if (Input.GetAxis("j3Horizontal") < 0)
+            {
+                ChangePlayer("j3", -1, _playerId);
+                j3Delay = true;
+            }
+
+        }
+
+        if (j4CanHorizontal)
+        {
+            if (Input.GetAxis("j4Horizontal") > 0)
+            {
+                ChangePlayer("j4", 1, _playerId);
+                j4Delay = true;
+            }
+            else if (Input.GetAxis("j4Horizontal") < 0)
+            {
+                ChangePlayer("j4", -1, _playerId);
+                j4Delay = true;
+            }
+
+        }
+    }
+    void ChangePlayer(string control, int dir, string playerId)
+    {
+        bool check = false;
+
+        switch (control)
+        {
+            case "k":
+                check = kDelay;
+                break;
+            case "j1":
+                check = j1Delay;
+                break;
+            case "j2":
+                check = j2Delay;
+                break;
+            case "j3":
+                check = j3Delay;
+                break;
+            case "j4":
+                check = j4Delay;
+                break;
+            default:
+                Debug.LogError("Control not recognized!");
+                break;
+        }
+
+        if (PlayerList.All(player => player.Control != playerId) || check)
+        {
+            return;
+        }
+
+        int classPos = _classes.FindIndex(c => c == PlayerList.First(p => p.Control == playerId).Class);
+
+        if (classPos == 0 && dir == -1)
+        {
+            classPos = _classes.Count;
+        }
+        if (classPos == _classes.Count - 1 && dir == 1)
+        {
+            classPos = -1;
+        }
+
+        PlayerList.Find(p => p.Control == playerId).Class = _classes[classPos + dir];
+
+        PlayPlayersAudio(DirClip, control);
+
+        UpdateSelect(PlayerList);
+    }
 
     protected override void AddPlayer(string control)
     {
         pView.RPC("PlayerAddRPC", PhotonTargets.All, control, pView.viewID);
     }
 
-    protected override void AddInitialPlayer(string control, string pClass)
+    protected override void AddInitialPlayer(string control, string pClass, string inputControl)
     {
-        pView.RPC("PlayerAddInitialRPC", PhotonTargets.All, control, pClass, pView.viewID);
+        pView.RPC("PlayerAddInitialRPC", PhotonTargets.All, control, pClass, inputControl, pView.viewID);
     }
 
     protected override void RemovePlayer(string control)
@@ -58,7 +195,7 @@ public class onlinePlayerSelect : playerSelect
         }
         Player playerToRemove = PlayerList.First(p => p.Control == control);
 
-        switch (control)
+        switch (playerToRemove.OnlineControl)
         {
             case "k":
                 if (kStage == SelectStages.Browse)
@@ -150,14 +287,15 @@ public class onlinePlayerSelect : playerSelect
         UpdateSelect(PlayerList);
     }
 
-    public void OnlineAddInitialPlayer(string control, string pClass)
+    public void OnlineAddInitialPlayer(string control, string pClass, string inputControl = null)
     {
         var p = new Player
         {
             Control = control,
             Class = pClass,
             Num = PlayerList.Count,
-            Set = false
+            Set = false,
+            OnlineControl = inputControl
         };
 
         PlayerList.Add(p);
@@ -169,61 +307,12 @@ public class onlinePlayerSelect : playerSelect
 
     public void OnlineAddPlayer(string control)
     {
-        Debug.Log("RPCLOBBY");
         PlayerList.Find(pl => pl.Control == control).Set = true;
         pickedClasses.Add(PlayerList.Find(p2 => p2.Control == control).Class);
 
         PlayPlayersAudio(Clip, control);
 
         UpdateSelect(PlayerList);
-    }
-
-    void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-    {
-        /*
-        if (stream.isWriting)
-        {
-            // Our player
-            stream.SendNext(PlayerList.Count);
-
-            for (int i = 0; i < PlayerList.Count; i++)
-            {
-                stream.SendNext(PlayerList[i].Class);
-               // stream.SendNext(PlayerList[i].Control);
-                stream.SendNext(PhotonNetwork.player.ID);
-                stream.SendNext(PlayerList[i].Num);
-                stream.SendNext(PlayerList[i].Set);
-            }
-        }
-        else
-        {
-            // Network player
-            var count = (int)stream.ReceiveNext();
-
-            var list = new List<Player>();
-
-            for (int i = 0; i < count; i++)
-            {
-
-                var pClass = (string)stream.ReceiveNext();
-                var control = (int)stream.ReceiveNext();
-                var num = (int)stream.ReceiveNext();
-                var set = (bool)stream.ReceiveNext();
-
-                var player = new Player
-                {
-                    Class = pClass,
-                    Control = control.ToString(),
-                    Num = num,
-                    Set = set
-                };
-
-                list.Add(player);
-            }
-
-            PlayerList = list;
-        }
-        */
     }
 
     public override void Update()
@@ -239,45 +328,40 @@ public class onlinePlayerSelect : playerSelect
         {
             if (kCancel)
             {
-                RemovePlayer("k");
+                RemovePlayer(PlayerId);
                 kCancel = false;
-                chosen = false;
             }
         }
         if (Input.GetButton("j1Cancel"))
         {
             if (j1Cancel)
             {
-                RemovePlayer("j1");
+                RemovePlayer(PlayerId);
                 j1Cancel = false;
-                chosen = false;
             }
         }
         if (Input.GetButton("j2Cancel"))
         {
             if (j2Cancel)
             {
-                RemovePlayer("j2");
+                RemovePlayer(PlayerId);
                 j2Cancel = false;
-                chosen = false;
             }
         }
         if (Input.GetButton("j3Cancel"))
         {
             if (j3Cancel)
             {
-                RemovePlayer("j3");
+                RemovePlayer(PlayerId);
                 j3Cancel = false;
-                chosen = false;
             }
         }
         if (Input.GetButton("j4Cancel"))
         {
             if (j4Cancel)
             {
-                RemovePlayer("j4");
+                RemovePlayer(PlayerId);
                 j4Cancel = false;
-                chosen = false;
             }
         }
     }
@@ -288,29 +372,44 @@ public class onlinePlayerSelect : playerSelect
                         "Player List:\t" + PlayerList.Count + "/" + 4);
     }
 
+    protected override void SelectInitialPlayer(string control, string inputControl)
+    {
+        if (PlayerList.Count >= 4)
+        {
+            return;
+        }
+
+        string pClass = _classes.FirstOrDefault(c => !pickedClasses.Contains(c));
+
+        if (pClass == string.Empty)
+        {
+            Debug.LogError("Class name null!");
+        }
+
+        AddInitialPlayer(control, pClass, inputControl);
+    }
+
     void CheckSubmit()
     {
         if (Input.GetButton("kStart"))
         {
             if (kSubmit)
             {
-                string control = "k";
                 if (kStage == SelectStages.Browse)
                 {
-                    if (pickedClasses.Count > 0 && pickedClasses.Contains(PlayerList.Find(c => c.Control == control).Class))
+                    if (pickedClasses.Count > 0 && pickedClasses.Contains(PlayerList.Find(c => c.Control == PlayerId).Class))
                     {
-                        PlayPlayersAudio(InvalidClip, control);
+                        PlayPlayersAudio(InvalidClip, PlayerId);
                         return;
                     }
 
-                    AddPlayer(control);
+                    AddPlayer(PlayerId);
                     kStage = SelectStages.Chosen;
                     kCanHorizontal = false;
-                    chosen = true;
                 }
                 if (kStage == SelectStages.Disabled)
                 {
-                    SelectInitialPlayer(control);
+                    SelectInitialPlayer(PlayerId, "k");
                     kStage = SelectStages.Browse;
                     kCanHorizontal = true;
                 }
@@ -321,23 +420,20 @@ public class onlinePlayerSelect : playerSelect
         {
             if (j1Submit)
             {
-                string control = "j1";
-
                 if (j1Stage == SelectStages.Browse)
                 {
-                    if (pickedClasses.Count > 0 && pickedClasses.Contains(PlayerList.Find(c => c.Control == control).Class))
+                    if (pickedClasses.Count > 0 && pickedClasses.Contains(PlayerList.Find(c => c.Control == PlayerId).Class))
                     {
-                        PlayPlayersAudio(InvalidClip, control);
+                        PlayPlayersAudio(InvalidClip, PlayerId);
                         return;
                     }
-                    AddPlayer(control);
+                    AddPlayer(PlayerId);
                     j1Stage = SelectStages.Chosen;
                     j1CanHorizontal = false;
-                    chosen = true;
                 }
                 if (j1Stage == SelectStages.Disabled)
                 {
-                    SelectInitialPlayer(control);
+                    SelectInitialPlayer(PlayerId, "j1");
                     j1Stage = SelectStages.Browse;
                     j1CanHorizontal = true;
                 }
@@ -350,27 +446,25 @@ public class onlinePlayerSelect : playerSelect
         {
             if (j2Submit)
             {
-                string control = "j2";
-
                 if (j2Stage == SelectStages.Browse)
                 {
-                    if (pickedClasses.Count > 0 && pickedClasses.Contains(PlayerList.Find(c => c.Control == control).Class))
+                    if (pickedClasses.Count > 0 && pickedClasses.Contains(PlayerList.Find(c => c.Control == PlayerId).Class))
                     {
-                        PlayPlayersAudio(InvalidClip, control);
+                        PlayPlayersAudio(InvalidClip, PlayerId);
                         return;
                     }
 
-                    AddPlayer(control);
+                    AddPlayer(PlayerId);
                     j2Stage = SelectStages.Chosen;
                     j2CanHorizontal = false;
-                    chosen = true;
 
                 }
                 if (j2Stage == SelectStages.Disabled)
                 {
-                    SelectInitialPlayer(control);
+                    SelectInitialPlayer(PlayerId, "j2");
                     j2Stage = SelectStages.Browse;
                     j2CanHorizontal = true;
+
                 }
                 j2Submit = false;
 
@@ -381,27 +475,25 @@ public class onlinePlayerSelect : playerSelect
         {
             if (j3Submit)
             {
-                string control = "j3";
-
                 if (j3Stage == SelectStages.Browse)
                 {
-                    if (pickedClasses.Count > 0 && pickedClasses.Contains(PlayerList.Find(c => c.Control == control).Class))
+                    if (pickedClasses.Count > 0 && pickedClasses.Contains(PlayerList.Find(c => c.Control == PlayerId).Class))
                     {
-                        PlayPlayersAudio(InvalidClip, control);
+                        PlayPlayersAudio(InvalidClip, PlayerId);
                         return;
                     }
 
-                    AddPlayer(control);
+                    AddPlayer(PlayerId);
                     j3Stage = SelectStages.Chosen;
                     j3CanHorizontal = false;
-                    chosen = true;
 
                 }
                 if (j3Stage == SelectStages.Disabled)
                 {
-                    SelectInitialPlayer(control);
+                    SelectInitialPlayer(PlayerId, "j3");
                     j3Stage = SelectStages.Browse;
                     j3CanHorizontal = true;
+
                 }
                 j3Submit = false;
 
@@ -412,27 +504,25 @@ public class onlinePlayerSelect : playerSelect
         {
             if (j4Submit)
             {
-                string control = "j4";
-
                 if (j4Stage == SelectStages.Browse)
                 {
-                    if (pickedClasses.Count > 0 && pickedClasses.Contains(PlayerList.Find(c => c.Control == control).Class))
+                    if (pickedClasses.Count > 0 && pickedClasses.Contains(PlayerList.Find(c => c.Control == PlayerId).Class))
                     {
-                        PlayPlayersAudio(InvalidClip, control);
+                        PlayPlayersAudio(InvalidClip, PlayerId);
                         return;
                     }
 
-                    AddPlayer(control);
+                    AddPlayer(PlayerId);
                     j4Stage = SelectStages.Chosen;
                     j4CanHorizontal = false;
-                    chosen = true;
 
                 }
                 if (j4Stage == SelectStages.Disabled)
                 {
-                    SelectInitialPlayer(control);
+                    SelectInitialPlayer(PlayerId, "j4");
                     j4Stage = SelectStages.Browse;
                     j4CanHorizontal = true;
+
                 }
                 j4Submit = false;
 

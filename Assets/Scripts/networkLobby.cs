@@ -1,4 +1,7 @@
 ﻿
+
+using UnityEngine;
+
 public class networkLobby : Photon.PunBehaviour
 {
     [PunRPC]
@@ -9,10 +12,10 @@ public class networkLobby : Photon.PunBehaviour
     }
 
     [PunRPC]
-    public void PlayerAddInitialRPC(string control, string pClass, int pId)
+    public void PlayerAddInitialRPC(string control, string pClass, string inputControl, int pId)
     {
         var pView = PhotonView.Find(pId);
-        pView.GetComponentInParent<onlinePlayerSelect>().OnlineAddInitialPlayer(control, pClass);
+        pView.GetComponentInParent<onlinePlayerSelect>().OnlineAddInitialPlayer(control, pClass, inputControl);
     }
 
     [PunRPC]
@@ -22,4 +25,7 @@ public class networkLobby : Photon.PunBehaviour
         pView.GetComponentInParent<onlinePlayerSelect>().OnlineRemovePlayer(control);
     }
 
+    void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+    }
 }

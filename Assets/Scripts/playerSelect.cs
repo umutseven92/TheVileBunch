@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.UI;
@@ -51,11 +52,11 @@ public class playerSelect : Photon.PunBehaviour
     private Sprite bButton;
     private Sprite startButton;
 
-    private bool kDelay = false;
-    private bool j1Delay = false;
-    private bool j2Delay = false;
-    private bool j3Delay = false;
-    private bool j4Delay = false;
+    protected bool kDelay = false;
+    protected bool j1Delay = false;
+    protected bool j2Delay = false;
+    protected bool j3Delay = false;
+    protected bool j4Delay = false;
 
     protected bool kSubmit = true;
     protected bool j1Submit = true;
@@ -100,7 +101,7 @@ public class playerSelect : Photon.PunBehaviour
     private const string SelectText = "Press Start\n(Space)";
 
     // Use this for initialization
-    void Start()
+    protected virtual void Start()
     {
         Play.enabled = false;
         cowboyImage = Resources.Load<Sprite>("cowboy");
@@ -234,7 +235,7 @@ public class playerSelect : Photon.PunBehaviour
         }
 
     }
-    protected virtual void SelectInitialPlayer(string control)
+    protected virtual void SelectInitialPlayer(string control, string inputControl = null)
     {
         if (PlayerList.Count >= 4 || PlayerList.Any(player => player.Control == control))
         {
@@ -248,9 +249,9 @@ public class playerSelect : Photon.PunBehaviour
             Debug.LogError("Class name null!");
         }
 
-        AddInitialPlayer(control, pClass);
+        AddInitialPlayer(control, pClass, inputControl);
     }
-    protected virtual void AddInitialPlayer(string control, string pClass)
+    protected virtual void AddInitialPlayer(string control, string pClass, string inputControl)
     {
         var p = new Player
         {
@@ -268,11 +269,10 @@ public class playerSelect : Photon.PunBehaviour
     }
 
 
-    void CheckHorizontal()
+    protected virtual void CheckHorizontal()
     {
         if (kCanHorizontal)
         {
-            // TODO: Fix the bug here (Input.GetAxis not updating).
             if (Input.GetAxis("kHorizontal") > 0)
             {
                 ChangePlayer("k", 1);
@@ -644,6 +644,7 @@ public class playerSelect : Photon.PunBehaviour
         public string Class { get; set; }
         public int Num { get; set; }
         public bool Set { get; set; }
+        public string OnlineControl { get; set; }
     }
 
 }
