@@ -40,4 +40,6 @@ MonoBehaviour:
   - PlayerAddRPC
   - PlayerAddInitialRPC
   - PlayerRemoveRPC
+  - PlayerChangeRPC
+  - SceneSelectRPC
   DisableAutoOpenWizard: 1

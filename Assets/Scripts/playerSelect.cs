@@ -13,6 +13,8 @@ public class playerSelect : Photon.PunBehaviour
     public AudioClip ReadyClip;
 
     public Button Play;
+    public Button Back;
+
     public Text P1Text;
     public Text P2Text;
     public Text P3Text;
@@ -623,7 +625,7 @@ public class playerSelect : Photon.PunBehaviour
         UpdateSelect(PlayerList);
     }
 
-    private void UpdatePlayButton()
+    protected virtual void UpdatePlayButton()
     {
         if (PlayerList.Count(o => o.Set) >= 2)
         {

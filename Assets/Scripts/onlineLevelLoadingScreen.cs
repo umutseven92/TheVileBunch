@@ -1,13 +1,13 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
 using UnityEngine.UI;
 
-public class loadingScreen : Photon.PunBehaviour
+public class onlineLevelLoadingScreen : Photon.PunBehaviour
 {
+
     public Text LoadingText;
     public Text DiaryText;
     public double LoadingMs = 1.500d;
@@ -18,10 +18,19 @@ public class loadingScreen : Photon.PunBehaviour
     private const string Loading = "Loading";
     private List<string> _diaries = new List<string>();
     private System.Random _rand = new System.Random();
+    private bool _ready = false;
 
     void Start()
     {
+        PhotonNetwork.automaticallySyncScene = false;
+        if (PhotonNetwork.isMasterClient)
+        {
+            PhotonNetwork.room.open = false;
+            PhotonNetwork.room.visible = false;
+        }
+
         GameObject speaker = GameObject.Find("Speaker");
+
         if (speaker != null) speaker.GetComponent<AudioSource>().Stop();
 
         var tips = Resources.Load("tips") as TextAsset;
@@ -48,6 +57,12 @@ public class loadingScreen : Photon.PunBehaviour
         DiaryText.text = _diaries[count];
 
         AButton.GetComponent<SpriteRenderer>().enabled = false;
+
+    }
+
+    void OnGUI()
+    {
+        GUILayout.Label(PhotonNetwork.connectionStateDetailed.ToString());
     }
 
     void Update()
@@ -60,7 +75,7 @@ public class loadingScreen : Photon.PunBehaviour
 
             if (Input.GetButtonDown("Submit"))
             {
-                Application.LoadLevel(LevelName);
+                PhotonNetwork.LoadLevel(LevelName);
             }
         }
 
@@ -87,6 +102,5 @@ public class loadingScreen : Photon.PunBehaviour
         {
             LoadingText.text += ".";
         }
-
     }
 }

@@ -25,7 +25,22 @@ public class onlinePlayerSelect : playerSelect
     protected override void Start()
     {
         base.Start();
+        PhotonNetwork.automaticallySyncScene = true;
+
         pView = GetComponentInParent<PhotonView>();
+        Back.onClick.AddListener(() =>
+        {
+            PhotonNetwork.Disconnect();
+            Application.LoadLevel("Menu");
+        });
+        Play.onClick.AddListener(() =>
+        {
+            //pView.RPC("SceneSelectRPC", PhotonTargets.All, pView.viewID);
+            if (PhotonNetwork.isMasterClient)
+            {
+                PhotonNetwork.LoadLevel("OnlineSceneSelect");
+            }
+        });
     }
 
     public override void CheckInputs()
@@ -123,33 +138,39 @@ public class onlinePlayerSelect : playerSelect
 
         }
     }
+
     void ChangePlayer(string control, int dir, string playerId)
     {
-        bool check = false;
+        var delay = false;
 
         switch (control)
         {
             case "k":
-                check = kDelay;
+                delay = kDelay;
                 break;
             case "j1":
-                check = j1Delay;
+                delay = j1Delay;
                 break;
             case "j2":
-                check = j2Delay;
+                delay = j2Delay;
                 break;
             case "j3":
-                check = j3Delay;
+                delay = j3Delay;
                 break;
             case "j4":
-                check = j4Delay;
+                delay = j4Delay;
                 break;
             default:
                 Debug.LogError("Control not recognized!");
                 break;
         }
 
-        if (PlayerList.All(player => player.Control != playerId) || check)
+        pView.RPC("PlayerChangeRPC", PhotonTargets.All, control, dir, playerId, delay, pView.viewID);
+    }
+
+    public void OnlineChangePlayer(string control, int dir, bool delay, string playerId)
+    {
+        if (PlayerList.All(player => player.Control != playerId) || delay)
         {
             return;
         }
@@ -202,14 +223,11 @@ public class onlinePlayerSelect : playerSelect
                 {
                     kStage = SelectStages.Disabled;
                     kCanHorizontal = false;
-                    PlayerList.Remove(playerToRemove);
                 }
                 if (kStage == SelectStages.Chosen)
                 {
                     kStage = SelectStages.Browse;
                     kCanHorizontal = true;
-                    pickedClasses.Remove(playerToRemove.Class);
-                    playerToRemove.Set = false;
                 }
                 break;
 
@@ -218,14 +236,11 @@ public class onlinePlayerSelect : playerSelect
                 {
                     j1Stage = SelectStages.Disabled;
                     j1CanHorizontal = false;
-                    PlayerList.Remove(playerToRemove);
                 }
                 if (j1Stage == SelectStages.Chosen)
                 {
                     j1Stage = SelectStages.Browse;
                     j1CanHorizontal = true;
-                    pickedClasses.Remove(playerToRemove.Class);
-                    playerToRemove.Set = false;
                 }
                 break;
 
@@ -234,15 +249,11 @@ public class onlinePlayerSelect : playerSelect
                 {
                     j2Stage = SelectStages.Disabled;
                     j2CanHorizontal = false;
-                    PlayerList.Remove(playerToRemove);
                 }
                 if (j2Stage == SelectStages.Chosen)
                 {
                     j2Stage = SelectStages.Browse;
                     j2CanHorizontal = true;
-                    pickedClasses.Remove(playerToRemove.Class);
-                    playerToRemove.Set = false;
-
                 }
                 break;
 
@@ -251,14 +262,11 @@ public class onlinePlayerSelect : playerSelect
                 {
                     j3Stage = SelectStages.Disabled;
                     j3CanHorizontal = false;
-                    PlayerList.Remove(playerToRemove);
                 }
                 if (j3Stage == SelectStages.Chosen)
                 {
                     j3Stage = SelectStages.Browse;
                     j3CanHorizontal = true;
-                    pickedClasses.Remove(playerToRemove.Class);
-                    playerToRemove.Set = false;
                 }
                 break;
 
@@ -267,14 +275,11 @@ public class onlinePlayerSelect : playerSelect
                 {
                     j4Stage = SelectStages.Disabled;
                     j4CanHorizontal = false;
-                    PlayerList.Remove(playerToRemove);
                 }
                 if (j4Stage == SelectStages.Chosen)
                 {
                     j4Stage = SelectStages.Browse;
                     j4CanHorizontal = true;
-                    pickedClasses.Remove(playerToRemove.Class);
-                    playerToRemove.Set = false;
                 }
                 break;
 
@@ -284,7 +289,27 @@ public class onlinePlayerSelect : playerSelect
 
         }
 
+        if (playerToRemove.Set)
+        {
+            pickedClasses.Remove(playerToRemove.Class);
+            playerToRemove.Set = false;
+        }
+        else
+        {
+            PlayerList.Remove(playerToRemove);
+        }
+
         UpdateSelect(PlayerList);
+    }
+
+    protected override void UpdatePlayButton()
+    {
+        if (!PhotonNetwork.isMasterClient)
+        {
+            return;
+        }
+
+        base.UpdatePlayButton();
     }
 
     public void OnlineAddInitialPlayer(string control, string pClass, string inputControl = null)
@@ -314,6 +339,7 @@ public class onlinePlayerSelect : playerSelect
 
         UpdateSelect(PlayerList);
     }
+
 
     public override void Update()
     {

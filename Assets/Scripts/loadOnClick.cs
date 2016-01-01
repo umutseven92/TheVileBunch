@@ -62,11 +62,10 @@ public class loadOnClick : MonoBehaviour
     public void EndLocalGame()
     {
         playerSelect.PlayerList = new List<playerSelect.Player>();
-        Application.LoadLevel(1);
+        Application.LoadLevel("LocalPlayerSelect");
     }
     public void FocusOn(Transform item)
     {
         EventSystem.current.SetSelectedGameObject(item.gameObject);
     }
-
 }
