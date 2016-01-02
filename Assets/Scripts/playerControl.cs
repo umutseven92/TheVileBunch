@@ -128,7 +128,7 @@ public abstract class playerControl : MonoBehaviour
     protected float _horizontal;
     protected float _vertical;
 
-    private bool _spawned;
+    protected bool _spawned;
     private double _spawnedCounter = 0.000d;
     public double _spawnedMs = 2.000d;
 
@@ -284,6 +284,11 @@ public abstract class playerControl : MonoBehaviour
 
     protected virtual void FixedUpdate()
     {
+        if (_spawned)
+        {
+            return;
+        }
+
         float h = Input.GetAxis(Control + "Horizontal");
         float v = Input.GetAxis(Control + "Vertical");
 
@@ -811,7 +816,7 @@ public abstract class playerControl : MonoBehaviour
             Instantiate(BloodSplatter, transform.position, transform.rotation);
             Health = StartingHealth;
             HealthSlider.value = Health;
-
+            
             SpawnCanvas.enabled = true;
 
             switch (Spawn)

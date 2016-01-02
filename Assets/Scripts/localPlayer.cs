@@ -54,6 +54,8 @@ public class localPlayer : playerControl
         {
             DrawLine();
         }
+
+       // _paused = _spawned;
     }
 
     protected override void FixedUpdate()

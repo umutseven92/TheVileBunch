@@ -19,13 +19,11 @@ public class localController : MonoBehaviour
 
     public Button btnEndGameExit;
     public Button btnExit;
-    public Text staticRoundText;
-    public Text roundText;
-    public Text classScoreText;
-    public Text scoreScoreText;
     public Text winnerText;
+    public Text CountdownText;
     public Transform Player;
     public AudioSource musicPlayer;
+    public AudioSource dingPlayer;
 
     public Transform AmmoPickup;
     public Transform HealthPickup;
@@ -43,7 +41,7 @@ public class localController : MonoBehaviour
     private double slowMoCounter = 0.000d;
     public double slowMoMs = 1.500d;
 
-    public double scoreCardMs = 1.500d;
+    private double scoreCardMs = 3.000d;
 
     private KeyValuePair<string, int> winner;
 
@@ -82,7 +80,7 @@ public class localController : MonoBehaviour
         CheckPlayerPrefs();
 
         CreatePlayers(playerSelect.PlayerList.Count);
-        SetScoreCard(1.ToString(), "   Get Ready!", string.Empty);
+        SetScoreCard();
 
         foreach (var s in pickupSpawns)
         {
@@ -277,13 +275,11 @@ public class localController : MonoBehaviour
         btnEndGameExit.Select();
     }
 
-    void SetScoreCard(string round, string winner, string score)
+    void SetScoreCard()
     {
-        staticRoundText.enabled = true;
-        roundText.text = round;
-        classScoreText.text = winner;
-        scoreScoreText.text = score;
-
+        musicPlayer.Pause();
+        dingPlayer.loop = true;
+        dingPlayer.Play();
         scoreCanvas.enabled = true;
     }
 
@@ -294,9 +290,25 @@ public class localController : MonoBehaviour
             PauseAllPlayers();
             _counter += 1 * Time.deltaTime;
 
+            if (_counter >= 1.000 && _counter < 2.000)
+            {
+                CountdownText.text = "2";
+            }
+            if (_counter >= 2.000 && _counter < scoreCardMs)
+            {
+                CountdownText.text = "1";
+            }
+
+            if (_counter >= 2.500 && _counter < scoreCardMs)
+            {
+                dingPlayer.Stop();
+            }
+
             if (_counter >= scoreCardMs)
             {
+
                 scoreCanvas.enabled = false;
+                musicPlayer.UnPause();
                 UnPauseAllPlayers();
                 _counter = 0.000d;
             }
