@@ -26,15 +26,15 @@ public class onlineLoadingScreen : Photon.PunBehaviour
         GameObject speaker = GameObject.Find("Speaker");
         if (speaker != null) speaker.GetComponent<AudioSource>().Stop();
 
-        var diaries = Resources.Load("diaries") as TextAsset;
+        var tips = Resources.Load("tips") as TextAsset;
 
-        using (var reader = XmlReader.Create(new StringReader(diaries.text)))
+        using (var reader = XmlReader.Create(new StringReader(tips.text)))
         {
             while (reader.Read())
             {
                 if (reader.IsStartElement())
                 {
-                    if (reader.Name.Equals("entry"))
+                    if (reader.Name.Equals("tip"))
                     {
                         if (reader.Read())
                         {
@@ -53,10 +53,14 @@ public class onlineLoadingScreen : Photon.PunBehaviour
 
         if (!onlineHelper.Joining)
         {
-            PhotonNetwork.ConnectUsingSettings(global.GameVersion);
+            if (PhotonNetwork.connectionState != ConnectionState.Connected)
+            {
+                PhotonNetwork.ConnectUsingSettings(global.GameVersion);
+            }
         }
         else
         {
+            // Join lobby
             PhotonNetwork.JoinRoom(onlineHelper.LobbyName);
         }
     }
@@ -64,9 +68,15 @@ public class onlineLoadingScreen : Photon.PunBehaviour
     {
         if (!onlineHelper.Joining)
         {
+            // Create lobby
             PhotonNetwork.CreateRoom(onlineHelper.LobbyName, new RoomOptions() { maxPlayers = 4 }, null);
 
         }
+    }
+
+    void OnGUI()
+    {
+        GUILayout.Label(PhotonNetwork.connectionStateDetailed.ToString());
     }
 
     public override void OnJoinedRoom()

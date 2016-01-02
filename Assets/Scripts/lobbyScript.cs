@@ -14,23 +14,11 @@ public class lobbyScript : Photon.PunBehaviour
 
         onlineHelper.LobbyName = LobbyName;
         onlineHelper.Joining = false;
-        Application.LoadLevel("DunesOnlineLoading");
-        //       PhotonNetwork.ConnectUsingSettings(global.GameVersion);
+        Application.LoadLevel("OnlineLoading");
     }
 
     public void SetLobbyName(string lobbyName)
     {
         LobbyName = lobbyName.ToLower(CultureInfo.InvariantCulture);
     }
-    /*
-    public override void OnJoinedLobby()
-    {
-        PhotonNetwork.CreateRoom(LobbyName, new RoomOptions() { maxPlayers = 4 }, null);
-    }
-
-    public override void OnJoinedRoom()
-    {
-        PhotonNetwork.LoadLevel("DunesOnline");
-    }
-    */
 }

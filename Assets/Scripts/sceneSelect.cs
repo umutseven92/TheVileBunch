@@ -1,22 +1,19 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class sceneSelect : MonoBehaviour
+public class sceneSelect : Photon.PunBehaviour
 {
     public Button PlayButton;
+    public Button BackButton;
 
     // Use this for initialization
-    void Start()
+    protected virtual void Start()
     {
         PlayButton.Select();
     }
 
     // Update is called once per frame
-    void Update()
+    protected virtual void Update()
     {
-        if (Input.GetButtonDown("kCancel") || Input.GetButtonDown("j1Cancel") || Input.GetButtonDown("j2Cancel") || Input.GetButtonDown("j3Cancel") || Input.GetButtonDown("j4Cancel"))
-        {
-            Application.LoadLevel("LocalPlayerSelect");
-        }
     }
 }

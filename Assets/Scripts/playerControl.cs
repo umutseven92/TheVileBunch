@@ -5,12 +5,9 @@ using System.Linq;
 using UnityEngine.UI;
 using XInputDotNetPure;
 
-public class playerControl : MonoBehaviour
+public abstract class playerControl : MonoBehaviour
 {
     #region Public Values
-
-    [HideInInspector]
-    public string OnlinePlayerName;
 
     [HideInInspector]
     public bool FacingRight = true;
@@ -50,12 +47,11 @@ public class playerControl : MonoBehaviour
 
     [HideInInspector]
     public float OnlinebYPos;
-    
+
     [HideInInspector]
     public GameObject _slashCol;
 
-    public bool Enabled; // Control for online, enable after spawn
-    public bool Multi = false; // Is player online
+    public int Spawn = 3;
     public int StartingAmmo = 3; // Starting ammo
     public int MaxAmmo = 3; // Maximum ammo a player can have
     public int StartingHealth = 3; // Starting health
@@ -68,8 +64,8 @@ public class playerControl : MonoBehaviour
     public float BulletSpeed = 20f; // Speed of the bullet
     public float MovementLock = 0.2f; // Analog stick movement start value
     public float GunLightSpeed = 0.30f; // How fast does gun light appear
-    public float SlashOffset = 0.8f; // How far the player slashes
-    public float GunOffset = 0.1f; // How far the player shoots 
+    public float SlashOffset = 0.5f; // How far the player slashes
+    public float GunOffset = 0.5f; // How far the player shoots 
     public double SlashingMs = 0.3d; // How long does slashing take
     public double HitMs = 2.000d; // Invulnerability timer after getting hit
     public double HealedMs = 2.000d; // Health bar visibility after healed
@@ -84,9 +80,9 @@ public class playerControl : MonoBehaviour
     public double VibrationMs = 0.500d; // How long to vibrate after shooting
     public int MouseAimDeadZone = 50; // Mouse deadzone for aimline snapping
     public double AmmoMs = 2.000d; // Ammo counter visibility after shooting
+    public float GravityScale = 4;
 
     public Transform GroundCheck;
-    public Transform GroundCheck2;
     public Transform Bullet;
     public Transform Explosion;
     public Transform BloodSplatter;
@@ -100,48 +96,60 @@ public class playerControl : MonoBehaviour
     public AudioClip GunCockClip;
     public Light GunLight;
     public Text AmmoText;
-    public Text OnlineNameText;
+    public Canvas SpawnCanvas;
+    public Sprite HealthThree;
+    public Sprite HealthTwo;
+    public Sprite HealthOne;
+    public Image SpawnImage;
 
     #endregion
 
     #region Private Values
 
-    private bool _grounded;
-    private bool _grounded2;
-    private bool _inFrontOfLadder;
-    private bool _up;
+    protected bool _inFrontOfLadder;
+    protected bool _up;
     private bool _dead;
     private bool _first = true;
-    private bool _paused;
-    private Rigidbody2D _rb2D;
-    private AudioSource _audio;
+    protected Rigidbody2D _rb2D;
+    protected AudioSource _audio;
     private Animator _animator;
     private SpriteRenderer _sRenderer;
     private List<playerSelect.Player> _localPlayers;
-    private bool _slashing;
+    protected bool _slashing;
     private double _slashingCounter;
-    private bool _hit;
-    private bool _healed;
+    protected bool _hit;
+    protected bool _healed;
     private double _hitCounter;
     private double _healedCounter;
     private double _flashTimer;
-    private bool _gunLight;
+    protected bool _gunLight;
     private double _gunLightCounter;
-    private double _ammoCounter;
-    private float _horizontal;
+    protected double _ammoCounter;
+    protected float _horizontal;
+    protected float _vertical;
+
+    protected bool _spawned;
+    private double _spawnedCounter = 0.000d;
+    public double _spawnedMs = 2.000d;
+
     private bool _bulletUp;
     private bool _bulletDown;
     private bool _bulletRight;
     private bool _bulletLeft;
-    private bool _aiming;
-    private bool _softAim;
+    protected bool _aiming;
+    protected bool _softAim;
     private double _aimCounter;
-    private bool _aimCanceled;
+    protected bool _aimCanceled;
     private Color _playerColor;
     private double vibrationCounter = 0.000d;
     private bool vibrating = false;
-    private bool Grounded;
-    private bool _ammoChanged;
+    protected bool Grounded;
+    protected bool _ammoChanged;
+
+    protected float bXPos;
+    protected float bYPos;
+    protected float bXSpeed;
+    protected float bYSpeed;
 
     #endregion
 
@@ -164,7 +172,7 @@ public class playerControl : MonoBehaviour
 
     #endregion
 
-    void Awake()
+    protected virtual void Awake()
     {
         _rb2D = GetComponent<Rigidbody2D>();
         _animator = GetComponent<Animator>();
@@ -190,18 +198,13 @@ public class playerControl : MonoBehaviour
         Health = StartingHealth;
 
         AmmoText.enabled = false;
+        SpawnCanvas.enabled = false;
     }
 
-
-    void Update()
+    private void SetFirst()
     {
         if (_first)
         {
-            if (Multi)
-            {
-                MultiSetPlayer();
-            }
-
             if (playerNum == 1)
             {
                 _playerColor = new Color(0f, 0.5f, 0.5f, 1f);
@@ -224,74 +227,29 @@ public class playerControl : MonoBehaviour
             _sRenderer.color = _playerColor;
             _first = false;
         }
+    }
+
+    private void SetGrounded()
+    {
+        var groundedLeft = GroundCheck.GetComponent<BoxCollider2D>().IsTouchingLayers(1 << LayerMask.NameToLayer("Ground"));
+
+        Grounded = groundedLeft;
+    }
+
+    protected virtual void Update()
+    {
+        SetFirst();
 
         AmmoText.text = Ammo.ToString();
 
-        _grounded = Physics2D.Linecast(transform.position, GroundCheck.position, 1 << LayerMask.NameToLayer("Ground"));
-        _grounded2 = Physics2D.Linecast(transform.position, GroundCheck2.position, 1 << LayerMask.NameToLayer("Ground"));
-
-        Grounded = _grounded || _grounded2;
-
-        if (Input.GetButtonDown(Control + "Fire") && !_paused && Ammo > 0 && Enabled)
-        {
-            _softAim = true;
-        }
-
-        if (Input.GetButtonDown(Control + "Jump") && (Grounded || _inFrontOfLadder) && !_paused && !_aiming && Enabled)
-        {
-            Jump = true;
-        }
-
-        if (Input.GetButtonUp(Control + "Fire") && !_paused && Ammo > 0 && Enabled)
-        {
-            if (_aimCanceled)
-            {
-                _aimCanceled = false;
-                return;
-            }
-            Shoot();
-            AimLine.GetComponent<SpriteRenderer>().enabled = false;
-            _aiming = false;
-            _softAim = false;
-        }
-
-        if (Input.GetButtonDown(Control + "Slash") && !_paused && !_slashing && !_aiming && Enabled)
-        {
-            if (Multi)
-            {
-                var pView = GetComponentInParent<PhotonView>();
-                pView.RPC("SlashRPC", PhotonTargets.All, pView.viewID);
-            }
-            else
-            {
-                Slash();
-            }
-        }
-
-        if (Input.GetButtonDown(Control + "Slash") && !_paused && !_slashing && _aiming && Enabled)
-        {
-            _aiming = false;
-            AimLine.GetComponent<SpriteRenderer>().enabled = false;
-            _aimCanceled = true;
-        }
-
-        _up = Input.GetAxis(Control + "Vertical") > 0.3f;
+        SetGrounded();
 
         CheckTimers();
         UpdateSlashColPos();
 
-        if (Enabled)
-        {
-            HandleAnimations();
-        }
-
-        if (_aiming && Enabled)
-        {
-            DrawLine();
-        }
     }
 
-    private void HandleAnimations()
+    protected void HandleAnimations()
     {
         var jumping = !Grounded;
 
@@ -324,23 +282,24 @@ public class playerControl : MonoBehaviour
     }
 
 
-    private void FixedUpdate()
+    protected virtual void FixedUpdate()
     {
-        float h = Input.GetAxis(Control + "Horizontal");
-        float v = Input.GetAxis(Control + "Vertical");
-
-        _horizontal = h;
-
-        if (_paused)
+        if (_spawned)
         {
             return;
         }
+
+        float h = Input.GetAxis(Control + "Horizontal");
+        float v = Input.GetAxis(Control + "Vertical");
 
         // Stop movement if value is below movement lock
         if ((h < MovementLock && h > 0) || (h > -MovementLock && h < 0))
         {
             h = 0;
         }
+
+        _horizontal = h;
+        _vertical = v;
 
         if (v > DirectionLock && v > 0)
         {
@@ -376,55 +335,6 @@ public class playerControl : MonoBehaviour
             _bulletLeft = false;
         }
 
-        if (_inFrontOfLadder && Enabled)
-        {
-            _rb2D.gravityScale = 0;
-            _rb2D.velocity = Vector3.zero;
-
-            if (!_aiming)
-            {
-                if (v * _rb2D.velocity.y < MaxSpeed)
-                {
-                    _rb2D.AddForce(Vector2.up * v * MoveForce);
-                }
-
-                if (Mathf.Abs(_rb2D.velocity.y) > MaxSpeed)
-                {
-                    _rb2D.velocity = new Vector2(_rb2D.velocity.x, Mathf.Sign(_rb2D.velocity.y) * MaxSpeed);
-                }
-            }
-        }
-        else
-        {
-            if (Enabled)
-            {
-                _rb2D.gravityScale = 4;
-
-                if (!_aiming)
-                {
-                    if (h * _rb2D.velocity.x < MaxSpeed)
-                    {
-                        _rb2D.AddForce(Vector2.right * h * MoveForce);
-                    }
-
-                    if (Mathf.Abs(_rb2D.velocity.x) > MaxSpeed)
-                    {
-                        _rb2D.velocity = new Vector2(Mathf.Sign(_rb2D.velocity.x) * MaxSpeed, _rb2D.velocity.y);
-                    }
-                }
-
-            }
-        }
-
-        if (h > 0 && !FacingRight && !_paused && Enabled)
-        {
-            Flip();
-        }
-        else if (h < 0 && FacingRight && !_paused && Enabled)
-        {
-            Flip();
-        }
-
         if (Jump)
         {
             if (_inFrontOfLadder)
@@ -441,9 +351,53 @@ public class playerControl : MonoBehaviour
             _rb2D.velocity = new Vector2(0, _rb2D.velocity.y);
         }
 
+        if (_inFrontOfLadder)
+        {
+            _rb2D.gravityScale = 0;
+            _rb2D.velocity = Vector3.zero;
+
+            if (!_aiming)
+            {
+                if (_vertical * _rb2D.velocity.y < MaxSpeed)
+                {
+                    _rb2D.AddForce(Vector2.up * _vertical * MoveForce);
+                }
+
+                if (Mathf.Abs(_rb2D.velocity.y) > MaxSpeed)
+                {
+                    _rb2D.velocity = new Vector2(_rb2D.velocity.x, Mathf.Sign(_rb2D.velocity.y) * MaxSpeed);
+                }
+            }
+        }
+        else
+        {
+            _rb2D.gravityScale = GravityScale;
+
+            if (!_aiming)
+            {
+                if (_horizontal * _rb2D.velocity.x < MaxSpeed)
+                {
+                    _rb2D.AddForce(Vector2.right * _horizontal * MoveForce);
+                }
+
+                if (Mathf.Abs(_rb2D.velocity.x) > MaxSpeed)
+                {
+                    _rb2D.velocity = new Vector2(Mathf.Sign(_rb2D.velocity.x) * MaxSpeed, _rb2D.velocity.y);
+                }
+            }
+        }
+
+        if (_horizontal > 0 && !FacingRight)
+        {
+            Flip();
+        }
+        else if (_horizontal < 0 && FacingRight)
+        {
+            Flip();
+        }
     }
 
-    void DrawLine()
+    protected void DrawLine()
     {
         AimLine.GetComponent<SpriteRenderer>().enabled = true;
 
@@ -452,141 +406,61 @@ public class playerControl : MonoBehaviour
         var bYPos = 0f;
         var bRotation = 0f;
 
-        // Controller
-        if (!Control.Equals("k"))
+        if (!_bulletUp && !_bulletDown && !_bulletRight && !_bulletLeft)
         {
-            if (!_bulletUp && !_bulletDown && !_bulletRight && !_bulletLeft)
+            if (FacingRight)
             {
-                if (FacingRight)
-                {
-                    _bulletRight = true;
-                }
-                else
-                {
-                    _bulletLeft = true;
-                }
+                _bulletRight = true;
             }
+            else
+            {
+                _bulletLeft = true;
+            }
+        }
+
+        if (_bulletRight)
+        {
+            bXPos = GunOffset;
+            bRotation += 180;
+        }
+        else if (_bulletLeft)
+        {
+            bXPos = -GunOffset;
+        }
+
+        if (_bulletUp)
+        {
+            bYPos = GunOffset;
 
             if (_bulletRight)
             {
-                bXPos = GunOffset;
-                bRotation += 180;
+                bRotation += 45 - 180;
             }
-            else if (_bulletLeft)
+            if (_bulletLeft)
             {
-                bXPos = -GunOffset;
+                bRotation += 45;
             }
-
-            if (_bulletUp)
+            else
             {
-                bYPos = GunOffset;
-
-                if (_bulletRight)
-                {
-                    bRotation += 45 - 180;
-                }
-                if (_bulletLeft)
-                {
-                    bRotation += 45;
-                }
-                else
-                {
-                    bRotation += 90;
-                }
-
-            }
-            else if (_bulletDown)
-            {
-                bYPos = -GunOffset;
-
-                if (_bulletRight)
-                {
-                    bRotation += 45 + 90;
-                }
-                if (_bulletLeft)
-                {
-                    bRotation += 45 - 90;
-                }
-                else
-                {
-                    bRotation -= 90;
-                }
+                bRotation += 90;
             }
 
         }
-        // Keyboard
-        else
+        else if (_bulletDown)
         {
-            var mousePos = Input.mousePosition;
-            var playerPos = Camera.main.WorldToScreenPoint(transform.position);
+            bYPos = -GunOffset;
 
-            if (playerPos.x - MouseAimDeadZone > mousePos.x)
+            if (_bulletRight)
             {
-                if (FacingRight)
-                {
-                    Flip();
-                }
-                bXPos = -GunOffset;
-
-                if (mousePos.y < playerPos.y - MouseAimDeadZone || mousePos.y < playerPos.y + MouseAimDeadZone)
-                {
-                    // Left
-                    bRotation = 0;
-                }
-                if (playerPos.y - MouseAimDeadZone > mousePos.y)
-                {
-                    // Left - Down
-                    bYPos = -GunOffset;
-                    bRotation += 45 + 180 + 90;
-                }
-                else if (playerPos.y + MouseAimDeadZone < mousePos.y)
-                {
-                    // Left - Up
-                    bYPos = GunOffset;
-                    bRotation -= -45;
-                }
+                bRotation += 45 + 90;
             }
-
-            else if (playerPos.x + MouseAimDeadZone < mousePos.x)
+            if (_bulletLeft)
             {
-                if (!FacingRight)
-                {
-                    Flip();
-                }
-                bRotation += 180;
-                bXPos = GunOffset;
-
-                if (mousePos.y < playerPos.y - MouseAimDeadZone || mousePos.y < playerPos.y + MouseAimDeadZone)
-                {
-                    // Right 
-                    bRotation = 180;
-                }
-                if (playerPos.y - MouseAimDeadZone > mousePos.y)
-                {
-                    // Right - Down
-                    bYPos = -GunOffset;
-                    bRotation += 45;
-                }
-                else if (playerPos.y + MouseAimDeadZone < mousePos.y)
-                {
-                    // Right - Up
-                    bYPos = GunOffset;
-                    bRotation -= 45;
-                }
+                bRotation += 45 - 90;
             }
-
-            else if (playerPos.x - MouseAimDeadZone < mousePos.x || playerPos.x - MouseAimDeadZone > mousePos.x)
+            else
             {
-                if (playerPos.y > mousePos.y)
-                {
-                    bYPos = -GunOffset;
-                    bRotation -= 90;
-                }
-                else
-                {
-                    bYPos = GunOffset;
-                    bRotation += 90;
-                }
+                bRotation -= 90;
             }
         }
 
@@ -595,109 +469,13 @@ public class playerControl : MonoBehaviour
 
     }
 
-    // Player collided with..
-    void OnTriggerEnter2D(Collider2D other)
-    {
-        // Rope
-        if (other.name.StartsWith("ropeAttached") && _up)
-        {
-            _inFrontOfLadder = true;
-        }
-
-        // Bullet
-        if (other.name.StartsWith("Bullet(Clone)"))
-        {
-            if (!_hit)
-            {
-                _hit = true;
-
-                LowerHealth(BulletDamage);
-
-                // Small push
-                _rb2D.AddForce(other.gameObject.transform.position.x < this.transform.position.x
-                    ? new Vector2(PushX, PushY)
-                    : new Vector2(-PushY, PushY));
-
-                CheckHealth(other);
-            }
-        }
-
-        // Fall
-        if (other.name.StartsWith("FallCollider"))
-        {
-            Die(other);
-        }
-
-        // Ammo pickup
-        if (other.name.StartsWith("Ammo"))
-        {
-            _audio.PlayOneShot(AmmoClip);
-            Ammo += AmmoPickup;
-            if (Ammo > MaxAmmo)
-            {
-                Ammo = MaxAmmo;
-            }
-
-            _ammoChanged = true;
-            _ammoCounter = 0.000d;
-        }
-
-        // Health pickup
-        if (other.name.StartsWith("Health"))
-        {
-            _audio.PlayOneShot(HealthClip);
-            _healed = true;
-            GiveHealth(HealthPickup);
-        }
-
-        // Sword slash
-        if (other.name.StartsWith("slash"))
-        {
-            if (other.GetComponent<slashScript>().num != playerNum && other.GetComponent<slashScript>().slashing)
-            {
-                if (!_hit)
-                {
-                    _hit = true;
-                    LowerHealth(SwordDamage);
-
-                    if (Health > 0)
-                    {
-                        float pX = 0f;
-
-                        var go = GameObject.FindGameObjectsWithTag("Player");
-
-                        var gList = new List<GameObject>(go);
-                        gList.RemoveAt(0);
-                        go = gList.ToArray();
-
-                        foreach (
-                            var g in
-                                go.Where(
-                                    g =>
-                                        g.gameObject.GetComponent<playerControl>().playerNum ==
-                                        other.GetComponent<slashScript>().num))
-                        {
-                            pX = g.transform.position.x;
-                        }
-
-                        // Small push
-                        _rb2D.AddForce(pX < transform.position.x
-                            ? new Vector2(PushX, PushY)
-                            : new Vector2(-PushX, PushY));
-                    }
-                    CheckHealth(other);
-                }
-            }
-        }
-    }
-
-    void LowerHealth(int damage)
+    protected void LowerHealth(int damage)
     {
         Health -= damage;
         HealthSlider.value -= damage;
     }
 
-    void GiveHealth(int health)
+    protected void GiveHealth(int health)
     {
         Health += health;
 
@@ -736,6 +514,7 @@ public class playerControl : MonoBehaviour
         CheckHitTimer();
         CheckGunLightTimer();
         CheckHealedTimer();
+        CheckSpawnedTimer();
         CheckAimTimer();
         CheckVibrationTimer();
         CheckAmmoTimer();
@@ -815,6 +594,21 @@ public class playerControl : MonoBehaviour
         }
     }
 
+    private void CheckSpawnedTimer()
+    {
+        if (_spawned)
+        {
+            _spawnedCounter += 1 * Time.deltaTime;
+
+            if (_spawnedCounter >= _spawnedMs)
+            {
+                SpawnCanvas.enabled = false;
+                _spawned = false;
+                _spawnedCounter = 0.000d;
+            }
+        }
+    }
+
     private void CheckHealedTimer()
     {
         if (_healed)
@@ -868,7 +662,7 @@ public class playerControl : MonoBehaviour
 
     #endregion
 
-    public void Flip()
+    public virtual void Flip()
     {
         FlipSliderLeftRight(HealthSlider);
 
@@ -876,10 +670,6 @@ public class playerControl : MonoBehaviour
 
         FlipLeftRight(transform);
         FlipLeftRight(AmmoText.transform);
-        if (Multi)
-        {
-            FlipLeftRight(OnlineNameText.transform);
-        }
     }
 
     private void FlipSliderLeftRight(Slider slider)
@@ -887,7 +677,7 @@ public class playerControl : MonoBehaviour
         slider.direction = FacingRight ? Slider.Direction.RightToLeft : Slider.Direction.LeftToRight;
     }
 
-    private void FlipLeftRight(Transform obj)
+    protected void FlipLeftRight(Transform obj)
     {
         var scale = obj.localScale;
         scale.x *= -1;
@@ -895,7 +685,7 @@ public class playerControl : MonoBehaviour
         obj.localScale = scale;
     }
 
-    void Slash()
+    protected void Slash(int a)
     {
         _slashing = true;
 
@@ -903,17 +693,8 @@ public class playerControl : MonoBehaviour
         _audio.PlayOneShot(SlashClip);
     }
 
-    public void OnlineSlash()
-    {
-        Slash();
-    }
 
-    public void OnlineShoot(float bXSpeed, float bYSpeed, float bXPos, float bYPos)
-    {
-        Shoot(bXSpeed, bYSpeed, bXPos, bYPos);
-    }
-
-    void Shoot(float bXSpeed, float bYSpeed, float bXPos, float bYPos)
+    protected void Shoot(float bXSpeed, float bYSpeed, float bXPos, float bYPos)
     {
         var shotTransform = Instantiate(Bullet) as Transform;
 
@@ -933,157 +714,46 @@ public class playerControl : MonoBehaviour
         VibrateGamePad(playerNum);
     }
 
-    void Shoot()
+    protected virtual void Shoot()
     {
-        float bXPos = 0f;
-        float bYPos = 0f;
-        float bXSpeed = 0f;
-        float bYSpeed = 0f;
-
-        if (!Control.Equals("k"))
+        if (!_bulletUp && !_bulletDown && !_bulletRight && !_bulletLeft)
         {
-            if (!_bulletUp && !_bulletDown && !_bulletRight && !_bulletLeft)
+            if (FacingRight)
             {
-                if (FacingRight)
-                {
-                    _bulletRight = true;
-                }
-                else
-                {
-                    _bulletLeft = true;
-                }
+                _bulletRight = true;
             }
-
-            if (_bulletRight)
+            else
             {
-                bXSpeed = BulletSpeed;
-                bXPos = GunOffset;
-            }
-            else if (_bulletLeft)
-            {
-                bXSpeed = -BulletSpeed;
-                bXPos = -GunOffset;
-            }
-
-            if (_bulletUp)
-            {
-                bYSpeed = BulletSpeed;
-                bYPos = GunOffset;
-            }
-            else if (_bulletDown)
-            {
-                bYSpeed = -BulletSpeed;
-                bYPos = -GunOffset;
-            }
-        }
-        else
-        {
-            var mousePos = Input.mousePosition;
-            var playerPos = Camera.main.WorldToScreenPoint(transform.position);
-
-            if (playerPos.x - MouseAimDeadZone > mousePos.x)
-            {
-                bXPos = -GunOffset;
-
-                if (mousePos.y < playerPos.y - MouseAimDeadZone || mousePos.y < playerPos.y + MouseAimDeadZone)
-                {
-                    // Left
-                    bXSpeed = -BulletSpeed;
-
-                }
-                if (playerPos.y - MouseAimDeadZone > mousePos.y)
-                {
-                    // Left - Down
-                    bYPos = -GunOffset;
-                    bYSpeed = -BulletSpeed;
-
-                }
-                else if (playerPos.y + MouseAimDeadZone < mousePos.y)
-                {
-                    // Left - Up
-                    bYPos = GunOffset;
-                    bYSpeed = BulletSpeed;
-                    bXSpeed = -BulletSpeed;
-
-                }
-            }
-
-            else if (playerPos.x + MouseAimDeadZone < mousePos.x)
-            {
-                bXPos = GunOffset;
-
-                if (mousePos.y < playerPos.y - MouseAimDeadZone || mousePos.y < playerPos.y + MouseAimDeadZone)
-                {
-                    // Right 
-                    bXSpeed = BulletSpeed;
-
-                }
-                if (playerPos.y - MouseAimDeadZone > mousePos.y)
-                {
-                    // Right - Down
-                    bYPos = -GunOffset;
-                    bYSpeed = -BulletSpeed;
-
-                }
-                else if (playerPos.y + MouseAimDeadZone < mousePos.y)
-                {
-                    // Right - Up
-                    bYPos = GunOffset;
-                    bYSpeed = BulletSpeed;
-                    bXSpeed = BulletSpeed;
-
-                }
-            }
-
-            else if (playerPos.x - MouseAimDeadZone < mousePos.x || playerPos.x - MouseAimDeadZone > mousePos.x)
-            {
-                if (playerPos.y > mousePos.y)
-                {
-                    bYPos = -GunOffset;
-                    bYSpeed = -BulletSpeed;
-
-                }
-                else
-                {
-                    bYPos = GunOffset;
-                    bYSpeed = BulletSpeed;
-
-                }
+                _bulletLeft = true;
             }
         }
 
-        if (Multi)
+        if (_bulletRight)
         {
-            OnlinebXPos = bXPos;
-            OnlinebYPos = bYPos;
-            OnlinebXSpeed = bXSpeed;
-            OnlinebYSpeed = bYSpeed;
-
-            var pView = GetComponentInParent<PhotonView>();
-            pView.RPC("ShootRPC", PhotonTargets.All, pView.viewID, bXPos, bYPos, bXSpeed, bYSpeed);
+            bXSpeed = BulletSpeed;
+            bXPos = GunOffset;
         }
-        else
+        else if (_bulletLeft)
         {
-            var shotTransform = Instantiate(Bullet) as Transform;
-            shotTransform.position = new Vector3(transform.position.x + bXPos, transform.position.y + bYPos, transform.position.z);
-
-            shotTransform.GetComponent<Rigidbody2D>().velocity = new Vector2(bXSpeed, bYSpeed);
+            bXSpeed = -BulletSpeed;
+            bXPos = -GunOffset;
         }
 
-        _audio.PlayOneShot(GunShot);
-        GunLight.enabled = true;
-        _gunLight = true;
-        Ammo--;
-        _ammoChanged = true;
-        _ammoCounter = 0.000d;
+        if (_bulletUp)
+        {
+            bYSpeed = BulletSpeed;
+            bYPos = GunOffset;
+        }
+        else if (_bulletDown)
+        {
+            bYSpeed = -BulletSpeed;
+            bYPos = -GunOffset;
+        }
 
-        AmmoText.enabled = true;
-
-        VibrateGamePad(playerNum);
     }
 
 
-    void VibrateGamePad(int player)
+    protected void VibrateGamePad(int player)
     {
         return;
         switch (Control)
@@ -1136,15 +806,40 @@ public class playerControl : MonoBehaviour
         }
     }
 
-    void CheckHealth(Collider2D other)
+
+    protected void CheckHealth(Collider2D other)
     {
-        if (Health <= 0)
+        if (Health <= 0 && Spawn > 0)
+        {
+            Spawn--;
+            _hit = true;
+            Instantiate(BloodSplatter, transform.position, transform.rotation);
+            Health = StartingHealth;
+            HealthSlider.value = Health;
+            
+            SpawnCanvas.enabled = true;
+
+            switch (Spawn)
+            {
+                case 3:
+                    SpawnImage.sprite = HealthThree;
+                    break;
+                case 2:
+                    SpawnImage.sprite = HealthTwo;
+                    break;
+                case 1:
+                    SpawnImage.sprite = HealthOne;
+                    break;
+            }
+            _spawned = true;
+        }
+        else if (Health <= 0 && Spawn <= 1)
         {
             Die(other);
         }
     }
 
-    void Die(Collider2D other)
+    protected void Die(Collider2D other)
     {
         _dead = true;
         Instantiate(BloodSplatter, transform.position, transform.rotation);
@@ -1156,7 +851,6 @@ public class playerControl : MonoBehaviour
             deadPlayer.SendMessage("SetColor", _playerColor);
             deadPlayer.SendMessage("Die", other.transform.position.x < this.transform.position.x ? "left" : "right");
         }
-
         Destroy(gameObject);
     }
 
@@ -1173,25 +867,5 @@ public class playerControl : MonoBehaviour
         _playerClass = _localPlayers[num - 1].Class;
 
         _slashCol.SendMessage("GetPlayerNum", playerNum);
-    }
-
-    void MultiSetPlayer()
-    {
-        playerNum = 1;
-        Control = "j1";
-        _playerClass = "The Cowboy";
-        OnlinePlayerName = PlayerPrefs.GetString(global.PlayerName);
-        OnlineNameText.text = OnlinePlayerName;
-        _slashCol.SendMessage("GetPlayerNum", playerNum);
-    }
-
-    void Pause()
-    {
-        _paused = true;
-    }
-
-    void UnPause()
-    {
-        _paused = false;
     }
 }

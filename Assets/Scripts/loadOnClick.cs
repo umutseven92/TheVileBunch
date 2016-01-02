@@ -1,14 +1,19 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class loadOnClick : MonoBehaviour
 {
-
     public void LoadScene(int level)
     {
         Application.LoadLevel(level);
+    }
+
+    public void Disconnect()
+    {
+        PhotonNetwork.Disconnect();
     }
 
     public void LoadScene(string levelName)
@@ -57,6 +62,10 @@ public class loadOnClick : MonoBehaviour
     public void EndLocalGame()
     {
         playerSelect.PlayerList = new List<playerSelect.Player>();
-        Application.LoadLevel(1);
+        Application.LoadLevel("LocalPlayerSelect");
+    }
+    public void FocusOn(Transform item)
+    {
+        EventSystem.current.SetSelectedGameObject(item.gameObject);
     }
 }

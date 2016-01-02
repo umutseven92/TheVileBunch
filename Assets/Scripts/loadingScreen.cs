@@ -6,7 +6,7 @@ using System.Linq;
 using System.Xml;
 using UnityEngine.UI;
 
-public class loadingScreen : MonoBehaviour
+public class loadingScreen : Photon.PunBehaviour
 {
     public Text LoadingText;
     public Text DiaryText;
@@ -24,15 +24,15 @@ public class loadingScreen : MonoBehaviour
         GameObject speaker = GameObject.Find("Speaker");
         if (speaker != null) speaker.GetComponent<AudioSource>().Stop();
 
-        var diaries = Resources.Load("diaries") as TextAsset;
+        var tips = Resources.Load("tips") as TextAsset;
 
-        using (var reader = XmlReader.Create(new StringReader(diaries.text)))
+        using (var reader = XmlReader.Create(new StringReader(tips.text)))
         {
             while (reader.Read())
             {
                 if (reader.IsStartElement())
                 {
-                    if (reader.Name.Equals("entry"))
+                    if (reader.Name.Equals("tip"))
                     {
                         if (reader.Read())
                         {
@@ -58,9 +58,9 @@ public class loadingScreen : MonoBehaviour
             LoadingText.text = "Loaded";
             AButton.GetComponent<SpriteRenderer>().enabled = true;
 
-            if (Input.GetButtonDown("Submit") )
+            if (Input.GetButtonDown("Submit"))
             {
-                PhotonNetwork.LoadLevel(LevelName);
+                Application.LoadLevel(LevelName);
             }
         }
 

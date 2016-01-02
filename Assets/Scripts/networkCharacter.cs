@@ -11,29 +11,35 @@ public class networkCharacter : Photon.MonoBehaviour
     private string _onlineName;
     private int _health;
     private int _ammo;
-    private bool _shooting;
-    private float _bXPos;
-    private float _bYPos;
-    private float _bXSpeed;
-    private float _bYSpeed;
+    private float _fraction;
 
     void Update()
     {
         if (!photonView.isMine)
         {
-            var net = photonView.transform.GetComponent<playerControl>();
+            var net = photonView.transform.GetComponent<onlinePlayer>();
 
             net.AmmoText.enabled = true;
             net.HealthSlider.GetComponentInParent<Canvas>().enabled = true;
-            photonView.transform.position = Vector3.Lerp(transform.position, _correctPlayerPos, Time.deltaTime * 25);
+
+            // We get 10 updates per sec. sometimes a few less or one or two more, depending on variation of lag.
+            // Due to that we want to reach the correct position in a little over 100ms. This way, we usually avoid a stop.
+            // Lerp() gets a fraction value between 0 and 1. This is how far we went from A to B.
+            // Our fraction variable would reach 1 in 100ms if we multiply deltaTime by 10.
+            // We want it to take a bit longer, so we multiply with 9 instead.
+            _fraction = _fraction + Time.deltaTime * 9;
+            //photonView.GetComponent<Rigidbody2D>().position = Vector3.Lerp(transform.position, _correctPlayerPos, _fraction);
+            photonView.transform.position = Vector3.Lerp(transform.position, _correctPlayerPos, Time.deltaTime * 20);
+
             SetOrientation(net);
             net.OnlineNameText.text = _onlineName;
             net.Health = _health;
             net.Ammo = _ammo;
         }
+        Debug.Log(PhotonNetwork.GetPing());
     }
 
-    private void SetOrientation(playerControl net)
+    private void SetOrientation(onlinePlayer net)
     {
         FlipSliderLeftRight(net);
 
@@ -52,7 +58,7 @@ public class networkCharacter : Photon.MonoBehaviour
 
     }
 
-    private void FlipSliderLeftRight(playerControl net)
+    private void FlipSliderLeftRight(onlinePlayer net)
     {
         if (_correctLocalScale < 0)
         {
@@ -67,10 +73,9 @@ public class networkCharacter : Photon.MonoBehaviour
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
-
         if (stream.isWriting)
         {
-            var ply = transform.GetComponent<playerControl>();
+            var ply = transform.GetComponent<onlinePlayer>();
 
             // Our player
 
@@ -107,6 +112,8 @@ public class networkCharacter : Photon.MonoBehaviour
 
             // Ammo
             _ammo = (int)stream.ReceiveNext();
+
+            _fraction = 0;
         }
     }
 
@@ -122,10 +129,22 @@ public class networkCharacter : Photon.MonoBehaviour
         RPCBase(pId).OnlineSlash();
     }
 
-    private static playerControl RPCBase(int pId)
+    [PunRPC]
+    public void SlashHitRPC(int pId)
+    {
+        RPCBase(pId).HitBySlash();
+    }
+
+    [PunRPC]
+    public void BulletHitRPC(int pId)
+    {
+        RPCBase(pId).HitByBullet();
+    }
+
+    private static onlinePlayer RPCBase(int pId)
     {
         var pView = PhotonView.Find(pId);
-        return pView.GetComponentInParent<playerControl>();
+        return pView.GetComponentInParent<onlinePlayer>();
     }
 
 }
