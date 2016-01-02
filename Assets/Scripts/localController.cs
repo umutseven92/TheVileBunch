@@ -45,7 +45,6 @@ public class localController : MonoBehaviour
 
     public double scoreCardMs = 1.500d;
 
-    private Dictionary<string, int> ClassScores = new Dictionary<string, int>();
     private KeyValuePair<string, int> winner;
 
     private bool paused = false;
@@ -65,7 +64,6 @@ public class localController : MonoBehaviour
     private bool ammoOnScreen = false;
     private bool healthOnScreen = false;
 
-    private bool roundOver;
     private double _roundOverCounter;
     public double _roundOverMs;
 
@@ -82,11 +80,6 @@ public class localController : MonoBehaviour
         pauseCanvas.enabled = false;
 
         CheckPlayerPrefs();
-
-        foreach (playerSelect.Player t in playerSelect.PlayerList)
-        {
-            ClassScores.Add(t.Class, 0);
-        }
 
         CreatePlayers(playerSelect.PlayerList.Count);
         SetScoreCard(1.ToString(), "   Get Ready!", string.Empty);
@@ -134,26 +127,12 @@ public class localController : MonoBehaviour
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player").Where(p => p.transform.position != Vector3.zero).ToArray();
         CheckTimers();
 
-        if (players.Length == 1 && !gameOver)
+        if (players.Length == 1)
         {
-            var winningClass = players[0].GetComponent<localPlayer>()._playerClass;
-            ClassScores[winningClass]++;
-
-            if (ClassScores[winningClass] == ScoreToReach)
-            {
-                // Game Over
-                winner = ClassScores.First(k => k.Value == ScoreToReach);
-                slowMo = true;
-                gameOver = true;
-            }
-            else
-            {
-                _round++;
-                RestartGame(players);
-            }
-
+            winner = new KeyValuePair<string, int>(players[0].GetComponent<localPlayer>()._playerClass, 3);
+            slowMo = true;
+            gameOver = true;
         }
-
     }
 
 
@@ -261,36 +240,16 @@ public class localController : MonoBehaviour
         ScoreCardTimer();
         SlowMotionTimer();
         PickupTimers();
-        PlayerSpawnTimer();
     }
-
-    void RestartGame(GameObject[] lastPlayers)
-    {
-        SetScoreCard(_round.ToString(), lastPlayers[0].GetComponent<localPlayer>()._playerClass, ClassScores[lastPlayers[0].GetComponent<localPlayer>()._playerClass].ToString());
-        foreach (var o in lastPlayers)
-        {
-            Destroy(o);
-        }
-
-        foreach (var s in GameObject.FindGameObjectsWithTag("Slash"))
-        {
-            Destroy(s);
-        }
-
-        _healthCounter = 0;
-        _ammoCounter = 0;
-
-        // Destroy ammo & health pickups
-        GameObject.FindGameObjectsWithTag("ammoPickup").ToList().ForEach(Destroy);
-        GameObject.FindGameObjectsWithTag("healthPickup").ToList().ForEach(Destroy);
-
-        roundOver = true;
-    }
-
 
     void PauseAllPlayers()
     {
-        GameObject[] allPlayers = GameObject.FindGameObjectsWithTag("Player").Where(p => p.transform.position != Vector3.zero).ToArray();
+        if (gameOver)
+        {
+            return;
+        }
+
+        var allPlayers = GameObject.FindGameObjectsWithTag("Player").Where(p => p.transform.position != Vector3.zero).ToArray();
 
         foreach (var allPlayer in allPlayers)
         {
@@ -301,7 +260,7 @@ public class localController : MonoBehaviour
 
     void UnPauseAllPlayers()
     {
-        GameObject[] allPlayers = GameObject.FindGameObjectsWithTag("Player").Where(p => p.transform.position != Vector3.zero).ToArray();
+        var allPlayers = GameObject.FindGameObjectsWithTag("Player").Where(p => p.transform.position != Vector3.zero).ToArray();
 
         foreach (var allPlayer in allPlayers)
         {
@@ -340,21 +299,6 @@ public class localController : MonoBehaviour
                 scoreCanvas.enabled = false;
                 UnPauseAllPlayers();
                 _counter = 0.000d;
-
-            }
-        }
-    }
-
-    private void PlayerSpawnTimer()
-    {
-        if (roundOver)
-        {
-            _roundOverCounter += Time.deltaTime;
-            if (_roundOverCounter >= _roundOverMs)
-            {
-                roundOver = false;
-                CreatePlayers(playerSelect.PlayerList.Count);
-                _roundOverCounter = 0d;
             }
         }
     }
@@ -362,7 +306,7 @@ public class localController : MonoBehaviour
     void PickupTimers()
     {
         AmmoTimer();
-        HealthTimer();
+        //HealthTimer();
     }
 
     private void AmmoTimer()
@@ -405,9 +349,7 @@ public class localController : MonoBehaviour
                 slowMo = false;
                 slowMoCounter = 0.000d;
 
-                // One winner
                 SetEndGameCard(winner.Key);
-
             }
         }
     }

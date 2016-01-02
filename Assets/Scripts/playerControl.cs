@@ -51,6 +51,7 @@ public abstract class playerControl : MonoBehaviour
     [HideInInspector]
     public GameObject _slashCol;
 
+    public int Spawn = 3;
     public int StartingAmmo = 3; // Starting ammo
     public int MaxAmmo = 3; // Maximum ammo a player can have
     public int StartingHealth = 3; // Starting health
@@ -95,6 +96,11 @@ public abstract class playerControl : MonoBehaviour
     public AudioClip GunCockClip;
     public Light GunLight;
     public Text AmmoText;
+    public Canvas SpawnCanvas;
+    public Sprite HealthThree;
+    public Sprite HealthTwo;
+    public Sprite HealthOne;
+    public Image SpawnImage;
 
     #endregion
 
@@ -121,6 +127,10 @@ public abstract class playerControl : MonoBehaviour
     protected double _ammoCounter;
     protected float _horizontal;
     protected float _vertical;
+
+    private bool _spawned;
+    private double _spawnedCounter = 0.000d;
+    public double _spawnedMs = 2.000d;
 
     private bool _bulletUp;
     private bool _bulletDown;
@@ -188,6 +198,7 @@ public abstract class playerControl : MonoBehaviour
         Health = StartingHealth;
 
         AmmoText.enabled = false;
+        SpawnCanvas.enabled = false;
     }
 
     private void SetFirst()
@@ -498,6 +509,7 @@ public abstract class playerControl : MonoBehaviour
         CheckHitTimer();
         CheckGunLightTimer();
         CheckHealedTimer();
+        CheckSpawnedTimer();
         CheckAimTimer();
         CheckVibrationTimer();
         CheckAmmoTimer();
@@ -573,6 +585,21 @@ public abstract class playerControl : MonoBehaviour
                 _hitCounter = 0.000d;
                 _flashTimer = 0.000d;
                 _sRenderer.enabled = true;
+            }
+        }
+    }
+
+    private void CheckSpawnedTimer()
+    {
+        if (_spawned)
+        {
+            _spawnedCounter += 1 * Time.deltaTime;
+
+            if (_spawnedCounter >= _spawnedMs)
+            {
+                SpawnCanvas.enabled = false;
+                _spawned = false;
+                _spawnedCounter = 0.000d;
             }
         }
     }
@@ -774,9 +801,34 @@ public abstract class playerControl : MonoBehaviour
         }
     }
 
+
     protected void CheckHealth(Collider2D other)
     {
-        if (Health <= 0)
+        if (Health <= 0 && Spawn > 0)
+        {
+            Spawn--;
+            _hit = true;
+            Instantiate(BloodSplatter, transform.position, transform.rotation);
+            Health = StartingHealth;
+            HealthSlider.value = Health;
+
+            SpawnCanvas.enabled = true;
+
+            switch (Spawn)
+            {
+                case 3:
+                    SpawnImage.sprite = HealthThree;
+                    break;
+                case 2:
+                    SpawnImage.sprite = HealthTwo;
+                    break;
+                case 1:
+                    SpawnImage.sprite = HealthOne;
+                    break;
+            }
+            _spawned = true;
+        }
+        else if (Health <= 0 && Spawn <= 1)
         {
             Die(other);
         }
@@ -794,7 +846,6 @@ public abstract class playerControl : MonoBehaviour
             deadPlayer.SendMessage("SetColor", _playerColor);
             deadPlayer.SendMessage("Die", other.transform.position.x < this.transform.position.x ? "left" : "right");
         }
-
         Destroy(gameObject);
     }
 
@@ -812,6 +863,4 @@ public abstract class playerControl : MonoBehaviour
 
         _slashCol.SendMessage("GetPlayerNum", playerNum);
     }
-
-
 }
