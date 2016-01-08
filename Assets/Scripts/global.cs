@@ -10,4 +10,5 @@ public class global : MonoBehaviour
     public static string Music = "Music";
     public static string SoundEffects = "SoundEffects";
     public static string PlayerName = "PlayerName";
+    public static string PlayerId = "PlayerId";
 }

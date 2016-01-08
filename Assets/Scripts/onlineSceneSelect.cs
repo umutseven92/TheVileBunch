@@ -4,6 +4,10 @@ using UnityEngine.UI;
 public class onlineSceneSelect : sceneSelect
 {
     public Text LevelText;
+    public Text BackText;
+    public Button[] LevelSelectButtons;
+
+    private bool sure = false;
 
     protected override void Start()
     {
@@ -11,8 +15,16 @@ public class onlineSceneSelect : sceneSelect
 
         if (!PhotonNetwork.isMasterClient)
         {
+            foreach (var button in LevelSelectButtons)
+            {
+                button.enabled = false;
+            }
             PlayButton.enabled = false;
-            BackButton.enabled = false;
+            BackText.text = "Quit";
+        }
+        else
+        {
+            BackText.text = "Back";
         }
 
         PlayButton.onClick.AddListener(() =>
@@ -30,9 +42,26 @@ public class onlineSceneSelect : sceneSelect
                     break;
             }
         });
+
         BackButton.onClick.AddListener(() =>
         {
-            PhotonNetwork.LoadLevel("OnlinePlayerSelect");
+            if (PhotonNetwork.isMasterClient)
+            {
+                PhotonNetwork.LoadLevel("OnlinePlayerSelect");
+            }
+            else
+            {
+                if (!sure)
+                {
+                    BackText.text = "Sure?";
+                    sure = true;
+                }
+                else
+                {
+                    PhotonNetwork.Disconnect();
+                    Application.LoadLevel("Menu");
+                }
+            }
         });
     }
     void OnGUI()

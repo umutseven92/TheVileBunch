@@ -12,7 +12,6 @@ public class loadingScreen : Photon.PunBehaviour
     public Text DiaryText;
     public double LoadingMs = 1.500d;
     public string LevelName;
-    public Transform AButton;
 
     private double _loadingTextCounter;
     private const string Loading = "Loading";
@@ -46,8 +45,6 @@ public class loadingScreen : Photon.PunBehaviour
         var count = _rand.Next(0, _diaries.Count);
 
         DiaryText.text = _diaries[count];
-
-        AButton.GetComponent<SpriteRenderer>().enabled = false;
     }
 
     void Update()
@@ -56,12 +53,7 @@ public class loadingScreen : Photon.PunBehaviour
         if (Application.GetStreamProgressForLevel(LevelName) == 1)
         {
             LoadingText.text = "Loaded";
-            AButton.GetComponent<SpriteRenderer>().enabled = true;
-
-            if (Input.GetButtonDown("Submit"))
-            {
-                Application.LoadLevel(LevelName);
-            }
+            Application.LoadLevel(LevelName);
         }
 
     }

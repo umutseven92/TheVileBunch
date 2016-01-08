@@ -2,12 +2,15 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.UI;
 
 public class onlinePlayerSelect : playerSelect
 {
-    private PhotonView pView;
+    public Text BackText;
 
+    private PhotonView pView;
     private string _playerId;
+    private bool sure = false;
 
     [HideInInspector]
     public string PlayerId
@@ -16,7 +19,7 @@ public class onlinePlayerSelect : playerSelect
         {
             if (_playerId == null)
             {
-                _playerId = Guid.NewGuid().ToString();
+                _playerId = PlayerPrefs.GetString(global.PlayerId);
             }
             return _playerId;
         }
@@ -25,17 +28,25 @@ public class onlinePlayerSelect : playerSelect
     protected override void Start()
     {
         base.Start();
+
         PhotonNetwork.automaticallySyncScene = true;
 
         pView = GetComponentInParent<PhotonView>();
         Back.onClick.AddListener(() =>
         {
-            PhotonNetwork.Disconnect();
-            Application.LoadLevel("Menu");
+            if (!sure)
+            {
+                BackText.text = "Sure?";
+                sure = true;
+            }
+            else
+            {
+                PhotonNetwork.Disconnect();
+                Application.LoadLevel("Menu");
+            }
         });
         Play.onClick.AddListener(() =>
         {
-            //pView.RPC("SceneSelectRPC", PhotonTargets.All, pView.viewID);
             if (PhotonNetwork.isMasterClient)
             {
                 PhotonNetwork.LoadLevel("OnlineSceneSelect");
@@ -50,9 +61,16 @@ public class onlinePlayerSelect : playerSelect
         {
             if (kStage == SelectStages.Disabled && j1Stage == SelectStages.Disabled && j2Stage == SelectStages.Disabled && j3Stage == SelectStages.Disabled && j4Stage == SelectStages.Disabled)
             {
-                PhotonNetwork.Disconnect();
-
-                Application.LoadLevel("Menu");
+                if (!sure)
+                {
+                    BackText.text = "Sure?";
+                    sure = true;
+                }
+                else
+                {
+                    PhotonNetwork.Disconnect();
+                    Application.LoadLevel("Menu");
+                }
                 return;
             }
         }

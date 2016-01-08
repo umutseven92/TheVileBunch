@@ -929,7 +929,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: back
+  m_Text: Back
 --- !u!222 &729461264
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -966,6 +966,10 @@ MonoBehaviour:
   PlayButton: {fileID: 1728248595}
   BackButton: {fileID: 43316324}
   LevelText: {fileID: 1308772949}
+  BackText: {fileID: 729461263}
+  LevelSelectButtons:
+  - {fileID: 85963608}
+  - {fileID: 1637219441}
 --- !u!4 &817648267
 Transform:
   m_ObjectHideFlags: 0

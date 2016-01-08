@@ -1431,7 +1431,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: back
+  m_Text: Quit
 --- !u!222 &729461264
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1608,6 +1608,7 @@ MonoBehaviour:
   p4Left: {fileID: 1924640760}
   NextButton: {fileID: 545244353}
   BackButton: {fileID: 1496579996}
+  BackText: {fileID: 729461263}
 --- !u!4 &817648267
 Transform:
   m_ObjectHideFlags: 0

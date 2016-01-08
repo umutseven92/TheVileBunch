@@ -34,6 +34,9 @@ public class menuScript : MonoBehaviour
         {
             PlayerPrefs.SetString(global.PlayerName, _names[_rand.Next(_names.Length)]);
         }
+
+        // Player Id is volatile
+        PlayerPrefs.SetString(global.PlayerId, Guid.NewGuid().ToString());
     }
 
     private void SetMusic()
