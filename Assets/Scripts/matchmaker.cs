@@ -25,6 +25,11 @@ public class matchmaker : Photon.PunBehaviour
 
     private GameObject player;
 
+    public Vector3 PlayerOneSpawn = new Vector3(-6.98f, 3.06f, 0);
+    public Vector3 PlayerTwoSpawn = new Vector3(7.02f, 3.06f, 0);
+    public Vector3 PlayerThreeSpawn = new Vector3(-7.28f, -1.1f, 0);
+    public Vector3 PlayerFourSpawn = new Vector3(7.25f, -1.1f, 0);
+
     // Use this for initialization
     void Start()
     {
@@ -42,7 +47,28 @@ public class matchmaker : Photon.PunBehaviour
         {
             if (p.Control == PlayerPrefs.GetString(global.PlayerId))
             {
-                player = PhotonNetwork.Instantiate("PlayerOnline", new Vector3(1, 1, 0), Quaternion.identity, 0);
+                var pos = new Vector3();
+
+                switch (p.Num)
+                {
+                    case 1:
+                        pos = PlayerOneSpawn;
+                        break;
+                    case 2:
+                        pos = PlayerTwoSpawn;
+                        break;
+                    case 3:
+                        pos = PlayerThreeSpawn;
+                        break;
+                    case 4:
+                        pos = PlayerFourSpawn;
+                        break;
+                    default:
+                        Debug.LogError("Player number not within bounds!");
+                        break;
+                }
+
+                player = PhotonNetwork.Instantiate("PlayerOnline", pos, Quaternion.identity, 0);
 
                 var comp = player.GetComponent<onlinePlayer>();
                 comp.Control = p.OnlineControl;

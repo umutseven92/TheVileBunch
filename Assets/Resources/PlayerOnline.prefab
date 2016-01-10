@@ -530,13 +530,13 @@ MonoBehaviour:
   OnlinebYPos: 0
   _slashCol: {fileID: 0}
   Spawn: 3
-  StartingAmmo: 50
-  MaxAmmo: 50
+  StartingAmmo: 3
+  MaxAmmo: 3
   StartingHealth: 6
   MaxHealth: 6
-  BulletDamage: 2
-  SwordDamage: 1
-  MoveForce: 365
+  BulletDamage: 6
+  SwordDamage: 2
+  MoveForce: 400
   MaxSpeed: 3
   JumpForce: 15
   BulletSpeed: 20
@@ -1547,11 +1547,11 @@ Prefab:
       objectReference: {fileID: 8300000, guid: 4df9347d248a0964a99c2b77d1254af7, type: 3}
     - target: {fileID: 0}
       propertyPath: MaxAmmo
-      value: 50
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: StartingAmmo
-      value: 50
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: m_ReceiveShadows
@@ -1664,6 +1664,18 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: reverbZoneMixCustomCurve.m_RotationOrder
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: BulletDamage
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: SwordDamage
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: MoveForce
+      value: 400
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

@@ -809,33 +809,38 @@ public abstract class playerControl : MonoBehaviour
 
     protected void CheckHealth(Collider2D other)
     {
-        if (Health <= 0 && Spawn > 0)
+        if (Health <= 0)
         {
             Spawn--;
-            _hit = true;
-            Instantiate(BloodSplatter, transform.position, transform.rotation);
-            Health = StartingHealth;
-            HealthSlider.value = Health;
-            
-            SpawnCanvas.enabled = true;
 
-            switch (Spawn)
+            if (Spawn > 0)
             {
-                case 3:
-                    SpawnImage.sprite = HealthThree;
-                    break;
-                case 2:
-                    SpawnImage.sprite = HealthTwo;
-                    break;
-                case 1:
-                    SpawnImage.sprite = HealthOne;
-                    break;
+                _hit = true;
+                Instantiate(BloodSplatter, transform.position, transform.rotation);
+                Health = StartingHealth;
+                HealthSlider.value = Health;
+                Ammo = StartingAmmo;
+
+                SpawnCanvas.enabled = true;
+
+                switch (Spawn)
+                {
+                    case 3:
+                        SpawnImage.sprite = HealthThree;
+                        break;
+                    case 2:
+                        SpawnImage.sprite = HealthTwo;
+                        break;
+                    case 1:
+                        SpawnImage.sprite = HealthOne;
+                        break;
+                }
+                _spawned = true;
             }
-            _spawned = true;
-        }
-        else if (Health <= 0 && Spawn <= 1)
-        {
-            Die(other);
+            else if (Spawn <= 0)
+            {
+                Die(other);
+            }
         }
     }
 
