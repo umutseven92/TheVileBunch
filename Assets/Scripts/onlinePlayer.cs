@@ -148,6 +148,7 @@ public class onlinePlayer : playerControl
             gList.RemoveAt(0);
             go = gList.ToArray();
 
+            // BUG HERE
             foreach (
                 var g in
                     go.Where(

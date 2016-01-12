@@ -51,19 +51,20 @@ public class matchmaker : Photon.PunBehaviour
 
                 switch (p.Num)
                 {
-                    case 1:
+                    case 0:
                         pos = PlayerOneSpawn;
                         break;
-                    case 2:
+                    case 1:
                         pos = PlayerTwoSpawn;
                         break;
-                    case 3:
+                    case 2:
                         pos = PlayerThreeSpawn;
                         break;
-                    case 4:
+                    case 3:
                         pos = PlayerFourSpawn;
                         break;
                     default:
+                        // BUG HERE
                         Debug.LogError("Player number not within bounds!");
                         break;
                 }
