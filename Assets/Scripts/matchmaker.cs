@@ -78,6 +78,9 @@ public class matchmaker : Photon.PunBehaviour
 
                 comp.Enabled = true;
                 player.GetComponent<Rigidbody2D>().isKinematic = false;
+                comp.OnlinePlayerName = PlayerPrefs.GetString(global.PlayerName);
+                comp.OnlineNameText.text = PlayerPrefs.GetString(global.PlayerName);
+                comp._slashCol.SendMessage("GetPlayerNum", comp.playerNum);
             }
         });
 

@@ -30,7 +30,6 @@ public class onlinePlayer : playerControl
     protected override void Awake()
     {
         base.Awake();
-        MultiSetPlayer();
     }
 
     protected override void Update()
@@ -95,16 +94,6 @@ public class onlinePlayer : playerControl
 
         base.FixedUpdate();
 
-    }
-
-    private void MultiSetPlayer()
-    {
-        playerNum = 1;
-        Control = "j1";
-        _playerClass = "The Cowboy";
-        OnlinePlayerName = PlayerPrefs.GetString(global.PlayerName);
-        OnlineNameText.text = OnlinePlayerName;
-        _slashCol.SendMessage("GetPlayerNum", playerNum);
     }
 
     public void OnlineShoot(float bXSpeed, float bYSpeed, float bXPos, float bYPos)
