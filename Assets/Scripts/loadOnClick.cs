@@ -62,6 +62,7 @@ public class loadOnClick : MonoBehaviour
     public void EndLocalGame()
     {
         playerSelect.PlayerList = new List<playerSelect.Player>();
+        Time.timeScale = 1;
         Application.LoadLevel("LocalPlayerSelect");
     }
 

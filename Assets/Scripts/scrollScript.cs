@@ -10,7 +10,6 @@ public class scrollScript : MonoBehaviour
     void Start()
     {
         _renderer = GetComponent<Renderer>();
-        Time.timeScale = 1;
     }
 
     // Update is called once per frame
