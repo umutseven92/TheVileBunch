@@ -123,7 +123,6 @@ public class onlinePlayer : playerControl
 
     public void HitBySlash()
     {
-
         _hit = true;
         LowerHealth(SwordDamage);
 

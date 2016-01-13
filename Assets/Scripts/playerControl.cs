@@ -180,8 +180,6 @@ public abstract class playerControl : MonoBehaviour
         _sRenderer = GetComponent<SpriteRenderer>();
         HealthSlider = GetComponentInChildren<Slider>();
 
-        _localPlayers = playerSelect.PlayerList;
-
         _slashCol = Instantiate(SwordSlash.gameObject,
             FacingRight
                 ? new Vector3(transform.position.x + SlashOffset, transform.position.y, transform.position.y)
@@ -205,23 +203,22 @@ public abstract class playerControl : MonoBehaviour
     {
         if (_first)
         {
-            if (playerNum == 1)
+            switch (playerNum)
             {
-                _playerColor = new Color(0f, 0.5f, 0.5f, 1f);
-            }
-            else if (playerNum == 2)
-            {
-                Flip();
-                _playerColor = new Color(0, 0.5f, 0, 1f);
-            }
-            else if (playerNum == 3)
-            {
-                _playerColor = new Color(0, 0.5f, 0.5f, 1f);
-            }
-            else if (playerNum == 4)
-            {
-                Flip();
-                _playerColor = new Color(0.5f, 0.5f, 0.5f, 1f);
+                case 1:
+                    _playerColor = new Color(0f, 0.5f, 0.5f, 1f);
+                    break;
+                case 2:
+                    Flip();
+                    _playerColor = new Color(0, 0.5f, 0, 1f);
+                    break;
+                case 3:
+                    _playerColor = new Color(0, 0.5f, 0.5f, 1f);
+                    break;
+                case 4:
+                    Flip();
+                    _playerColor = new Color(0.5f, 0.5f, 0.5f, 1f);
+                    break;
             }
 
             _sRenderer.color = _playerColor;
@@ -859,18 +856,4 @@ public abstract class playerControl : MonoBehaviour
         Destroy(gameObject);
     }
 
-    void PlayerNumber(int number)
-    {
-        SetPlayerInfo(number);
-    }
-
-    void SetPlayerInfo(int num)
-    {
-        playerNum = num;
-        Control = _localPlayers[num - 1].Control;
-
-        _playerClass = _localPlayers[num - 1].Class;
-
-        _slashCol.SendMessage("GetPlayerNum", playerNum);
-    }
 }

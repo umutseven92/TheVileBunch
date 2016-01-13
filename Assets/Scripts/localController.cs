@@ -242,7 +242,7 @@ public class localController : MonoBehaviour
 
     void PauseAllPlayers()
     {
-        if (gameOver)
+        if (gameOver || scoreCanvas.enabled)
         {
             return;
         }
