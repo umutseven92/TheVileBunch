@@ -109,7 +109,7 @@ public class matchmaker : Photon.PunBehaviour
     public void Go()
     {
         Debug.Log(pId + " GO");
-        SetScoreCard();
+        //SetScoreCard();
     }
 
     void SetScoreCard()

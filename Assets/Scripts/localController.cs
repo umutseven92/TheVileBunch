@@ -98,7 +98,7 @@ public class localController : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetButtonDown("Pause"))
+        if (Input.GetButtonDown("Pause") && scoreCanvas.enabled == false)
         {
             if (paused)
             {
@@ -242,7 +242,7 @@ public class localController : MonoBehaviour
 
     void PauseAllPlayers()
     {
-        if (gameOver || scoreCanvas.enabled)
+        if (gameOver)
         {
             return;
         }
