@@ -1,11 +1,16 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Linq;
 using UnityEngine.UI;
 
 public class matchmaker : Photon.PunBehaviour
 {
     public AudioSource musicPlayer;
+    public AudioSource dingPlayer;
     public Canvas multiCanvas;
+    public Canvas scoreCanvas;
+    public Text CountdownText;
+
     public Text txtP1;
     public Text txtP2;
     public Text txtP3;
@@ -23,19 +28,33 @@ public class matchmaker : Photon.PunBehaviour
     private Text[] playerClasses;
     private Text[] playerPings;
 
-    private GameObject player;
+    [HideInInspector]
+    public GameObject _player;
+
+    [HideInInspector]
+    public string pId;
+
+    private PhotonView _pView;
+
 
     public Vector3 PlayerOneSpawn;
     public Vector3 PlayerTwoSpawn;
     public Vector3 PlayerThreeSpawn;
     public Vector3 PlayerFourSpawn;
 
+    private double _counter = 0.000d;
+    private double scoreCardMs = 3.000d;
+
     // Use this for initialization
     void Start()
     {
         multiCanvas.enabled = false;
+        scoreCanvas.enabled = false;
 
         SetPlayerMenuValues();
+        _pView = GetComponentInParent<PhotonView>();
+
+        pId = PlayerPrefs.GetString(global.PlayerId);
 
         var speaker = GameObject.Find("Speaker");
 
@@ -45,7 +64,7 @@ public class matchmaker : Photon.PunBehaviour
 
         playerSelect.PlayerList.ForEach(p =>
         {
-            if (p.Control == PlayerPrefs.GetString(global.PlayerId))
+            if (p.Control == pId)
             {
                 var pos = new Vector3();
 
@@ -69,22 +88,71 @@ public class matchmaker : Photon.PunBehaviour
                         break;
                 }
 
-                player = PhotonNetwork.Instantiate("PlayerOnline", pos, Quaternion.identity, 0);
+                _player = PhotonNetwork.Instantiate("PlayerOnline", pos, Quaternion.identity, 0);
 
-                var comp = player.GetComponent<onlinePlayer>();
+                var comp = _player.GetComponent<onlinePlayer>();
                 comp.Control = p.OnlineControl;
                 comp._playerClass = p.Class;
                 comp.playerNum = p.Num;
 
-                player.GetComponent<Rigidbody2D>().isKinematic = false;
+                _player.GetComponent<Rigidbody2D>().isKinematic = false;
                 comp.OnlinePlayerName = PlayerPrefs.GetString(global.PlayerName);
                 comp.OnlineNameText.text = PlayerPrefs.GetString(global.PlayerName);
                 comp._slashCol.SendMessage("GetPlayerNum", comp.playerNum);
-                comp.Enabled = true;
             }
         });
 
-        SetCanvas();
+        _pView.RPC("Ready", PhotonTargets.All, pId);
+    }
+
+    public void Go()
+    {
+        Debug.Log(pId + " GO");
+        SetScoreCard();
+    }
+
+    void SetScoreCard()
+    {
+        musicPlayer.Pause();
+        dingPlayer.loop = true;
+        dingPlayer.Play();
+        scoreCanvas.enabled = true;
+    }
+
+    private void ScoreCardTimer()
+    {
+        if (scoreCanvas.enabled)
+        {
+            _counter += 1 * Time.deltaTime;
+
+            if (_counter >= 1.000 && _counter < 2.000)
+            {
+                CountdownText.text = "2";
+            }
+            if (_counter >= 2.000 && _counter < scoreCardMs)
+            {
+                CountdownText.text = "1";
+            }
+
+            if (_counter >= 2.500 && _counter < scoreCardMs)
+            {
+                dingPlayer.Stop();
+            }
+
+            if (_counter >= scoreCardMs)
+            {
+                scoreCanvas.enabled = false;
+                musicPlayer.UnPause();
+                var comp = _player.GetComponent<onlinePlayer>();
+                comp.enabled = true;
+                _counter = 0.000d;
+            }
+        }
+    }
+
+    void CheckTimers()
+    {
+        ScoreCardTimer();
     }
 
     void SetPlayerMenuValues()
@@ -96,7 +164,17 @@ public class matchmaker : Photon.PunBehaviour
 
     void Update()
     {
+        CheckTimers();
         SetCanvas();
+        CheckTimers();
+    }
+
+    private void CheckInputs()
+    {
+        if (scoreCanvas.enabled)
+        {
+            return;
+        }
 
         if (Input.GetButtonDown("Tab"))
         {
@@ -106,11 +184,12 @@ public class matchmaker : Photon.PunBehaviour
         {
             multiCanvas.enabled = false;
         }
+
     }
 
     void SetCanvas()
     {
-        PhotonNetwork.playerName = player.GetComponent<onlinePlayer>().OnlinePlayerName;
+        PhotonNetwork.playerName = _player.GetComponent<onlinePlayer>().OnlinePlayerName;
 
         for (int i = 0; i < PhotonNetwork.playerList.Length; i++)
         {
@@ -136,6 +215,4 @@ public class matchmaker : Photon.PunBehaviour
     {
         GUILayout.Label(PhotonNetwork.connectionStateDetailed.ToString());
     }
-
-
 }

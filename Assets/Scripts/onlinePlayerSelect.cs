@@ -239,7 +239,6 @@ public class onlinePlayerSelect : playerSelect
                 {
                     kStage = SelectStages.Disabled;
                     kCanHorizontal = false;
-                    selected = false;
                 }
                 if (kStage == SelectStages.Chosen)
                 {
@@ -253,7 +252,6 @@ public class onlinePlayerSelect : playerSelect
                 {
                     j1Stage = SelectStages.Disabled;
                     j1CanHorizontal = false;
-                    selected = false;
                 }
                 if (j1Stage == SelectStages.Chosen)
                 {
@@ -267,7 +265,6 @@ public class onlinePlayerSelect : playerSelect
                 {
                     j2Stage = SelectStages.Disabled;
                     j2CanHorizontal = false;
-                    selected = false;
                 }
                 if (j2Stage == SelectStages.Chosen)
                 {
@@ -281,7 +278,6 @@ public class onlinePlayerSelect : playerSelect
                 {
                     j3Stage = SelectStages.Disabled;
                     j3CanHorizontal = false;
-                    selected = false;
                 }
                 if (j3Stage == SelectStages.Chosen)
                 {
@@ -295,7 +291,6 @@ public class onlinePlayerSelect : playerSelect
                 {
                     j4Stage = SelectStages.Disabled;
                     j4CanHorizontal = false;
-                    selected = false;
                 }
                 if (j4Stage == SelectStages.Chosen)
                 {
@@ -333,15 +328,8 @@ public class onlinePlayerSelect : playerSelect
         base.UpdatePlayButton();
     }
 
-    private bool selected = false;
-
     public void OnlineAddInitialPlayer(string control, string pClass, string inputControl = null)
     {
-        if (selected)
-        {
-            return;
-        }
-
         var p = new Player
         {
             Control = control,
@@ -367,7 +355,6 @@ public class onlinePlayerSelect : playerSelect
         PlayPlayersAudio(Clip, control);
 
         UpdateSelect(PlayerList);
-        selected = true;
     }
 
 
