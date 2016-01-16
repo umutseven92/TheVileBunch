@@ -215,4 +215,8 @@ public class matchmaker : Photon.PunBehaviour
     {
         GUILayout.Label(PhotonNetwork.connectionStateDetailed.ToString());
     }
+
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+    }
 }

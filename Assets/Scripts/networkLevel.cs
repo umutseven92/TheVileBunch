@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-public class networkLevel : MonoBehaviour
+public class networkLevel : Photon.PunBehaviour 
 {
     private readonly List<string> _readyPlayers = new List<string>();
     private bool _ready = false;
@@ -23,4 +23,7 @@ public class networkLevel : MonoBehaviour
         }
     }
 
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+    }
 }
