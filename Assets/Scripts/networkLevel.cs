@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-public class networkLevel : Photon.PunBehaviour 
+public class networkLevel : Photon.PunBehaviour
 {
     private readonly List<string> _readyPlayers = new List<string>();
     private bool _ready = false;
@@ -17,7 +17,6 @@ public class networkLevel : Photon.PunBehaviour
     {
         if (_readyPlayers.Count == playerSelect.PlayerList.Count && !_ready)
         {
-            Debug.Log("All players ready");
             GetComponentInParent<matchmaker>().Go();
             _ready = true;
         }

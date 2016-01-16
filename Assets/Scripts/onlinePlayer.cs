@@ -19,6 +19,7 @@ public class onlinePlayer : playerControl
     void Start()
     {
         _pView = GetComponentInParent<PhotonView>();
+        Debug.Log(Control);
     }
 
     public override void Flip()

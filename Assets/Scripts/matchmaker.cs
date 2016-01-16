@@ -92,6 +92,7 @@ public class matchmaker : Photon.PunBehaviour
 
                 var comp = _player.GetComponent<onlinePlayer>();
                 comp.Control = p.OnlineControl;
+                Debug.Log(p.OnlineControl);
                 comp._playerClass = p.Class;
                 comp.playerNum = p.Num;
 
@@ -99,7 +100,6 @@ public class matchmaker : Photon.PunBehaviour
                 comp.OnlinePlayerName = PlayerPrefs.GetString(global.PlayerName);
                 comp.OnlineNameText.text = PlayerPrefs.GetString(global.PlayerName);
                 comp._slashCol.SendMessage("GetPlayerNum", comp.playerNum);
-                comp.enabled = true;
             }
         });
 
@@ -109,7 +109,7 @@ public class matchmaker : Photon.PunBehaviour
     public void Go()
     {
         Debug.Log(pId + " GO");
-        //SetScoreCard();
+        SetScoreCard();
     }
 
     void SetScoreCard()
@@ -145,7 +145,7 @@ public class matchmaker : Photon.PunBehaviour
                 scoreCanvas.enabled = false;
                 musicPlayer.UnPause();
                 var comp = _player.GetComponent<onlinePlayer>();
-               // comp.enabled = true;
+                comp.Enabled = true;
                 _counter = 0.000d;
             }
         }
