@@ -36,7 +36,7 @@ public class networkCharacter : Photon.MonoBehaviour
             net.Health = _health;
             net.Ammo = _ammo;
         }
-        Debug.Log(PhotonNetwork.GetPing());
+        //Debug.Log(PhotonNetwork.GetPing());
     }
 
     private void SetOrientation(onlinePlayer net)
