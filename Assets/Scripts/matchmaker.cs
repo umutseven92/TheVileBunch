@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.UI;
 
@@ -9,6 +10,7 @@ public class matchmaker : Photon.PunBehaviour
     public AudioSource dingPlayer;
     public Canvas multiCanvas;
     public Canvas scoreCanvas;
+    public Canvas pauseCanvas;
     public Text CountdownText;
 
     public Text txtP1;
@@ -36,14 +38,23 @@ public class matchmaker : Photon.PunBehaviour
 
     private PhotonView _pView;
 
+    private double _slowMoCounter = 0.000d;
+    public double SlowMoMs = 1.5d;
 
+    private bool paused;
     public Vector3 PlayerOneSpawn;
     public Vector3 PlayerTwoSpawn;
     public Vector3 PlayerThreeSpawn;
     public Vector3 PlayerFourSpawn;
+    public Text WinnerText;
+    public Canvas EndGameCanvas;
+    public Button BtnEndGameExit;
+    public Button btnExit;
+
+    private onlinePlayer comp;
 
     private double _counter = 0.000d;
-    private double scoreCardMs = 3.000d;
+    public double scoreCardMs = 3.000d;
 
     // Use this for initialization
     void Start()
@@ -55,6 +66,7 @@ public class matchmaker : Photon.PunBehaviour
         _pView = GetComponentInParent<PhotonView>();
 
         pId = PlayerPrefs.GetString(global.PlayerId);
+
 
         var speaker = GameObject.Find("Speaker");
 
@@ -90,7 +102,7 @@ public class matchmaker : Photon.PunBehaviour
 
                 _player = PhotonNetwork.Instantiate("PlayerOnline", pos, Quaternion.identity, 0);
 
-                var comp = _player.GetComponent<onlinePlayer>();
+                comp = _player.GetComponent<onlinePlayer>();
                 comp.Control = p.OnlineControl;
                 Debug.Log(p.OnlineControl);
                 comp._playerClass = p.Class;
@@ -144,7 +156,6 @@ public class matchmaker : Photon.PunBehaviour
             {
                 scoreCanvas.enabled = false;
                 musicPlayer.UnPause();
-                var comp = _player.GetComponent<onlinePlayer>();
                 comp.Enabled = true;
                 _counter = 0.000d;
             }
@@ -154,6 +165,7 @@ public class matchmaker : Photon.PunBehaviour
     void CheckTimers()
     {
         ScoreCardTimer();
+        SlowMotionTimer();
     }
 
     void SetPlayerMenuValues()
@@ -163,34 +175,70 @@ public class matchmaker : Photon.PunBehaviour
         playerPings = new[] { txtP1Ping, txtP2Ping, txtP3Ping, txtP4Ping };
     }
 
+    private KeyValuePair<string, int> winner;
+    private bool slowMo;
+    private bool gameOver;
+
     void Update()
     {
         CheckTimers();
         SetCanvas();
-        CheckTimers();
+
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player").Where(p => p.transform.position != Vector3.zero).ToArray();
+
+        if (players.Length == 1)
+        {
+            winner = new KeyValuePair<string, int>(players[0].GetComponent<localPlayer>()._playerClass, 3);
+            slowMo = true;
+            gameOver = true;
+        }
     }
 
     private void CheckInputs()
     {
-        if (scoreCanvas.enabled)
+        if (scoreCanvas.enabled || paused)
         {
             return;
         }
 
         if (Input.GetButtonDown("Tab"))
         {
-            multiCanvas.enabled = true;
+            if (!paused && !scoreCanvas.enabled)
+            {
+                multiCanvas.enabled = true;
+            }
         }
         else if (Input.GetButtonUp("Tab"))
         {
             multiCanvas.enabled = false;
         }
 
+        if (Input.GetButtonDown("Pause") && scoreCanvas.enabled == false)
+        {
+            if (!scoreCanvas.enabled && !multiCanvas.enabled)
+
+                if (paused)
+                {
+                    comp.Enabled = true;
+                    GameObject myEventSystem = GameObject.Find("EventSystem");
+                    myEventSystem.GetComponent<UnityEngine.EventSystems.EventSystem>().SetSelectedGameObject(null);
+
+                    pauseCanvas.enabled = false;
+                }
+                else
+                {
+                    comp.Enabled = false;
+                    btnExit.Select();
+                    pauseCanvas.enabled = true;
+                }
+            paused = !paused;
+        }
     }
 
     void SetCanvas()
     {
-        PhotonNetwork.playerName = _player.GetComponent<onlinePlayer>().OnlinePlayerName;
+
+        PhotonNetwork.playerName = comp.OnlinePlayerName;
 
         for (int i = 0; i < PhotonNetwork.playerList.Length; i++)
         {
@@ -215,6 +263,37 @@ public class matchmaker : Photon.PunBehaviour
     void OnGUI()
     {
         GUILayout.Label(PhotonNetwork.connectionStateDetailed.ToString());
+    }
+
+    private void SlowMotionTimer()
+    {
+        if (slowMo)
+        {
+            Time.timeScale = 0.2f;
+            musicPlayer.pitch = 0.5f;
+            _slowMoCounter += 1 * Time.deltaTime;
+
+            if (_slowMoCounter >= SlowMoMs)
+            {
+                Time.timeScale = 1f;
+                musicPlayer.pitch = 1f;
+                slowMo = false;
+                _slowMoCounter = 0.000d;
+
+                SetEndGameCard(winner.Key);
+            }
+        }
+    }
+
+
+    void SetEndGameCard(string winner)
+    {
+        WinnerText.text = winner;
+
+        comp.Enabled = false;
+
+        EndGameCanvas.enabled = true;
+        BtnEndGameExit.Select();
     }
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
