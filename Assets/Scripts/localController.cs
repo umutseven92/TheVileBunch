@@ -33,7 +33,7 @@ public class localController : MonoBehaviour
     private int _round = 1;
 
     private bool gameOver = false;
-    private double _counter = 0.000d;
+    private double _counter = -1.000d;
     private double gameOverCounter = 0.000d;
     private double gameOverMs = 3.000d;
 

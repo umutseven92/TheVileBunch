@@ -53,8 +53,12 @@ public class matchmaker : Photon.PunBehaviour
 
     private onlinePlayer comp;
 
-    private double _counter = 0.000d;
+    private double _counter = -1.000d;
     public double scoreCardMs = 3.000d;
+
+    private KeyValuePair<string, int> winner;
+    private bool slowMo;
+    private bool gameOver;
 
     // Use this for initialization
     void Start()
@@ -175,10 +179,6 @@ public class matchmaker : Photon.PunBehaviour
         playerPings = new[] { txtP1Ping, txtP2Ping, txtP3Ping, txtP4Ping };
     }
 
-    private KeyValuePair<string, int> winner;
-    private bool slowMo;
-    private bool gameOver;
-
     void Update()
     {
         CheckTimers();
@@ -237,16 +237,18 @@ public class matchmaker : Photon.PunBehaviour
 
     void SetCanvas()
     {
-
         PhotonNetwork.playerName = comp.OnlinePlayerName;
+        PhotonNetwork.player.TagObject = comp;
 
+        // Fill player list
         for (int i = 0; i < PhotonNetwork.playerList.Length; i++)
         {
             playerNames[i].text = PhotonNetwork.playerList[i].name;
-            playerClasses[i].text = "CLASS";
-            playerPings[i].text = 45.ToString();
+            playerClasses[i].text = ((onlinePlayer)PhotonNetwork.playerList[i].TagObject)._playerClass;
+            playerPings[i].text = ((onlinePlayer)PhotonNetwork.playerList[i].TagObject).Ping.ToString();
         }
 
+        // Clear unused lines
         for (int i = 0; i < PhotonNetwork.room.maxPlayers - PhotonNetwork.playerList.Length; i++)
         {
             playerNames[PhotonNetwork.room.maxPlayers - i - 1].text = string.Empty;
@@ -296,7 +298,19 @@ public class matchmaker : Photon.PunBehaviour
         BtnEndGameExit.Select();
     }
 
-    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info) { }
+
+    public override void OnPhotonPlayerConnected(PhotonPlayer newPlayer)
     {
+        Debug.Log("Player connected: " + newPlayer.name);
+    }
+
+    public override void OnPhotonPlayerDisconnected(PhotonPlayer player)
+    {
+        Debug.Log("Player disconnected: " + player.name);
+        var dc = ((onlinePlayer) player.TagObject);
+        dc.Enabled = false;
+        dc.Spawn = 0;
+        dc.Health = 0;
     }
 }

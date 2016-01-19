@@ -16,6 +16,9 @@ public class onlinePlayer : playerControl
     private Collider2D _other;
     private PhotonView _pView;
 
+    [HideInInspector]
+    public int Ping;
+
     void Start()
     {
         _pView = GetComponentInParent<PhotonView>();
@@ -84,6 +87,8 @@ public class onlinePlayer : playerControl
         {
             DrawLine();
         }
+
+        Ping = PhotonNetwork.GetPing();
     }
 
     protected override void FixedUpdate()
@@ -238,4 +243,6 @@ public class onlinePlayer : playerControl
     {
         _pView.RPC("SlashRPC", PhotonTargets.All, _pView.viewID);
     }
+
+    
 }

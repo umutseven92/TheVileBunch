@@ -206,17 +206,17 @@ public abstract class playerControl : MonoBehaviour
             switch (playerNum)
             {
                 case 0:
+                    Flip();
                     _playerColor = new Color(0f, 0.5f, 0.5f, 1f);
                     break;
                 case 1:
-                    Flip();
                     _playerColor = new Color(0, 0.5f, 0, 1f);
                     break;
                 case 2:
+                    Flip();
                     _playerColor = new Color(0, 0.5f, 0.5f, 1f);
                     break;
                 case 3:
-                    Flip();
                     _playerColor = new Color(0.5f, 0.5f, 0.5f, 1f);
                     break;
             }
