@@ -64,6 +64,7 @@ public class localController : MonoBehaviour
 
     private double _roundOverCounter;
     public double _roundOverMs;
+    private bool start = false;
 
     // Use this for initialization
     void Start()
@@ -275,21 +276,27 @@ public class localController : MonoBehaviour
         btnEndGameExit.Select();
     }
 
+
     void SetScoreCard()
     {
         musicPlayer.Pause();
         dingPlayer.loop = true;
         dingPlayer.Play();
-        scoreCanvas.enabled = true;
+        start = true;
     }
 
     private void ScoreCardTimer()
     {
-        if (scoreCanvas.enabled)
+        if (start)
         {
             PauseAllPlayers();
             _counter += 1 * Time.deltaTime;
 
+            if (_counter >= 0 && _counter < 1.000)
+            {
+                scoreCanvas.enabled = true;
+                CountdownText.text = "3";
+            }
             if (_counter >= 1.000 && _counter < 2.000)
             {
                 CountdownText.text = "2";
@@ -308,6 +315,7 @@ public class localController : MonoBehaviour
             {
 
                 scoreCanvas.enabled = false;
+                start = false;
                 musicPlayer.UnPause();
                 UnPauseAllPlayers();
                 _counter = 0.000d;

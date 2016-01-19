@@ -239,6 +239,7 @@ public class onlinePlayerSelect : playerSelect
                 {
                     kStage = SelectStages.Disabled;
                     kCanHorizontal = false;
+                    selected = false;
                 }
                 if (kStage == SelectStages.Chosen)
                 {
@@ -252,6 +253,8 @@ public class onlinePlayerSelect : playerSelect
                 {
                     j1Stage = SelectStages.Disabled;
                     j1CanHorizontal = false;
+                    selected = false;
+
                 }
                 if (j1Stage == SelectStages.Chosen)
                 {
@@ -265,6 +268,8 @@ public class onlinePlayerSelect : playerSelect
                 {
                     j2Stage = SelectStages.Disabled;
                     j2CanHorizontal = false;
+                    selected = false;
+
                 }
                 if (j2Stage == SelectStages.Chosen)
                 {
@@ -278,6 +283,8 @@ public class onlinePlayerSelect : playerSelect
                 {
                     j3Stage = SelectStages.Disabled;
                     j3CanHorizontal = false;
+
+                    selected = false;
                 }
                 if (j3Stage == SelectStages.Chosen)
                 {
@@ -291,6 +298,8 @@ public class onlinePlayerSelect : playerSelect
                 {
                     j4Stage = SelectStages.Disabled;
                     j4CanHorizontal = false;
+                    selected = false;
+
                 }
                 if (j4Stage == SelectStages.Chosen)
                 {
@@ -412,7 +421,8 @@ public class onlinePlayerSelect : playerSelect
     void OnGUI()
     {
         GUILayout.Label("Online:\t\t" + PhotonNetwork.playerList.Length + "/" + PhotonNetwork.room.maxPlayers + "\n" +
-                        "Player List:\t" + PlayerList.Count + "/" + 4);
+                        "Player List:\t" + PlayerList.Count + "/" + 4 + "\n" +
+                        "Selected:\t" + selected);
     }
 
     protected override void SelectInitialPlayer(string control, string inputControl)
@@ -432,6 +442,8 @@ public class onlinePlayerSelect : playerSelect
         AddInitialPlayer(control, pClass, inputControl);
     }
 
+    private bool selected;
+
     void CheckSubmit()
     {
         if (Input.GetButton("kStart"))
@@ -450,8 +462,9 @@ public class onlinePlayerSelect : playerSelect
                     kStage = SelectStages.Chosen;
                     kCanHorizontal = false;
                 }
-                if (kStage == SelectStages.Disabled)
+                if (kStage == SelectStages.Disabled && !selected)
                 {
+                    selected = true;
                     SelectInitialPlayer(PlayerId, "k");
                     kStage = SelectStages.Browse;
                     kCanHorizontal = true;
@@ -474,8 +487,10 @@ public class onlinePlayerSelect : playerSelect
                     j1Stage = SelectStages.Chosen;
                     j1CanHorizontal = false;
                 }
-                if (j1Stage == SelectStages.Disabled)
+                if (j1Stage == SelectStages.Disabled && !selected)
                 {
+
+                    selected = true;
                     SelectInitialPlayer(PlayerId, "j1");
                     j1Stage = SelectStages.Browse;
                     j1CanHorizontal = true;
@@ -502,8 +517,9 @@ public class onlinePlayerSelect : playerSelect
                     j2CanHorizontal = false;
 
                 }
-                if (j2Stage == SelectStages.Disabled)
+                if (j2Stage == SelectStages.Disabled && !selected)
                 {
+                    selected = true;
                     SelectInitialPlayer(PlayerId, "j2");
                     j2Stage = SelectStages.Browse;
                     j2CanHorizontal = true;
@@ -531,8 +547,10 @@ public class onlinePlayerSelect : playerSelect
                     j3CanHorizontal = false;
 
                 }
-                if (j3Stage == SelectStages.Disabled)
+                if (j3Stage == SelectStages.Disabled && !selected)
                 {
+
+                    selected = true;
                     SelectInitialPlayer(PlayerId, "j3");
                     j3Stage = SelectStages.Browse;
                     j3CanHorizontal = true;
@@ -560,12 +578,12 @@ public class onlinePlayerSelect : playerSelect
                     j4CanHorizontal = false;
 
                 }
-                if (j4Stage == SelectStages.Disabled)
+                if (j4Stage == SelectStages.Disabled && !selected)
                 {
+                    selected = true;
                     SelectInitialPlayer(PlayerId, "j4");
                     j4Stage = SelectStages.Browse;
                     j4CanHorizontal = true;
-
                 }
                 j4Submit = false;
 

@@ -214,7 +214,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 170880}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -5.3802557, y: -1.8740263, z: 0}
+  m_LocalPosition: {x: -1.2026374, y: -1.5375335, z: 0}
   m_LocalScale: {x: 0.8, y: 0.8, z: 1}
   m_Children:
   - {fileID: 474538}
@@ -535,9 +535,9 @@ MonoBehaviour:
   GunLight: {fileID: 10806822}
   AmmoText: {fileID: 11416002}
   SpawnCanvas: {fileID: 22393534}
-  HealthThree: {fileID: 21300000, guid: d0ee872de7d0d7040ad92188f766f36f, type: 3}
-  HealthTwo: {fileID: 21300000, guid: 28affc62c8a5b624ea05477c45fd7b06, type: 3}
-  HealthOne: {fileID: 21300000, guid: 04d053e1d3fe32d47935a37bac170729, type: 3}
+  HealthThree: {fileID: 21300000, guid: 4d2a51752f93c5847acd99fa54185891, type: 3}
+  HealthTwo: {fileID: 21300000, guid: acced019e8efdc84a8d629591a4590d0, type: 3}
+  HealthOne: {fileID: 21300000, guid: d9fd232d3a0d5644fafcf8be7acb26c9, type: 3}
   SpawnImage: {fileID: 11476730}
   _spawnedMs: 2
 --- !u!114 &11416002
@@ -714,7 +714,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: d0ee872de7d0d7040ad92188f766f36f, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 4d2a51752f93c5847acd99fa54185891, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

@@ -59,6 +59,7 @@ public class matchmaker : Photon.PunBehaviour
     private KeyValuePair<string, int> winner;
     private bool slowMo;
     private bool gameOver;
+    private bool start;
 
     // Use this for initialization
     void Start()
@@ -133,15 +134,20 @@ public class matchmaker : Photon.PunBehaviour
         musicPlayer.Pause();
         dingPlayer.loop = true;
         dingPlayer.Play();
-        scoreCanvas.enabled = true;
+        start = true;
     }
 
     private void ScoreCardTimer()
     {
-        if (scoreCanvas.enabled)
+        if (start)
         {
             _counter += 1 * Time.deltaTime;
 
+            if (_counter >= 0 && _counter < 1.000)
+            {
+                scoreCanvas.enabled = true;
+                CountdownText.text = "3";
+            }
             if (_counter >= 1.000 && _counter < 2.000)
             {
                 CountdownText.text = "2";
@@ -159,6 +165,7 @@ public class matchmaker : Photon.PunBehaviour
             if (_counter >= scoreCardMs)
             {
                 scoreCanvas.enabled = false;
+                start = false;
                 musicPlayer.UnPause();
                 comp.Enabled = true;
                 _counter = 0.000d;
