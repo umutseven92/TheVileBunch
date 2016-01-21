@@ -1,4 +1,9 @@
 ﻿using System;
+using System.Text;
+using log4net;
+using log4net.Appender;
+using log4net.Config;
+using log4net.Layout;
 using UnityEngine;
 using UnityEngine.UI;
 using Random = System.Random;
@@ -10,16 +15,18 @@ public class menuScript : MonoBehaviour
     private readonly Random _rand = new Random();
     private readonly string[] _names = { "Chuck", "Cedric", "Iggy", "Woodrow", "Fergie", "Martin", "Volpe", "Tommy", "Steve", "Townie", "Deuce", "Townie", "Marvin", "Nazo", "Clive", "Ula", "Hobo", "Punky", "Yuri", "Gus", "Stan", "Bill", "Salim", "Ed", "Rob", "Paul", "Ernosto", "Ramon" };
 
+
     // Use this for initialization
     void Start()
     {
+        Version.text = "v" + global.GameVersion;
+
         Time.timeScale = 1.0f;
 
         //Application.targetFrameRate = global.FrameRateLimit;
         CheckPlayerPrefs();
         SetMusic();
 
-        Version.text = "v" + global.GameVersion;
     }
 
     private void CheckPlayerPrefs()
@@ -44,7 +51,7 @@ public class menuScript : MonoBehaviour
     private void SetMusic()
     {
         var audioSource = GameObject.Find("Speaker").GetComponent<AudioSource>();
-
         audioSource.mute = PlayerPrefs.GetInt(global.Music) != 1;
     }
+
 }

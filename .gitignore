@@ -4,6 +4,7 @@
 Temp/
 Library/
 out/
+logs/
 
 # ===================================== #
 # Visual Studio / MonoDevelop generated #
