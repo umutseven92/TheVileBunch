@@ -63,7 +63,7 @@ public class onlinePlayer : playerControl
             _softAim = false;
         }
 
-        if (Input.GetButtonDown(Control + "Slash") && !_slashing && !_aiming && Enabled)
+        if (Input.GetButtonDown(Control + "Slash") && !_slashing && !_aiming && Enabled && !_slashDelay)
         {
             Slash();
         }

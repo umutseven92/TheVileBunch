@@ -7,7 +7,6 @@ using XInputDotNetPure;
 
 public abstract class playerControl : MonoBehaviour
 {
-    #region Public Values
 
     [HideInInspector]
     public bool FacingRight = true;
@@ -102,10 +101,6 @@ public abstract class playerControl : MonoBehaviour
     public Sprite HealthOne;
     public Image SpawnImage;
 
-    #endregion
-
-    #region Private Values
-
     protected bool _inFrontOfLadder;
     protected bool _up;
     private bool _dead;
@@ -151,9 +146,10 @@ public abstract class playerControl : MonoBehaviour
     protected float bXSpeed;
     protected float bYSpeed;
 
-    #endregion
+    protected bool _slashDelay = false;
+    private double _slashDelayCounter = 0.000d;
+    public double SlashDelayMs = 1.000d;
 
-    #region Properties
 
     private Transform _line;
 
@@ -169,8 +165,6 @@ public abstract class playerControl : MonoBehaviour
             return _line;
         }
     }
-
-    #endregion
 
     protected virtual void Awake()
     {
@@ -508,6 +502,7 @@ public abstract class playerControl : MonoBehaviour
     {
         CheckHealthBar();
         CheckSlashingTimer();
+        CheckSlashDelay();
         CheckHitTimer();
         CheckGunLightTimer();
         CheckHealedTimer();
@@ -539,8 +534,22 @@ public abstract class playerControl : MonoBehaviour
             if (_slashingCounter >= SlashingMs)
             {
                 _slashing = false;
+                _slashDelay = true;
                 _slashCol.SendMessage("GetCol", _slashing);
                 _slashingCounter = 0.000d;
+            }
+        }
+    }
+
+    private void CheckSlashDelay()
+    {
+        if (_slashDelay)
+        {
+            _slashDelayCounter += 1 * Time.deltaTime;
+            if (_slashDelayCounter >= SlashDelayMs)
+            {
+                _slashDelayCounter = 0.000d;
+                _slashDelay = false;
             }
         }
     }

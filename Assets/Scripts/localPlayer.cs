@@ -43,7 +43,7 @@ public class localPlayer : playerControl
             _softAim = false;
         }
 
-        if (Input.GetButtonDown(Control + "Slash") && !_paused && !_slashing && !_aiming)
+        if (Input.GetButtonDown(Control + "Slash") && !_paused && !_slashing && !_aiming && !_slashDelay)
         {
             Slash();
         }

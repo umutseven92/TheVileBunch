@@ -26,7 +26,6 @@ public class menuScript : MonoBehaviour
         //Application.targetFrameRate = global.FrameRateLimit;
         CheckPlayerPrefs();
         SetMusic();
-
     }
 
     private void CheckPlayerPrefs()

@@ -57,7 +57,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   slashing: 0
   num: 0
-  visible: 0
+  visible: 1
 --- !u!212 &21253364
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -130,7 +130,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: visible
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
