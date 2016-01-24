@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using log4net;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -18,6 +19,8 @@ public class onlinePlayer : playerControl
 
     [HideInInspector]
     public int Ping;
+
+    private readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
     void Start()
     {
@@ -125,6 +128,7 @@ public class onlinePlayer : playerControl
 
         CheckHealth(_other);
 
+        Log.InfoFormat("Player {0}({1}) shot shown in client", _pView.viewID, OnlinePlayerName);
     }
 
     public void HitBySlash()
@@ -159,6 +163,8 @@ public class onlinePlayer : playerControl
                 : new Vector2(-PushX, PushY));
         }
         CheckHealth(_other);
+
+        Log.InfoFormat("Player {0}({1}) stab shown in client", _pView.viewID, OnlinePlayerName);
     }
 
     void OnTriggerEnter2D(Collider2D other)
@@ -176,6 +182,7 @@ public class onlinePlayer : playerControl
         {
             if (!_hit)
             {
+                Log.InfoFormat("Player {0}({1}) shot in client", _pView.viewID, OnlinePlayerName);
                 _pView.RPC("BulletHitRPC", PhotonTargets.All, _pView.viewID);
             }
         }
@@ -187,6 +194,7 @@ public class onlinePlayer : playerControl
             {
                 if (!_hit)
                 {
+                    Log.InfoFormat("Player {0}({1}) stabbed in client", _pView.viewID, OnlinePlayerName);
                     _pView.RPC("SlashHitRPC", PhotonTargets.All, _pView.viewID);
                 }
             }
@@ -244,5 +252,5 @@ public class onlinePlayer : playerControl
         _pView.RPC("SlashRPC", PhotonTargets.All, _pView.viewID);
     }
 
-    
+
 }

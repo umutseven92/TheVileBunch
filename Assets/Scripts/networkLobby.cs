@@ -1,6 +1,8 @@
-﻿
+﻿using log4net;
+
 public class networkLobby : Photon.PunBehaviour
 {
+
     [PunRPC]
     public void PlayerAddRPC(string control, int pId)
     {

@@ -103,13 +103,10 @@ public class playerSelect : Photon.PunBehaviour
     protected List<string> _classes = new List<string>();
     private const string SelectText = "Press Start\n(Space)";
 
-    private readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
     // Use this for initialization
     protected virtual void Start()
     {
-        Log.Info("Player Select");
-
         Play.enabled = false;
         cowboyImage = Resources.Load<Sprite>("cowboy");
         dancerImage = Resources.Load<Sprite>("dancer");

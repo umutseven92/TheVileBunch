@@ -545,7 +545,7 @@ MonoBehaviour:
   SlashOffset: 0.5
   GunOffset: 0.6
   SlashingMs: 0.3
-  HitMs: 2
+  HitMs: 0.5
   HealedMs: 2
   GunLightMs: 0.2
   Flash: 0.2
@@ -1678,6 +1678,10 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: MoveForce
       value: 400
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: HitMs
+      value: 0.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

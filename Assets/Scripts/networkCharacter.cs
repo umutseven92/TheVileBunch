@@ -1,9 +1,7 @@
-﻿using UnityEngine;
+﻿using log4net;
+using UnityEngine;
 using UnityEngine.UI;
 
-/// <summary>
-/// Online Character
-/// </summary>
 public class networkCharacter : Photon.MonoBehaviour
 {
     private Vector3 _correctPlayerPos;
@@ -12,6 +10,8 @@ public class networkCharacter : Photon.MonoBehaviour
     private int _health;
     private int _ammo;
     private float _fraction;
+
+    private readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
     void Update()
     {
@@ -132,12 +132,14 @@ public class networkCharacter : Photon.MonoBehaviour
     [PunRPC]
     public void SlashHitRPC(int pId)
     {
+        Log.InfoFormat("Player {0} stabbed in server", pId);
         RPCBase(pId).HitBySlash();
     }
 
     [PunRPC]
     public void BulletHitRPC(int pId)
     {
+        Log.InfoFormat("Player {0} shot in server", pId);
         RPCBase(pId).HitByBullet();
     }
 
