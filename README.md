@@ -37,6 +37,6 @@ Online play will feature character progression and matchmaking according to skil
 
 ## Links
 
-[Game Design Documents](https://www.dropbox.com/s/vq6zpal5q5j02xv/FSDesignDocument.docx?dl=0=) **OUTDATED**
+[Game Design Documents](https://www.dropbox.com/s/vq6zpal5q5j02xv/FSDesignDocument.docx?dl=0=) **OUTDATED, NEED TO BE UPDATED**
 
 [Game Art Draft](https://docs.google.com/document/d/1WvIpXSU1P47oblb4Adbgr3TqEiLrpzP_BuyZ4dKXFVs/edit)
