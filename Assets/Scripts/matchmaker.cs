@@ -66,12 +66,12 @@ public class matchmaker : Photon.PunBehaviour
     {
         multiCanvas.enabled = false;
         scoreCanvas.enabled = false;
+        pauseCanvas.enabled = false;
 
         SetPlayerMenuValues();
         _pView = GetComponentInParent<PhotonView>();
 
         pId = PlayerPrefs.GetString(global.PlayerId);
-
 
         var speaker = GameObject.Find("Speaker");
 
@@ -251,8 +251,8 @@ public class matchmaker : Photon.PunBehaviour
         for (int i = 0; i < PhotonNetwork.playerList.Length; i++)
         {
             playerNames[i].text = PhotonNetwork.playerList[i].name;
-            playerClasses[i].text = ((onlinePlayer)PhotonNetwork.playerList[i].TagObject)._playerClass;
-            playerPings[i].text = ((onlinePlayer)PhotonNetwork.playerList[i].TagObject).Ping.ToString();
+            //playerClasses[i].text = ((onlinePlayer)PhotonNetwork.playerList[i].TagObject)._playerClass;
+            //playerPings[i].text = ((onlinePlayer)PhotonNetwork.playerList[i].TagObject).Ping.ToString();
         }
 
         // Clear unused lines
