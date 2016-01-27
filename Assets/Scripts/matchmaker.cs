@@ -72,6 +72,7 @@ public class matchmaker : Photon.PunBehaviour
         multiCanvas.enabled = false;
         scoreCanvas.enabled = false;
         pauseCanvas.enabled = false;
+        EndGameCanvas.enabled = false;
 
         SetPlayerMenuValues();
         _pView = GetComponentInParent<PhotonView>();
