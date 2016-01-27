@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using log4net;
 using UnityEngine.UI;
 
 public class matchmaker : Photon.PunBehaviour
@@ -60,6 +61,10 @@ public class matchmaker : Photon.PunBehaviour
     private bool slowMo;
     private bool gameOver;
     private bool start;
+
+    private bool started = false;
+
+    private readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
     // Use this for initialization
     void Start()
@@ -125,7 +130,7 @@ public class matchmaker : Photon.PunBehaviour
 
     public void Go()
     {
-        Debug.Log(pId + " GO");
+        Log.Info(pId + " GO");
         SetScoreCard();
     }
 
@@ -146,6 +151,7 @@ public class matchmaker : Photon.PunBehaviour
             if (_counter >= 0 && _counter < 1.000)
             {
                 scoreCanvas.enabled = true;
+                started = true;
                 CountdownText.text = "3";
             }
             if (_counter >= 1.000 && _counter < 2.000)
@@ -190,6 +196,12 @@ public class matchmaker : Photon.PunBehaviour
     {
         CheckTimers();
         SetCanvas();
+        CheckInputs();
+
+        if (!started)
+        {
+            return;
+        }
 
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player").Where(p => p.transform.position != Vector3.zero).ToArray();
 
@@ -315,7 +327,7 @@ public class matchmaker : Photon.PunBehaviour
     public override void OnPhotonPlayerDisconnected(PhotonPlayer player)
     {
         Debug.Log("Player disconnected: " + player.name);
-        var dc = ((onlinePlayer) player.TagObject);
+        var dc = ((onlinePlayer)player.TagObject);
         dc.Enabled = false;
         dc.Spawn = 0;
         dc.Health = 0;
