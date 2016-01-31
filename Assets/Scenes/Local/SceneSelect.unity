@@ -161,8 +161,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 823571329}
-        m_MethodName: LoadScene
-        m_Mode: 5
+        m_MethodName: EndLocalGame
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -501,6 +501,48 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1245856357}
   m_RootOrder: 3
+--- !u!1001 &303210145
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 462310, guid: 3b3a815f8dbdb814e9c84c5247660782, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 1.153348
+      objectReference: {fileID: 0}
+    - target: {fileID: 462310, guid: 3b3a815f8dbdb814e9c84c5247660782, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: -0.7703739
+      objectReference: {fileID: 0}
+    - target: {fileID: 462310, guid: 3b3a815f8dbdb814e9c84c5247660782, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: -33.476562
+      objectReference: {fileID: 0}
+    - target: {fileID: 462310, guid: 3b3a815f8dbdb814e9c84c5247660782, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 462310, guid: 3b3a815f8dbdb814e9c84c5247660782, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 462310, guid: 3b3a815f8dbdb814e9c84c5247660782, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 462310, guid: 3b3a815f8dbdb814e9c84c5247660782, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 462310, guid: 3b3a815f8dbdb814e9c84c5247660782, type: 2}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: 3b3a815f8dbdb814e9c84c5247660782, type: 2}
+  m_IsPrefabParent: 0
 --- !u!1 &465981073
 GameObject:
   m_ObjectHideFlags: 0
@@ -975,6 +1017,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PlayButton: {fileID: 1728248595}
+  BackButton: {fileID: 0}
 --- !u!4 &817648267
 Transform:
   m_ObjectHideFlags: 0
@@ -1275,64 +1318,6 @@ Transform:
   - {fileID: 272299494}
   m_Father: {fileID: 0}
   m_RootOrder: 5
---- !u!1 &1254775655
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 1254775657}
-  - 212: {fileID: 1254775656}
-  m_Layer: 0
-  m_Name: Background
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!212 &1254775656
-SpriteRenderer:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1254775655}
-  m_Enabled: 1
-  m_CastShadows: 0
-  m_ReceiveShadows: 0
-  m_Materials:
-  - {fileID: 10754, guid: 0000000000000000e000000000000000, type: 0}
-  m_SubsetIndices: 
-  m_StaticBatchRoot: {fileID: 0}
-  m_UseLightProbes: 0
-  m_ReflectionProbeUsage: 0
-  m_ProbeAnchor: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: -105326633
-  m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 963d58be8f369f3479a7ad16c39b848c, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_FlipX: 0
-  m_FlipY: 0
---- !u!4 &1254775657
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1254775655}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0, y: -0.01, z: 0}
-  m_LocalScale: {x: 0.92529273, y: 0.92696583, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 1
 --- !u!1 &1308772947
 GameObject:
   m_ObjectHideFlags: 0

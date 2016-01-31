@@ -4,16 +4,26 @@ using UnityEngine.UI;
 public class onlineSceneSelect : sceneSelect
 {
     public Text LevelText;
+    public Text BackText;
+    public Button[] LevelSelectButtons;
+
+    private bool sure = false;
 
     protected override void Start()
     {
         base.Start();
 
+
         if (!PhotonNetwork.isMasterClient)
         {
+            foreach (var button in LevelSelectButtons)
+            {
+                button.enabled = false;
+            }
             PlayButton.enabled = false;
-            BackButton.enabled = false;
         }
+
+        BackText.text = "Quit";
 
         PlayButton.onClick.AddListener(() =>
         {
@@ -30,9 +40,19 @@ public class onlineSceneSelect : sceneSelect
                     break;
             }
         });
+
         BackButton.onClick.AddListener(() =>
         {
-            PhotonNetwork.LoadLevel("OnlinePlayerSelect");
+            if (!sure)
+            {
+                BackText.text = "Sure?";
+                sure = true;
+            }
+            else
+            {
+                PhotonNetwork.Disconnect();
+                Application.LoadLevel("Menu");
+            }
         });
     }
     void OnGUI()

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using log4net;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -16,6 +17,11 @@ public class onlinePlayer : playerControl
     private Collider2D _other;
     private PhotonView _pView;
 
+    [HideInInspector]
+    public int Ping;
+
+    private readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
     void Start()
     {
         _pView = GetComponentInParent<PhotonView>();
@@ -30,50 +36,51 @@ public class onlinePlayer : playerControl
     protected override void Awake()
     {
         base.Awake();
-        MultiSetPlayer();
     }
 
     protected override void Update()
     {
         base.Update();
 
-        if (Input.GetButtonDown(Control + "Fire") && Ammo > 0 && Enabled)
+        if (!string.IsNullOrEmpty(Control))
         {
-            _softAim = true;
-        }
-
-        if (Input.GetButtonDown(Control + "Jump") && (Grounded || _inFrontOfLadder) && !_aiming && Enabled)
-        {
-            Jump = true;
-        }
-
-        if (Input.GetButtonUp(Control + "Fire") && Ammo > 0 && Enabled)
-        {
-            if (_aimCanceled)
+            if (Input.GetButtonDown(Control + "Fire") && Ammo > 0 && Enabled)
             {
-                _aimCanceled = false;
-                return;
+                _softAim = true;
             }
-            Shoot();
-            AimLine.GetComponent<SpriteRenderer>().enabled = false;
-            _aiming = false;
-            _softAim = false;
+
+            if (Input.GetButtonDown(Control + "Jump") && (Grounded || _inFrontOfLadder) && !_aiming && Enabled)
+            {
+                Jump = true;
+            }
+
+            if (Input.GetButtonUp(Control + "Fire") && Ammo > 0 && Enabled)
+            {
+                if (_aimCanceled)
+                {
+                    _aimCanceled = false;
+                    return;
+                }
+                Shoot();
+                AimLine.GetComponent<SpriteRenderer>().enabled = false;
+                _aiming = false;
+                _softAim = false;
+            }
+
+            if (Input.GetButtonDown(Control + "Slash") && !_slashing && !_aiming && Enabled && !_slashDelay)
+            {
+                Slash();
+            }
+
+            if (Input.GetButtonDown(Control + "Slash") && !_slashing && _aiming && Enabled)
+            {
+                _aiming = false;
+                AimLine.GetComponent<SpriteRenderer>().enabled = false;
+                _aimCanceled = true;
+            }
+
+            _up = Input.GetAxis(Control + "Vertical") > 0.3f;
         }
-
-        if (Input.GetButtonDown(Control + "Slash") && !_slashing && !_aiming && Enabled)
-        {
-            Slash();
-        }
-
-        if (Input.GetButtonDown(Control + "Slash") && !_slashing && _aiming && Enabled)
-        {
-            _aiming = false;
-            AimLine.GetComponent<SpriteRenderer>().enabled = false;
-            _aimCanceled = true;
-        }
-
-        _up = Input.GetAxis(Control + "Vertical") > 0.3f;
-
 
         if (Enabled)
         {
@@ -84,6 +91,8 @@ public class onlinePlayer : playerControl
         {
             DrawLine();
         }
+
+        Ping = PhotonNetwork.GetPing();
     }
 
     protected override void FixedUpdate()
@@ -95,16 +104,6 @@ public class onlinePlayer : playerControl
 
         base.FixedUpdate();
 
-    }
-
-    private void MultiSetPlayer()
-    {
-        playerNum = 1;
-        Control = "j1";
-        _playerClass = "The Cowboy";
-        OnlinePlayerName = PlayerPrefs.GetString(global.PlayerName);
-        OnlineNameText.text = OnlinePlayerName;
-        _slashCol.SendMessage("GetPlayerNum", playerNum);
     }
 
     public void OnlineShoot(float bXSpeed, float bYSpeed, float bXPos, float bYPos)
@@ -130,11 +129,11 @@ public class onlinePlayer : playerControl
 
         CheckHealth(_other);
 
+        Log.InfoFormat("Player {0}({1}) shot shown in client", _pView.viewID, OnlinePlayerName);
     }
 
     public void HitBySlash()
     {
-
         _hit = true;
         LowerHealth(SwordDamage);
 
@@ -148,6 +147,7 @@ public class onlinePlayer : playerControl
             gList.RemoveAt(0);
             go = gList.ToArray();
 
+            // BUG HERE
             foreach (
                 var g in
                     go.Where(
@@ -164,6 +164,8 @@ public class onlinePlayer : playerControl
                 : new Vector2(-PushX, PushY));
         }
         CheckHealth(_other);
+
+        Log.InfoFormat("Player {0}({1}) stab shown in client", _pView.viewID, OnlinePlayerName);
     }
 
     void OnTriggerEnter2D(Collider2D other)
@@ -181,6 +183,7 @@ public class onlinePlayer : playerControl
         {
             if (!_hit)
             {
+                Log.InfoFormat("Player {0}({1}) shot in client", _pView.viewID, OnlinePlayerName);
                 _pView.RPC("BulletHitRPC", PhotonTargets.All, _pView.viewID);
             }
         }
@@ -192,6 +195,7 @@ public class onlinePlayer : playerControl
             {
                 if (!_hit)
                 {
+                    Log.InfoFormat("Player {0}({1}) stabbed in client", _pView.viewID, OnlinePlayerName);
                     _pView.RPC("SlashHitRPC", PhotonTargets.All, _pView.viewID);
                 }
             }
@@ -248,4 +252,6 @@ public class onlinePlayer : playerControl
     {
         _pView.RPC("SlashRPC", PhotonTargets.All, _pView.viewID);
     }
+
+
 }

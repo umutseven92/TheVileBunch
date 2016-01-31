@@ -7,7 +7,6 @@ using XInputDotNetPure;
 
 public abstract class playerControl : MonoBehaviour
 {
-    #region Public Values
 
     [HideInInspector]
     public bool FacingRight = true;
@@ -102,10 +101,6 @@ public abstract class playerControl : MonoBehaviour
     public Sprite HealthOne;
     public Image SpawnImage;
 
-    #endregion
-
-    #region Private Values
-
     protected bool _inFrontOfLadder;
     protected bool _up;
     private bool _dead;
@@ -151,9 +146,10 @@ public abstract class playerControl : MonoBehaviour
     protected float bXSpeed;
     protected float bYSpeed;
 
-    #endregion
+    protected bool _slashDelay = false;
+    private double _slashDelayCounter = 0.000d;
+    public double SlashDelayMs = 1.000d;
 
-    #region Properties
 
     private Transform _line;
 
@@ -170,8 +166,6 @@ public abstract class playerControl : MonoBehaviour
         }
     }
 
-    #endregion
-
     protected virtual void Awake()
     {
         _rb2D = GetComponent<Rigidbody2D>();
@@ -179,8 +173,6 @@ public abstract class playerControl : MonoBehaviour
         _audio = GetComponent<AudioSource>();
         _sRenderer = GetComponent<SpriteRenderer>();
         HealthSlider = GetComponentInChildren<Slider>();
-
-        _localPlayers = playerSelect.PlayerList;
 
         _slashCol = Instantiate(SwordSlash.gameObject,
             FacingRight
@@ -205,23 +197,22 @@ public abstract class playerControl : MonoBehaviour
     {
         if (_first)
         {
-            if (playerNum == 1)
+            switch (playerNum)
             {
-                _playerColor = new Color(0f, 0.5f, 0.5f, 1f);
-            }
-            else if (playerNum == 2)
-            {
-                Flip();
-                _playerColor = new Color(0, 0.5f, 0, 1f);
-            }
-            else if (playerNum == 3)
-            {
-                _playerColor = new Color(0, 0.5f, 0.5f, 1f);
-            }
-            else if (playerNum == 4)
-            {
-                Flip();
-                _playerColor = new Color(0.5f, 0.5f, 0.5f, 1f);
+                case 0:
+                    Flip();
+                    _playerColor = new Color(0f, 0.5f, 0.5f, 1f);
+                    break;
+                case 1:
+                    _playerColor = new Color(0, 0.5f, 0, 1f);
+                    break;
+                case 2:
+                    Flip();
+                    _playerColor = new Color(0, 0.5f, 0.5f, 1f);
+                    break;
+                case 3:
+                    _playerColor = new Color(0.5f, 0.5f, 0.5f, 1f);
+                    break;
             }
 
             _sRenderer.color = _playerColor;
@@ -511,6 +502,7 @@ public abstract class playerControl : MonoBehaviour
     {
         CheckHealthBar();
         CheckSlashingTimer();
+        CheckSlashDelay();
         CheckHitTimer();
         CheckGunLightTimer();
         CheckHealedTimer();
@@ -542,8 +534,22 @@ public abstract class playerControl : MonoBehaviour
             if (_slashingCounter >= SlashingMs)
             {
                 _slashing = false;
+                _slashDelay = true;
                 _slashCol.SendMessage("GetCol", _slashing);
                 _slashingCounter = 0.000d;
+            }
+        }
+    }
+
+    private void CheckSlashDelay()
+    {
+        if (_slashDelay)
+        {
+            _slashDelayCounter += 1 * Time.deltaTime;
+            if (_slashDelayCounter >= SlashDelayMs)
+            {
+                _slashDelayCounter = 0.000d;
+                _slashDelay = false;
             }
         }
     }
@@ -809,33 +815,38 @@ public abstract class playerControl : MonoBehaviour
 
     protected void CheckHealth(Collider2D other)
     {
-        if (Health <= 0 && Spawn > 0)
+        if (Health <= 0)
         {
             Spawn--;
-            _hit = true;
-            Instantiate(BloodSplatter, transform.position, transform.rotation);
-            Health = StartingHealth;
-            HealthSlider.value = Health;
-            
-            SpawnCanvas.enabled = true;
 
-            switch (Spawn)
+            if (Spawn > 0)
             {
-                case 3:
-                    SpawnImage.sprite = HealthThree;
-                    break;
-                case 2:
-                    SpawnImage.sprite = HealthTwo;
-                    break;
-                case 1:
-                    SpawnImage.sprite = HealthOne;
-                    break;
+                _hit = true;
+                Instantiate(BloodSplatter, transform.position, transform.rotation);
+                Health = StartingHealth;
+                HealthSlider.value = Health;
+                Ammo = StartingAmmo;
+
+                SpawnCanvas.enabled = true;
+
+                switch (Spawn)
+                {
+                    case 3:
+                        SpawnImage.sprite = HealthThree;
+                        break;
+                    case 2:
+                        SpawnImage.sprite = HealthTwo;
+                        break;
+                    case 1:
+                        SpawnImage.sprite = HealthOne;
+                        break;
+                }
+                _spawned = true;
             }
-            _spawned = true;
-        }
-        else if (Health <= 0 && Spawn <= 1)
-        {
-            Die(other);
+            else if (Spawn <= 0)
+            {
+                Die(other);
+            }
         }
     }
 
@@ -854,18 +865,4 @@ public abstract class playerControl : MonoBehaviour
         Destroy(gameObject);
     }
 
-    void PlayerNumber(int number)
-    {
-        SetPlayerInfo(number);
-    }
-
-    void SetPlayerInfo(int num)
-    {
-        playerNum = num;
-        Control = _localPlayers[num - 1].Control;
-
-        _playerClass = _localPlayers[num - 1].Class;
-
-        _slashCol.SendMessage("GetPlayerNum", playerNum);
-    }
 }

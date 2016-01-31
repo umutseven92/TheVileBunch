@@ -2,6 +2,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
+using log4net;
 using UnityEngine.UI;
 using XInputDotNetPure;
 
@@ -101,6 +102,7 @@ public class playerSelect : Photon.PunBehaviour
     protected List<string> pickedClasses = new List<string>();
     protected List<string> _classes = new List<string>();
     private const string SelectText = "Press Start\n(Space)";
+
 
     // Use this for initialization
     protected virtual void Start()

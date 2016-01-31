@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -13,7 +12,6 @@ public class onlineLoadingScreen : Photon.PunBehaviour
     public Text DiaryText;
     public double LoadingMs = 1.500d;
     public string LevelName;
-    public Transform AButton;
 
     private double _loadingTextCounter;
     private const string Loading = "Loading";
@@ -49,7 +47,6 @@ public class onlineLoadingScreen : Photon.PunBehaviour
 
         DiaryText.text = _diaries[count];
 
-        AButton.GetComponent<SpriteRenderer>().enabled = false;
 
         if (!onlineHelper.Joining)
         {
@@ -90,14 +87,9 @@ public class onlineLoadingScreen : Photon.PunBehaviour
         if (_ready)
         {
             LoadingText.text = "Loaded";
-            AButton.GetComponent<SpriteRenderer>().enabled = true;
 
-            if (Input.GetButtonDown("Submit"))
-            {
-                PhotonNetwork.LoadLevel(LevelName);
-            }
+            PhotonNetwork.LoadLevel(LevelName);
         }
-
     }
 
     private void AnimateLoadingText()

@@ -62,8 +62,19 @@ public class loadOnClick : MonoBehaviour
     public void EndLocalGame()
     {
         playerSelect.PlayerList = new List<playerSelect.Player>();
+        Time.timeScale = 1;
         Application.LoadLevel("LocalPlayerSelect");
     }
+
+    public void EndMultiGame()
+    {
+        playerSelect.PlayerList = new List<playerSelect.Player>();
+        PhotonNetwork.automaticallySyncScene = false;
+        Time.timeScale = 1;
+        PhotonNetwork.Disconnect();
+        Application.LoadLevel("Menu");
+    }
+
     public void FocusOn(Transform item)
     {
         EventSystem.current.SetSelectedGameObject(item.gameObject);

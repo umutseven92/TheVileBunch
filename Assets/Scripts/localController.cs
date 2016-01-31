@@ -33,7 +33,7 @@ public class localController : MonoBehaviour
     private int _round = 1;
 
     private bool gameOver = false;
-    private double _counter = 0.000d;
+    private double _counter = -1.000d;
     private double gameOverCounter = 0.000d;
     private double gameOverMs = 3.000d;
 
@@ -64,6 +64,7 @@ public class localController : MonoBehaviour
 
     private double _roundOverCounter;
     public double _roundOverMs;
+    private bool start = false;
 
     // Use this for initialization
     void Start()
@@ -98,7 +99,7 @@ public class localController : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetButtonDown("Pause"))
+        if (Input.GetButtonDown("Pause") && scoreCanvas.enabled == false)
         {
             if (paused)
             {
@@ -264,12 +265,11 @@ public class localController : MonoBehaviour
         {
             allPlayer.SendMessage("UnPause");
         }
-
     }
 
-    void SetEndGameCard(string winner)
+    void SetEndGameCard(string __winner)
     {
-        winnerText.text = winner;
+        winnerText.text = __winner;
         PauseAllPlayers();
         endGameCanvas.enabled = true;
         btnEndGameExit.Select();
@@ -280,16 +280,21 @@ public class localController : MonoBehaviour
         musicPlayer.Pause();
         dingPlayer.loop = true;
         dingPlayer.Play();
-        scoreCanvas.enabled = true;
+        start = true;
     }
 
     private void ScoreCardTimer()
     {
-        if (scoreCanvas.enabled)
+        if (start)
         {
             PauseAllPlayers();
             _counter += 1 * Time.deltaTime;
 
+            if (_counter >= 0 && _counter < 1.000)
+            {
+                scoreCanvas.enabled = true;
+                CountdownText.text = "3";
+            }
             if (_counter >= 1.000 && _counter < 2.000)
             {
                 CountdownText.text = "2";
@@ -308,6 +313,7 @@ public class localController : MonoBehaviour
             {
 
                 scoreCanvas.enabled = false;
+                start = false;
                 musicPlayer.UnPause();
                 UnPauseAllPlayers();
                 _counter = 0.000d;

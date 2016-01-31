@@ -1,6 +1,8 @@
-﻿
+﻿using log4net;
+
 public class networkLobby : Photon.PunBehaviour
 {
+
     [PunRPC]
     public void PlayerAddRPC(string control, int pId)
     {
@@ -29,14 +31,5 @@ public class networkLobby : Photon.PunBehaviour
         pView.GetComponentInParent<onlinePlayerSelect>().OnlineChangePlayer(control, dir, delay, playerId);
     }
 
-    [PunRPC]
-    public void SceneSelectRPC(int pId)
-    {
-        var pView = PhotonView.Find(pId);
-        pView.GetComponentInParent<onlinePlayerSelect>();
-    }
-
-    void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-    {
-    }
+    void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info) { }
 }

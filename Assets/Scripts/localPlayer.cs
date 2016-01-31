@@ -7,6 +7,15 @@ public class localPlayer : playerControl
 {
     private bool _paused;
 
+    private List<playerSelect.Player> _localPlayers;
+
+    protected override void Awake()
+    {
+        base.Awake();
+
+        _localPlayers = playerSelect.PlayerList;
+    }
+
     protected override void Update()
     {
         base.Update();
@@ -34,7 +43,7 @@ public class localPlayer : playerControl
             _softAim = false;
         }
 
-        if (Input.GetButtonDown(Control + "Slash") && !_paused && !_slashing && !_aiming)
+        if (Input.GetButtonDown(Control + "Slash") && !_paused && !_slashing && !_aiming && !_slashDelay)
         {
             Slash();
         }
@@ -55,7 +64,7 @@ public class localPlayer : playerControl
             DrawLine();
         }
 
-       // _paused = _spawned;
+        // _paused = _spawned;
     }
 
     protected override void FixedUpdate()
@@ -125,7 +134,7 @@ public class localPlayer : playerControl
         // Sword slash
         if (other.name.StartsWith("slash"))
         {
-            if (other.GetComponent<slashScript>().num != playerNum &&  other.GetComponent<slashScript>().slashing)
+            if (other.GetComponent<slashScript>().num != playerNum && other.GetComponent<slashScript>().slashing)
             {
                 if (!_hit)
                 {
@@ -205,6 +214,15 @@ public class localPlayer : playerControl
     void UnPause()
     {
         _paused = false;
+    }
+    void PlayerNumber(int num)
+    {
+        playerNum = num;
+        Control = _localPlayers[num - 1].Control;
+
+        _playerClass = _localPlayers[num - 1].Class;
+
+        _slashCol.SendMessage("GetPlayerNum", playerNum);
     }
 
 }

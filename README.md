@@ -5,12 +5,12 @@
 
 The Vile Bunch is a local & multiplayer arena action game, set in the Wild West, also known as the American Frontier. Four players fight to the death, using guns, swords and even their fists, with unique, different characters. 
 
-##Story
+## Story
 
 The game is set in 1873, in the the Western United States. Four outlaws, all from different walks of life, get together and pull off one of the biggest bank robberies to date. Once realizing that the haul is much bigger than they thought - each of them wants the whole pie for himself.
 
 
-###Core Characters
+### Core Characters
 
 * The Cowboy
   * A civil war veteran who has a very dark outlook on life.
@@ -22,7 +22,7 @@ The game is set in 1873, in the the Western United States. Four outlaws, all fro
   * A former slave who wants to be a better person.
 
 
-##Gameplay 
+## Gameplay 
 
 The Vile Bunch 2D game that can be played locally with four people or online with one player. The game is played on multiple levels (“arenas”) with different layouts, each centered around the Wild West theme. The game ends when a player reaches three wins.
 
@@ -37,6 +37,6 @@ Online play will feature character progression and matchmaking according to skil
 
 ## Links
 
-[Game Design Documents](https://www.dropbox.com/s/vq6zpal5q5j02xv/FSDesignDocument.docx?dl=0=) **OUTDATED**
+[Game Design Documents](https://www.dropbox.com/s/vq6zpal5q5j02xv/FSDesignDocument.docx?dl=0=) **OUTDATED, NEED TO BE UPDATED**
 
 [Game Art Draft](https://docs.google.com/document/d/1WvIpXSU1P47oblb4Adbgr3TqEiLrpzP_BuyZ4dKXFVs/edit)
