@@ -13,19 +13,12 @@ public class onlineSceneSelect : sceneSelect
     {
         base.Start();
 
-        if (!PhotonNetwork.isMasterClient)
+        foreach (var button in LevelSelectButtons)
         {
-            foreach (var button in LevelSelectButtons)
-            {
-                button.enabled = false;
-            }
-            PlayButton.enabled = false;
-            BackText.text = "Quit";
+            button.enabled = false;
         }
-        else
-        {
-            BackText.text = "Back";
-        }
+        PlayButton.enabled = false;
+        BackText.text = "Quit";
 
         PlayButton.onClick.AddListener(() =>
         {
@@ -45,22 +38,15 @@ public class onlineSceneSelect : sceneSelect
 
         BackButton.onClick.AddListener(() =>
         {
-            if (PhotonNetwork.isMasterClient)
+            if (!sure)
             {
-                PhotonNetwork.LoadLevel("OnlinePlayerSelect");
+                BackText.text = "Sure?";
+                sure = true;
             }
             else
             {
-                if (!sure)
-                {
-                    BackText.text = "Sure?";
-                    sure = true;
-                }
-                else
-                {
-                    PhotonNetwork.Disconnect();
-                    Application.LoadLevel("Menu");
-                }
+                PhotonNetwork.Disconnect();
+                Application.LoadLevel("Menu");
             }
         });
     }
