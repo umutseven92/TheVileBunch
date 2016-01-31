@@ -10,7 +10,7 @@ public class global : MonoBehaviour
         ConfigureAllLogging();
     }
 
-    public static string GameVersion = "0.2.9";
+    public static string GameVersion = "0.3.0";
     public static int FrameRateLimit = 60;
 
     // Player Pref values
