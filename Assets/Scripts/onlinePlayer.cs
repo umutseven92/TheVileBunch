@@ -25,7 +25,6 @@ public class onlinePlayer : playerControl
     void Start()
     {
         _pView = GetComponentInParent<PhotonView>();
-        Debug.Log(Control);
     }
 
     public override void Flip()
@@ -43,43 +42,45 @@ public class onlinePlayer : playerControl
     {
         base.Update();
 
-        if (Input.GetButtonDown(Control + "Fire") && Ammo > 0 && Enabled)
+        if (!string.IsNullOrEmpty(Control))
         {
-            _softAim = true;
-        }
-
-        if (Input.GetButtonDown(Control + "Jump") && (Grounded || _inFrontOfLadder) && !_aiming && Enabled)
-        {
-            Jump = true;
-        }
-
-        if (Input.GetButtonUp(Control + "Fire") && Ammo > 0 && Enabled)
-        {
-            if (_aimCanceled)
+            if (Input.GetButtonDown(Control + "Fire") && Ammo > 0 && Enabled)
             {
-                _aimCanceled = false;
-                return;
+                _softAim = true;
             }
-            Shoot();
-            AimLine.GetComponent<SpriteRenderer>().enabled = false;
-            _aiming = false;
-            _softAim = false;
+
+            if (Input.GetButtonDown(Control + "Jump") && (Grounded || _inFrontOfLadder) && !_aiming && Enabled)
+            {
+                Jump = true;
+            }
+
+            if (Input.GetButtonUp(Control + "Fire") && Ammo > 0 && Enabled)
+            {
+                if (_aimCanceled)
+                {
+                    _aimCanceled = false;
+                    return;
+                }
+                Shoot();
+                AimLine.GetComponent<SpriteRenderer>().enabled = false;
+                _aiming = false;
+                _softAim = false;
+            }
+
+            if (Input.GetButtonDown(Control + "Slash") && !_slashing && !_aiming && Enabled && !_slashDelay)
+            {
+                Slash();
+            }
+
+            if (Input.GetButtonDown(Control + "Slash") && !_slashing && _aiming && Enabled)
+            {
+                _aiming = false;
+                AimLine.GetComponent<SpriteRenderer>().enabled = false;
+                _aimCanceled = true;
+            }
+
+            _up = Input.GetAxis(Control + "Vertical") > 0.3f;
         }
-
-        if (Input.GetButtonDown(Control + "Slash") && !_slashing && !_aiming && Enabled && !_slashDelay)
-        {
-            Slash();
-        }
-
-        if (Input.GetButtonDown(Control + "Slash") && !_slashing && _aiming && Enabled)
-        {
-            _aiming = false;
-            AimLine.GetComponent<SpriteRenderer>().enabled = false;
-            _aimCanceled = true;
-        }
-
-        _up = Input.GetAxis(Control + "Vertical") > 0.3f;
-
 
         if (Enabled)
         {

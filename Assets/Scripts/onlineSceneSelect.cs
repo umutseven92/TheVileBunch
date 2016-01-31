@@ -13,11 +13,16 @@ public class onlineSceneSelect : sceneSelect
     {
         base.Start();
 
-        foreach (var button in LevelSelectButtons)
+
+        if (!PhotonNetwork.isMasterClient)
         {
-            button.enabled = false;
+            foreach (var button in LevelSelectButtons)
+            {
+                button.enabled = false;
+            }
+            PlayButton.enabled = false;
         }
-        PlayButton.enabled = false;
+
         BackText.text = "Quit";
 
         PlayButton.onClick.AddListener(() =>

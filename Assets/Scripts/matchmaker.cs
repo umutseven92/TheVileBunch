@@ -69,6 +69,10 @@ public class matchmaker : Photon.PunBehaviour
     // Use this for initialization
     void Start()
     {
+        if (Time.timeScale < 1.0f)
+        {
+            Time.timeScale = 1f;
+        }
         multiCanvas.enabled = false;
         scoreCanvas.enabled = false;
         pauseCanvas.enabled = false;
@@ -120,6 +124,7 @@ public class matchmaker : Photon.PunBehaviour
                 comp.playerNum = p.Num;
 
                 _player.GetComponent<Rigidbody2D>().isKinematic = false;
+
                 comp.OnlinePlayerName = PlayerPrefs.GetString(global.PlayerName);
                 comp.OnlineNameText.text = PlayerPrefs.GetString(global.PlayerName);
                 comp._slashCol.SendMessage("GetPlayerNum", comp.playerNum);
@@ -208,7 +213,7 @@ public class matchmaker : Photon.PunBehaviour
 
         if (players.Length == 1)
         {
-            winner = new KeyValuePair<string, int>(players[0].GetComponent<localPlayer>()._playerClass, 3);
+            winner = new KeyValuePair<string, int>(players[0].GetComponent<onlinePlayer>()._playerClass, 3);
             slowMo = true;
             gameOver = true;
         }
@@ -248,8 +253,8 @@ public class matchmaker : Photon.PunBehaviour
                 else
                 {
                     comp.Enabled = false;
-                    btnExit.Select();
                     pauseCanvas.enabled = true;
+                    btnExit.Select();
                 }
             paused = !paused;
         }
@@ -307,10 +312,9 @@ public class matchmaker : Photon.PunBehaviour
         }
     }
 
-
-    void SetEndGameCard(string winner)
+    void SetEndGameCard(string _winner)
     {
-        WinnerText.text = winner;
+        WinnerText.text = _winner;
 
         comp.Enabled = false;
 

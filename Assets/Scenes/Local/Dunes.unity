@@ -1637,7 +1637,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22405326, guid: a24de13ab26f646459f893223cb690c9, type: 2}
       propertyPath: m_RootOrder
-      value: 13
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 22405326, guid: a24de13ab26f646459f893223cb690c9, type: 2}
       propertyPath: m_AnchoredPosition.x
@@ -3020,9 +3020,9 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 923f18116dd3b7443957056b1d29fa35, type: 3}
+  m_audioClip: {fileID: 8300000, guid: fd302d0c79e7f28488da4ddf05c8445b, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.7
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -3062,7 +3062,7 @@ AudioSource:
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
-    m_RotationOrder: 4
+    m_RotationOrder: 0
   spreadCustomCurve:
     serializedVersion: 2
     m_Curve:
@@ -3073,7 +3073,7 @@ AudioSource:
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
-    m_RotationOrder: 4
+    m_RotationOrder: 0
   reverbZoneMixCustomCurve:
     serializedVersion: 2
     m_Curve:
@@ -3084,7 +3084,7 @@ AudioSource:
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
-    m_RotationOrder: 4
+    m_RotationOrder: 0
 --- !u!4 &1986258262
 Transform:
   m_ObjectHideFlags: 0

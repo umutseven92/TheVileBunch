@@ -265,17 +265,15 @@ public class localController : MonoBehaviour
         {
             allPlayer.SendMessage("UnPause");
         }
-
     }
 
-    void SetEndGameCard(string winner)
+    void SetEndGameCard(string __winner)
     {
-        winnerText.text = winner;
+        winnerText.text = __winner;
         PauseAllPlayers();
         endGameCanvas.enabled = true;
         btnEndGameExit.Select();
     }
-
 
     void SetScoreCard()
     {
