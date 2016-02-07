@@ -22,6 +22,12 @@ public class onlinePlayer : playerControl
 
     private readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
+    [HideInInspector]
+    public bool bulletHit = false;
+
+    [HideInInspector]
+    public bool swordHit = false;
+
     void Start()
     {
         _pView = GetComponentInParent<PhotonView>();
@@ -128,8 +134,7 @@ public class onlinePlayer : playerControl
             : new Vector2(-PushY, PushY));
 
         CheckHealth(_other);
-
-        Log.InfoFormat("Player {0}({1}) shot shown in client", _pView.viewID, OnlinePlayerName);
+        Log.InfoFormat("{0} ({1}) shot at client.", this.OnlinePlayerName, _pView.viewID);
     }
 
     public void HitBySlash()
@@ -165,7 +170,7 @@ public class onlinePlayer : playerControl
         }
         CheckHealth(_other);
 
-        Log.InfoFormat("Player {0}({1}) stab shown in client", _pView.viewID, OnlinePlayerName);
+        Log.InfoFormat("{0} ({1}) stabbed at client.", this.OnlinePlayerName, _pView.viewID);
     }
 
     void OnTriggerEnter2D(Collider2D other)
@@ -184,7 +189,8 @@ public class onlinePlayer : playerControl
             if (!_hit)
             {
                 Log.InfoFormat("Player {0}({1}) shot in client", _pView.viewID, OnlinePlayerName);
-                _pView.RPC("BulletHitRPC", PhotonTargets.All, _pView.viewID);
+                bulletHit = true;
+                //_pView.RPC("BulletHitRPC", PhotonTargets.All, _pView.viewID);
             }
         }
 
@@ -196,7 +202,8 @@ public class onlinePlayer : playerControl
                 if (!_hit)
                 {
                     Log.InfoFormat("Player {0}({1}) stabbed in client", _pView.viewID, OnlinePlayerName);
-                    _pView.RPC("SlashHitRPC", PhotonTargets.All, _pView.viewID);
+                    swordHit = true;
+                    //_pView.RPC("SlashHitRPC", PhotonTargets.All, _pView.viewID);
                 }
             }
         }

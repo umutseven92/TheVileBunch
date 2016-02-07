@@ -11,10 +11,16 @@ public class networkCharacter : Photon.MonoBehaviour
     private int _ammo;
     private float _fraction;
 
+    private bool _bulletHit;
+    private bool _swordHit;
+
     private readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
     void Update()
     {
+        var players = GameObject.FindGameObjectsWithTag("player");
+        Debug.Log(players.Length);
+
         if (!photonView.isMine)
         {
             var net = photonView.transform.GetComponent<onlinePlayer>();
@@ -35,6 +41,25 @@ public class networkCharacter : Photon.MonoBehaviour
             net.OnlineNameText.text = _onlineName;
             net.Health = _health;
             net.Ammo = _ammo;
+
+            var player = photonView.GetComponentInParent<onlinePlayer>();
+
+            if (_bulletHit)
+            {
+                Log.InfoFormat("{0} ({1}) shot at server.", player.OnlinePlayerName, photonView.viewID);
+                player.HitByBullet();
+                _bulletHit = false;
+                player.bulletHit = false;
+            }
+
+            if (_swordHit)
+            {
+                Log.InfoFormat("{0} ({1}) stabbed at server.", player.OnlinePlayerName, photonView.viewID);
+                player.HitBySlash();
+                _swordHit = false;
+                player.swordHit = false;
+            }
+
         }
         //Debug.Log(PhotonNetwork.GetPing());
     }
@@ -93,6 +118,13 @@ public class networkCharacter : Photon.MonoBehaviour
 
             // Ammo
             stream.SendNext(ply.Ammo);
+
+            // Bullet hit
+            stream.SendNext(ply.bulletHit);
+
+            // Sword hit
+            stream.SendNext(ply.swordHit);
+
         }
         else
         {
@@ -112,6 +144,12 @@ public class networkCharacter : Photon.MonoBehaviour
 
             // Ammo
             _ammo = (int)stream.ReceiveNext();
+
+            // Bullet hit
+            _bulletHit = (bool)stream.ReceiveNext();
+
+            // Sword hit
+            _swordHit = (bool)stream.ReceiveNext();
 
             _fraction = 0;
         }

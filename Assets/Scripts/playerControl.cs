@@ -699,7 +699,6 @@ public abstract class playerControl : MonoBehaviour
         _audio.PlayOneShot(SlashClip);
     }
 
-
     protected void Shoot(float bXSpeed, float bYSpeed, float bXPos, float bYPos)
     {
         var shotTransform = Instantiate(Bullet) as Transform;
