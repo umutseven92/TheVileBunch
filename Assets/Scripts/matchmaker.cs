@@ -122,6 +122,7 @@ public class matchmaker : Photon.PunBehaviour
                 Debug.Log(p.OnlineControl);
                 comp._playerClass = p.Class;
                 comp.playerNum = p.Num;
+                comp.AmmoText.enabled = false;
 
                 _player.GetComponent<Rigidbody2D>().isKinematic = false;
 

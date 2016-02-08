@@ -11,15 +11,15 @@ public class networkCharacter : Photon.MonoBehaviour
     private int _ammo;
     private float _fraction;
 
-    private bool _bulletHit;
-    private bool _swordHit;
-
     private readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
     void Update()
     {
-        var players = GameObject.FindGameObjectsWithTag("player");
-        Debug.Log(players.Length);
+        var players = GameObject.FindGameObjectsWithTag("Player");
+        var bullets = GameObject.FindGameObjectsWithTag("Bullet");
+        var swords = GameObject.FindGameObjectsWithTag("Sword");
+
+        CheckCollisions(players, bullets, swords);
 
         if (!photonView.isMine)
         {
@@ -41,27 +41,50 @@ public class networkCharacter : Photon.MonoBehaviour
             net.OnlineNameText.text = _onlineName;
             net.Health = _health;
             net.Ammo = _ammo;
-
-            var player = photonView.GetComponentInParent<onlinePlayer>();
-
-            if (_bulletHit)
-            {
-                Log.InfoFormat("{0} ({1}) shot at server.", player.OnlinePlayerName, photonView.viewID);
-                player.HitByBullet();
-                _bulletHit = false;
-                player.bulletHit = false;
-            }
-
-            if (_swordHit)
-            {
-                Log.InfoFormat("{0} ({1}) stabbed at server.", player.OnlinePlayerName, photonView.viewID);
-                player.HitBySlash();
-                _swordHit = false;
-                player.swordHit = false;
-            }
-
         }
         //Debug.Log(PhotonNetwork.GetPing());
+    }
+
+    private void CheckCollisions(GameObject[] players, GameObject[] bullets, GameObject[] swords)
+    {
+        CheckBulletCollisions(players, bullets);
+        CheckSwordCollisions(players, swords);
+    }
+
+    private void CheckBulletCollisions(GameObject[] players, GameObject[] bullets)
+    {
+        foreach (var bullet in bullets)
+        {
+            foreach (var player in players)
+            {
+                var shot = bullet.GetComponent<Collider2D>().IsTouching(player.GetComponent<Collider2D>());
+
+                if (shot)
+                {
+                    var onl = player.GetComponent<onlinePlayer>();
+                    Log.InfoFormat("{0} shot in server", onl.OnlinePlayerName);
+                    onl.HitByBullet();
+                }
+            }
+        }
+    }
+
+    private void CheckSwordCollisions(GameObject[] players, GameObject[] swords)
+    {
+        foreach (var sword in swords)
+        {
+            foreach (var player in players)
+            {
+                var stabbed = sword.GetComponent<Collider2D>().IsTouching(player.GetComponent<Collider2D>()) && sword.GetComponent<slashScript>().slashing;
+
+                if (stabbed)
+                {
+                    var onl = player.GetComponent<onlinePlayer>();
+                    Log.InfoFormat("{0} stabbed in server", onl.OnlinePlayerName);
+                    onl.HitBySlash();
+                }
+            }
+        }
     }
 
     private void SetOrientation(onlinePlayer net)
@@ -118,13 +141,6 @@ public class networkCharacter : Photon.MonoBehaviour
 
             // Ammo
             stream.SendNext(ply.Ammo);
-
-            // Bullet hit
-            stream.SendNext(ply.bulletHit);
-
-            // Sword hit
-            stream.SendNext(ply.swordHit);
-
         }
         else
         {
@@ -144,12 +160,6 @@ public class networkCharacter : Photon.MonoBehaviour
 
             // Ammo
             _ammo = (int)stream.ReceiveNext();
-
-            // Bullet hit
-            _bulletHit = (bool)stream.ReceiveNext();
-
-            // Sword hit
-            _swordHit = (bool)stream.ReceiveNext();
 
             _fraction = 0;
         }
@@ -186,6 +196,5 @@ public class networkCharacter : Photon.MonoBehaviour
         var pView = PhotonView.Find(pId);
         return pView.GetComponentInParent<onlinePlayer>();
     }
-
 }
 

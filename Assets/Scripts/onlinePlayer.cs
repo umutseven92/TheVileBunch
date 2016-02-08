@@ -22,12 +22,6 @@ public class onlinePlayer : playerControl
 
     private readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-    [HideInInspector]
-    public bool bulletHit = false;
-
-    [HideInInspector]
-    public bool swordHit = false;
-
     void Start()
     {
         _pView = GetComponentInParent<PhotonView>();
@@ -124,53 +118,59 @@ public class onlinePlayer : playerControl
 
     public void HitByBullet()
     {
-        _hit = true;
+        if (!_hit)
+        {
+            _hit = true;
 
-        LowerHealth(BulletDamage);
+            LowerHealth(BulletDamage);
 
-        // Small push
-        _rb2D.AddForce(_other.gameObject.transform.position.x < this.transform.position.x
-            ? new Vector2(PushX, PushY)
-            : new Vector2(-PushY, PushY));
+            // Small push
+            _rb2D.AddForce(_other.gameObject.transform.position.x < this.transform.position.x
+                ? new Vector2(PushX, PushY)
+                : new Vector2(-PushY, PushY));
 
-        CheckHealth(_other);
-        Log.InfoFormat("{0} ({1}) shot at client.", this.OnlinePlayerName, _pView.viewID);
+            CheckHealth(_other);
+            Log.InfoFormat("{0} shot at client.", this.OnlinePlayerName);
+        }
     }
 
     public void HitBySlash()
     {
-        _hit = true;
-        LowerHealth(SwordDamage);
-
-        if (Health > 0)
+        if (!_hit)
         {
-            float pX = 0f;
+            _hit = true;
+            LowerHealth(SwordDamage);
 
-            var go = GameObject.FindGameObjectsWithTag("Player");
-
-            var gList = new List<GameObject>(go);
-            gList.RemoveAt(0);
-            go = gList.ToArray();
-
-            // BUG HERE
-            foreach (
-                var g in
-                    go.Where(
-                        g =>
-                            g.gameObject.GetComponent<playerControl>().playerNum ==
-                            _other.GetComponent<slashScript>().num))
+            if (Health > 0)
             {
-                pX = g.transform.position.x;
+                float pX = 0f;
+
+                var go = GameObject.FindGameObjectsWithTag("Player");
+
+                var gList = new List<GameObject>(go);
+                gList.RemoveAt(0);
+                go = gList.ToArray();
+
+                // BUG HERE
+                foreach (
+                    var g in
+                        go.Where(
+                            g =>
+                                g.gameObject.GetComponent<playerControl>().playerNum ==
+                                _other.GetComponent<slashScript>().num))
+                {
+                    pX = g.transform.position.x;
+                }
+
+                // Small push
+                _rb2D.AddForce(pX < transform.position.x
+                    ? new Vector2(PushX, PushY)
+                    : new Vector2(-PushX, PushY));
             }
+            CheckHealth(_other);
 
-            // Small push
-            _rb2D.AddForce(pX < transform.position.x
-                ? new Vector2(PushX, PushY)
-                : new Vector2(-PushX, PushY));
+            Log.InfoFormat("{0} stabbed at client.", this.OnlinePlayerName);
         }
-        CheckHealth(_other);
-
-        Log.InfoFormat("{0} ({1}) stabbed at client.", this.OnlinePlayerName, _pView.viewID);
     }
 
     void OnTriggerEnter2D(Collider2D other)
@@ -183,13 +183,13 @@ public class onlinePlayer : playerControl
             _inFrontOfLadder = true;
         }
 
+        /*
         // Bullet
         if (other.name.StartsWith("Bullet(Clone)"))
         {
             if (!_hit)
             {
                 Log.InfoFormat("Player {0}({1}) shot in client", _pView.viewID, OnlinePlayerName);
-                bulletHit = true;
                 //_pView.RPC("BulletHitRPC", PhotonTargets.All, _pView.viewID);
             }
         }
@@ -202,12 +202,11 @@ public class onlinePlayer : playerControl
                 if (!_hit)
                 {
                     Log.InfoFormat("Player {0}({1}) stabbed in client", _pView.viewID, OnlinePlayerName);
-                    swordHit = true;
                     //_pView.RPC("SlashHitRPC", PhotonTargets.All, _pView.viewID);
                 }
             }
         }
-
+        */
         // Fall
         if (other.name.StartsWith("FallCollider"))
         {
