@@ -30,7 +30,7 @@ public class global : MonoBehaviour
         var fileAppender = new RollingFileAppender
         {
             AppendToFile = true,
-            File = @"logs\log.txt",
+            File = @"logs\log.log",
             Layout = patternLayout,
             MaxSizeRollBackups = 5,
             MaximumFileSize = "10MB",

@@ -43,4 +43,10 @@ MonoBehaviour:
   - PlayerChangeRPC
   - SceneSelectRPC
   - Ready
+  - AddToPlayerListRPC
+  - ChangeToPlayerListRPC
+  - InitialAddToPlayerListRPC
+  - PlayerJoinRPC
+  - RemoveFromPlayerListRPC
+  - RemoveSetFromPlayerListRPC
   DisableAutoOpenWizard: 1

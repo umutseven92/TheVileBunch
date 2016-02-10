@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using System.Linq;
 using UnityEngine.UI;
 
@@ -50,6 +51,11 @@ public class onlinePlayerSelect : playerSelect
                 PhotonNetwork.LoadLevel("OnlineSceneSelect");
             }
         });
+
+        if (!PhotonNetwork.isMasterClient)
+        {
+            pView.RPC("PlayerJoinRPC", PhotonTargets.All, pView.viewID);
+        }
     }
 
     public override void CheckInputs()
@@ -202,6 +208,7 @@ public class onlinePlayerSelect : playerSelect
             classPos = -1;
         }
 
+        pView.RPC("ChangeToPlayerListRPC", PhotonTargets.All, playerId, _classes[classPos + dir]);
         PlayerList.Find(p => p.Control == playerId).Class = _classes[classPos + dir];
 
         PlayPlayersAudio(DirClip, control);
@@ -222,6 +229,12 @@ public class onlinePlayerSelect : playerSelect
     protected override void RemovePlayer(string control)
     {
         pView.RPC("PlayerRemoveRPC", PhotonTargets.All, control, pView.viewID);
+    }
+
+    public void GetAllPlayers(List<Player> players)
+    {
+        PlayerList = players;
+        UpdateSelect(PlayerList);
     }
 
     public void OnlineRemovePlayer(string control)
@@ -317,10 +330,12 @@ public class onlinePlayerSelect : playerSelect
         if (playerToRemove.Set)
         {
             pickedClasses.Remove(playerToRemove.Class);
+            pView.RPC("RemoveSetFromPlayerListRPC", PhotonTargets.All, control);
             playerToRemove.Set = false;
         }
         else
         {
+            pView.RPC("RemoveFromPlayerListRPC", PhotonTargets.All, control);
             PlayerList.Remove(playerToRemove);
         }
 
@@ -348,6 +363,7 @@ public class onlinePlayerSelect : playerSelect
             OnlineControl = inputControl
         };
 
+        pView.RPC("InitialAddToPlayerListRPC", PhotonTargets.All, p);
         PlayerList.Add(p);
 
         PlayPlayersAudio(ReadyClip, control);
@@ -357,8 +373,9 @@ public class onlinePlayerSelect : playerSelect
 
     public void OnlineAddPlayer(string control)
     {
-
         PlayerList.Find(pl => pl.Control == control).Set = true;
+        pView.RPC("AddToPlayerListRPC", PhotonTargets.All, control);
+
         pickedClasses.Add(PlayerList.Find(p2 => p2.Control == control).Class);
 
         PlayPlayersAudio(Clip, control);
