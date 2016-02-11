@@ -31,6 +31,9 @@ public class onlinePlayerSelect : playerSelect
         PhotonNetwork.automaticallySyncScene = true;
 
         pView = GetComponentInParent<PhotonView>();
+
+        PhotonNetwork.player.TagObject = pView.viewID;
+
         Back.onClick.AddListener(() =>
         {
             if (!sure)
@@ -208,7 +211,6 @@ public class onlinePlayerSelect : playerSelect
             classPos = -1;
         }
 
-        pView.RPC("ChangeToPlayerListRPC", PhotonTargets.All, playerId, _classes[classPos + dir]);
         PlayerList.Find(p => p.Control == playerId).Class = _classes[classPos + dir];
 
         PlayPlayersAudio(DirClip, control);
@@ -231,10 +233,14 @@ public class onlinePlayerSelect : playerSelect
         pView.RPC("PlayerRemoveRPC", PhotonTargets.All, control, pView.viewID);
     }
 
-    public void GetAllPlayers(List<Player> players)
+    public void SetAllPlayers(List<Player> players)
     {
         PlayerList = players;
         UpdateSelect(PlayerList);
+    }
+    public List<Player> GetAllPlayers()
+    {
+        return PlayerList;
     }
 
     public void OnlineRemovePlayer(string control)
@@ -330,12 +336,10 @@ public class onlinePlayerSelect : playerSelect
         if (playerToRemove.Set)
         {
             pickedClasses.Remove(playerToRemove.Class);
-            pView.RPC("RemoveSetFromPlayerListRPC", PhotonTargets.All, control);
             playerToRemove.Set = false;
         }
         else
         {
-            pView.RPC("RemoveFromPlayerListRPC", PhotonTargets.All, control);
             PlayerList.Remove(playerToRemove);
         }
 
@@ -363,7 +367,6 @@ public class onlinePlayerSelect : playerSelect
             OnlineControl = inputControl
         };
 
-        pView.RPC("InitialAddToPlayerListRPC", PhotonTargets.All, p);
         PlayerList.Add(p);
 
         PlayPlayersAudio(ReadyClip, control);
@@ -374,7 +377,6 @@ public class onlinePlayerSelect : playerSelect
     public void OnlineAddPlayer(string control)
     {
         PlayerList.Find(pl => pl.Control == control).Set = true;
-        pView.RPC("AddToPlayerListRPC", PhotonTargets.All, control);
 
         pickedClasses.Add(PlayerList.Find(p2 => p2.Control == control).Class);
 
@@ -607,7 +609,4 @@ public class onlinePlayerSelect : playerSelect
             }
         }
     }
-
-
-
 }
