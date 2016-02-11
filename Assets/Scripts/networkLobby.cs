@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class networkLobby : Photon.PunBehaviour
 {
-
     [PunRPC]
     public void PlayerAddRPC(string control, int pId)
     {
@@ -32,18 +31,36 @@ public class networkLobby : Photon.PunBehaviour
         var pView = PhotonView.Find(pId);
         pView.GetComponentInParent<onlinePlayerSelect>().OnlineChangePlayer(control, dir, delay, playerId);
     }
-    
+
     [PunRPC]
     public void PlayerJoinRPC(int pId)
     {
-        var master =  FindObjectsOfType<onlinePlayerSelect>().Single(p => p.Master = true);
-
-        var players = master.GetAllPlayers();
+        var players =  FindObjectsOfType<onlinePlayerSelect>().Single(p => p.Master).GetAllPlayers();
 
         var pView = PhotonView.Find(pId);
         pView.GetComponentInParent<onlinePlayerSelect>().SetAllPlayers(players);
 
     }
 
-    void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info) { }
+    void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        /*
+        if (stream.isWriting)
+        {
+            // Our player
+            if (PhotonNetwork.isMasterClient)
+            {
+                GameObject.FindObjectsOfType<onlinePlayerSelect>().Single(p => p.Master).GetAllPlayers();
+                stream.SendNext();
+            }
+        }
+        else
+        {
+            if (!PhotonNetwork.isMasterClient)
+            {
+
+            }
+        }
+        */
+    }
 }

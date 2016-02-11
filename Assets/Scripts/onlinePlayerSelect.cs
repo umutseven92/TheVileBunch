@@ -16,11 +16,7 @@ public class onlinePlayerSelect : playerSelect
     {
         get
         {
-            if (_playerId == null)
-            {
-                _playerId = PlayerPrefs.GetString(global.PlayerId);
-            }
-            return _playerId;
+            return PlayerPrefs.GetString(global.PlayerId);
         }
     }
 
