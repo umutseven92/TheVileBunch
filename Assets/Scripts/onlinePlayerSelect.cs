@@ -24,6 +24,12 @@ public class onlinePlayerSelect : playerSelect
         }
     }
 
+    [HideInInspector]
+    public bool Master
+    {
+        get; set;
+    }
+
     protected override void Start()
     {
         base.Start();
@@ -31,8 +37,6 @@ public class onlinePlayerSelect : playerSelect
         PhotonNetwork.automaticallySyncScene = true;
 
         pView = GetComponentInParent<PhotonView>();
-
-        PhotonNetwork.player.TagObject = pView.viewID;
 
         Back.onClick.AddListener(() =>
         {
@@ -47,6 +51,7 @@ public class onlinePlayerSelect : playerSelect
                 Application.LoadLevel("Menu");
             }
         });
+
         Play.onClick.AddListener(() =>
         {
             if (PhotonNetwork.isMasterClient)
@@ -58,6 +63,10 @@ public class onlinePlayerSelect : playerSelect
         if (!PhotonNetwork.isMasterClient)
         {
             pView.RPC("PlayerJoinRPC", PhotonTargets.All, pView.viewID);
+        }
+        else
+        {
+            Master = true;
         }
     }
 

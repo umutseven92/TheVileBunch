@@ -32,14 +32,13 @@ public class networkLobby : Photon.PunBehaviour
         var pView = PhotonView.Find(pId);
         pView.GetComponentInParent<onlinePlayerSelect>().OnlineChangePlayer(control, dir, delay, playerId);
     }
-
+    
     [PunRPC]
     public void PlayerJoinRPC(int pId)
     {
-        var masterId = (int)PhotonNetwork.masterClient.TagObject;
-        var mView = PhotonView.Find(masterId);
+        var master =  FindObjectsOfType<onlinePlayerSelect>().Single(p => p.Master = true);
 
-        var players = mView.GetComponentInParent<onlinePlayerSelect>().GetAllPlayers();
+        var players = master.GetAllPlayers();
 
         var pView = PhotonView.Find(pId);
         pView.GetComponentInParent<onlinePlayerSelect>().SetAllPlayers(players);
