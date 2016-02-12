@@ -56,6 +56,7 @@ public class networkLobby : Photon.PunBehaviour
         }
         else
         {
+            // Other player
             if (!PhotonNetwork.isMasterClient)
             {
 
