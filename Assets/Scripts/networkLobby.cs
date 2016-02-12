@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class networkLobby : Photon.PunBehaviour
 {
+    private List<playerSelect.Player> Players = new List<playerSelect.Player>();
+
     [PunRPC]
     public void PlayerAddRPC(string control, int pId)
     {
@@ -35,23 +37,31 @@ public class networkLobby : Photon.PunBehaviour
     [PunRPC]
     public void PlayerJoinRPC(int pId)
     {
-        var players =  FindObjectsOfType<onlinePlayerSelect>().Single(p => p.Master).GetAllPlayers();
-
         var pView = PhotonView.Find(pId);
-        pView.GetComponentInParent<onlinePlayerSelect>().SetAllPlayers(players);
+        pView.GetComponentInParent<onlinePlayerSelect>().SetAllPlayers(Players);
 
     }
 
     void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
-        /*
         if (stream.isWriting)
         {
             // Our player
             if (PhotonNetwork.isMasterClient)
             {
-                GameObject.FindObjectsOfType<onlinePlayerSelect>().Single(p => p.Master).GetAllPlayers();
-                stream.SendNext();
+                var players = GameObject.FindObjectsOfType<onlinePlayerSelect>().Single(p => p.Master).GetAllPlayers();
+
+                // Player count
+                stream.SendNext(players.Count);
+
+                foreach (var p in players)
+                {
+                    stream.SendNext(p.Control);
+                    stream.SendNext(p.Class);
+                    stream.SendNext(p.Num);
+                    stream.SendNext(p.OnlineControl);
+                    stream.SendNext(p.Set);
+                }
             }
         }
         else
@@ -59,9 +69,29 @@ public class networkLobby : Photon.PunBehaviour
             // Other player
             if (!PhotonNetwork.isMasterClient)
             {
+                // Player count
+                var count = (int)stream.ReceiveNext();
 
+                for (int i = 0; i < count; i++)
+                {
+                    var control = (string)stream.ReceiveNext();
+                    var pClass = (string)stream.ReceiveNext();
+                    var num = (int)stream.ReceiveNext();
+                    var onlineControl = (string)stream.ReceiveNext();
+                    var set = (bool)stream.ReceiveNext();
+
+                    var player = new playerSelect.Player()
+                    {
+                        Control = control,
+                        Class = pClass,
+                        Num = num,
+                        OnlineControl = onlineControl,
+                        Set = set
+                    };
+
+                    Players.Add(player);
+                }
             }
         }
-        */
     }
 }
