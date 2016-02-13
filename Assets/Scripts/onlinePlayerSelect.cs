@@ -393,7 +393,7 @@ public class onlinePlayerSelect : playerSelect
         {
             if (!PhotonNetwork.isMasterClient)
             {
-                //pView.RPC("PlayerJoinRPC", PhotonTargets.All, pView.viewID);
+                pView.RPC("PlayerJoinRPC", PhotonTargets.All, pView.viewID);
             }
             else
             {
