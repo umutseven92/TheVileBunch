@@ -63,10 +63,6 @@ public class networkLobby : Photon.PunBehaviour
                     stream.SendNext(p.Set);
                 }
             }
-            else
-            {
-
-            }
         }
         else
         {
@@ -99,10 +95,6 @@ public class networkLobby : Photon.PunBehaviour
                     }
 
                 }
-            }
-            else
-            {
-
             }
         }
     }

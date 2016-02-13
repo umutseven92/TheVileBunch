@@ -187,7 +187,7 @@ public class onlinePlayerSelect : playerSelect
                 break;
         }
 
-        pView.RPC("PlayerChangeRPC", PhotonTargets.All, control, dir, playerId, delay, pView.viewID);
+        pView.RPC("PlayerChangeRPC", PhotonTargets.AllBuffered, control, dir, playerId, delay, pView.viewID);
     }
 
     public void OnlineChangePlayer(string control, int dir, bool delay, string playerId)
@@ -217,17 +217,17 @@ public class onlinePlayerSelect : playerSelect
 
     protected override void AddPlayer(string control)
     {
-        pView.RPC("PlayerAddRPC", PhotonTargets.All, control, pView.viewID);
+        pView.RPC("PlayerAddRPC", PhotonTargets.AllBuffered, control, pView.viewID);
     }
 
     protected override void AddInitialPlayer(string control, string pClass, string inputControl)
     {
-        pView.RPC("PlayerAddInitialRPC", PhotonTargets.All, control, pClass, inputControl, pView.viewID);
+        pView.RPC("PlayerAddInitialRPC", PhotonTargets.AllBuffered, control, pClass, inputControl, pView.viewID);
     }
 
     protected override void RemovePlayer(string control)
     {
-        pView.RPC("PlayerRemoveRPC", PhotonTargets.All, control, pView.viewID);
+        pView.RPC("PlayerRemoveRPC", PhotonTargets.AllBuffered, control, pView.viewID);
     }
 
     public void SetAllPlayers(List<Player> players)
@@ -235,6 +235,7 @@ public class onlinePlayerSelect : playerSelect
         PlayerList = players;
         UpdateSelect(PlayerList);
     }
+
     public List<Player> GetAllPlayers()
     {
         return PlayerList;
@@ -392,7 +393,7 @@ public class onlinePlayerSelect : playerSelect
         {
             if (!PhotonNetwork.isMasterClient)
             {
-                pView.RPC("PlayerJoinRPC", PhotonTargets.All, pView.viewID);
+                //pView.RPC("PlayerJoinRPC", PhotonTargets.All, pView.viewID);
             }
             else
             {

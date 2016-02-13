@@ -1,19 +1,25 @@
 ﻿using System.Globalization;
+using log4net;
 using UnityEngine;
 
 public class lobbyScript : Photon.PunBehaviour
 {
     private string LobbyName { get; set; }
 
+    private readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
     public void CreateLobby()
     {
         if (string.IsNullOrEmpty(LobbyName))
         {
+            Log.Info("Lobby name is empty.");
             return;
         }
 
         onlineHelper.LobbyName = LobbyName;
         onlineHelper.Joining = false;
+
+        Log.InfoFormat("Joining {0}..",LobbyName);
         Application.LoadLevel("OnlineLoading");
     }
 
