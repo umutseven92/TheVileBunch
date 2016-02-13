@@ -37,9 +37,11 @@ public class networkLobby : Photon.PunBehaviour
     [PunRPC]
     public void PlayerJoinRPC(int pId)
     {
-        var pView = PhotonView.Find(pId);
-        pView.GetComponentInParent<onlinePlayerSelect>().SetAllPlayers(Players);
-
+        if (!PhotonNetwork.isMasterClient)
+        {
+            var pView = PhotonView.Find(pId);
+            pView.GetComponentInParent<onlinePlayerSelect>().SetAllPlayers(Players);
+        }
     }
 
     void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
