@@ -10,6 +10,7 @@ public class onlinePlayerSelect : playerSelect
     private PhotonView pView;
     private string _playerId;
     private bool sure = false;
+    private bool first = true;
 
     [HideInInspector]
     public string PlayerId
@@ -55,15 +56,6 @@ public class onlinePlayerSelect : playerSelect
                 PhotonNetwork.LoadLevel("OnlineSceneSelect");
             }
         });
-
-        if (!PhotonNetwork.isMasterClient)
-        {
-            pView.RPC("PlayerJoinRPC", PhotonTargets.All, pView.viewID);
-        }
-        else
-        {
-            Master = true;
-        }
     }
 
     public override void CheckInputs()
@@ -395,6 +387,20 @@ public class onlinePlayerSelect : playerSelect
     {
         base.Update();
         UpdateSelect(PlayerList);
+
+        if (first)
+        {
+            if (!PhotonNetwork.isMasterClient)
+            {
+                pView.RPC("PlayerJoinRPC", PhotonTargets.All, pView.viewID);
+            }
+            else
+            {
+                Master = true;
+            }
+
+            first = false;
+        }
     }
 
     public override void CheckCancel()

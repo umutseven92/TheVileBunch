@@ -63,6 +63,10 @@ public class networkLobby : Photon.PunBehaviour
                     stream.SendNext(p.Set);
                 }
             }
+            else
+            {
+
+            }
         }
         else
         {
@@ -80,17 +84,25 @@ public class networkLobby : Photon.PunBehaviour
                     var onlineControl = (string)stream.ReceiveNext();
                     var set = (bool)stream.ReceiveNext();
 
-                    var player = new playerSelect.Player()
+                    if (Players.All(a => a.Control != control))
                     {
-                        Control = control,
-                        Class = pClass,
-                        Num = num,
-                        OnlineControl = onlineControl,
-                        Set = set
-                    };
+                        var player = new playerSelect.Player()
+                        {
+                            Control = control,
+                            Class = pClass,
+                            Num = num,
+                            OnlineControl = onlineControl,
+                            Set = set
+                        };
 
-                    Players.Add(player);
+                        Players.Add(player);
+                    }
+
                 }
+            }
+            else
+            {
+
             }
         }
     }
