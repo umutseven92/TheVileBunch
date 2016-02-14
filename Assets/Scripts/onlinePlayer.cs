@@ -183,14 +183,13 @@ public class onlinePlayer : playerControl
             _inFrontOfLadder = true;
         }
 
-        /*
         // Bullet
         if (other.name.StartsWith("Bullet(Clone)"))
         {
             if (!_hit)
             {
                 Log.InfoFormat("Player {0}({1}) shot in client", _pView.viewID, OnlinePlayerName);
-                //_pView.RPC("BulletHitRPC", PhotonTargets.All, _pView.viewID);
+                _pView.RPC("BulletHitRPC", PhotonTargets.All, _pView.viewID);
             }
         }
 
@@ -202,11 +201,11 @@ public class onlinePlayer : playerControl
                 if (!_hit)
                 {
                     Log.InfoFormat("Player {0}({1}) stabbed in client", _pView.viewID, OnlinePlayerName);
-                    //_pView.RPC("SlashHitRPC", PhotonTargets.All, _pView.viewID);
+                    _pView.RPC("SlashHitRPC", PhotonTargets.All, _pView.viewID);
                 }
             }
         }
-        */
+
         // Fall
         if (other.name.StartsWith("FallCollider"))
         {

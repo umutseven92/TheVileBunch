@@ -15,12 +15,6 @@ public class networkCharacter : Photon.MonoBehaviour
 
     void Update()
     {
-        var players = GameObject.FindGameObjectsWithTag("Player");
-        var bullets = GameObject.FindGameObjectsWithTag("Bullet");
-        var swords = GameObject.FindGameObjectsWithTag("Sword");
-
-        CheckCollisions(players, bullets, swords);
-
         if (!photonView.isMine)
         {
             var net = photonView.transform.GetComponent<onlinePlayer>();
@@ -43,48 +37,6 @@ public class networkCharacter : Photon.MonoBehaviour
             net.Ammo = _ammo;
         }
         //Debug.Log(PhotonNetwork.GetPing());
-    }
-
-    private void CheckCollisions(GameObject[] players, GameObject[] bullets, GameObject[] swords)
-    {
-        CheckBulletCollisions(players, bullets);
-        CheckSwordCollisions(players, swords);
-    }
-
-    private void CheckBulletCollisions(GameObject[] players, GameObject[] bullets)
-    {
-        foreach (var bullet in bullets)
-        {
-            foreach (var player in players)
-            {
-                var shot = bullet.GetComponent<Collider2D>().IsTouching(player.GetComponent<Collider2D>());
-
-                if (shot)
-                {
-                    var onl = player.GetComponent<onlinePlayer>();
-                    Log.InfoFormat("{0} shot in server", onl.OnlinePlayerName);
-                    onl.HitByBullet();
-                }
-            }
-        }
-    }
-
-    private void CheckSwordCollisions(GameObject[] players, GameObject[] swords)
-    {
-        foreach (var sword in swords)
-        {
-            foreach (var player in players)
-            {
-                var stabbed = sword.GetComponent<Collider2D>().IsTouching(player.GetComponent<Collider2D>()) && sword.GetComponent<slashScript>().slashing;
-
-                if (stabbed)
-                {
-                    var onl = player.GetComponent<onlinePlayer>();
-                    Log.InfoFormat("{0} stabbed in server", onl.OnlinePlayerName);
-                    onl.HitBySlash();
-                }
-            }
-        }
     }
 
     private void SetOrientation(onlinePlayer net)
