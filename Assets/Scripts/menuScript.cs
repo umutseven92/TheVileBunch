@@ -22,6 +22,9 @@ public class menuScript : MonoBehaviour
     {
         Version.text = "v" + global.GameVersion;
 
+        PhotonNetwork.sendRate = 60;
+        PhotonNetwork.sendRateOnSerialize = 60;
+
         Time.timeScale = 1.0f;
 
         Log.Info("Initializing game..");

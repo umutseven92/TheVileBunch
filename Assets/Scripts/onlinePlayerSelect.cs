@@ -46,6 +46,12 @@ public class onlinePlayerSelect : playerSelect
             else
             {
                 PhotonNetwork.Disconnect();
+
+                if (PlayerList.Count <  1)
+                {
+                    PlayerList = new List<Player>();
+                }
+
                 Application.LoadLevel("Menu");
             }
         });
@@ -396,9 +402,6 @@ public class onlinePlayerSelect : playerSelect
 
     public override void Update()
     {
-        base.Update();
-        UpdateSelect(PlayerList);
-
         if (first)
         {
             if (!PhotonNetwork.isMasterClient)
@@ -412,6 +415,11 @@ public class onlinePlayerSelect : playerSelect
 
             first = false;
         }
+
+        base.Update();
+
+        UpdateSelect(PlayerList);
+
     }
 
     public override void CheckCancel()
