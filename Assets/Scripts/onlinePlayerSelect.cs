@@ -8,7 +8,6 @@ public class onlinePlayerSelect : playerSelect
     public Text BackText;
 
     private PhotonView pView;
-    private string _playerId;
     private bool sure = false;
     private bool first = true;
     private bool selected;
@@ -47,7 +46,7 @@ public class onlinePlayerSelect : playerSelect
             {
                 PhotonNetwork.Disconnect();
 
-                if (PlayerList.Count <  1)
+                if (PlayerList.Count < 1)
                 {
                     PlayerList = new List<Player>();
                 }
@@ -97,12 +96,12 @@ public class onlinePlayerSelect : playerSelect
         {
             if (Input.GetAxis("kHorizontal") > 0)
             {
-                ChangePlayer("k", 1, _playerId);
+                ChangePlayer("k", 1, PlayerId);
                 kDelay = true;
             }
             else if (Input.GetAxis("kHorizontal") < 0)
             {
-                ChangePlayer("k", -1, _playerId);
+                ChangePlayer("k", -1, PlayerId);
                 kDelay = true;
             }
 
@@ -111,12 +110,12 @@ public class onlinePlayerSelect : playerSelect
         {
             if (Input.GetAxis("j1Horizontal") > 0)
             {
-                ChangePlayer("j1", 1, _playerId);
+                ChangePlayer("j1", 1, PlayerId);
                 j1Delay = true;
             }
             else if (Input.GetAxis("j1Horizontal") < 0)
             {
-                ChangePlayer("j1", -1, _playerId);
+                ChangePlayer("j1", -1, PlayerId);
                 j1Delay = true;
             }
 
@@ -126,12 +125,12 @@ public class onlinePlayerSelect : playerSelect
         {
             if (Input.GetAxis("j2Horizontal") > 0)
             {
-                ChangePlayer("j2", 1, _playerId);
+                ChangePlayer("j2", 1, PlayerId);
                 j2Delay = true;
             }
             else if (Input.GetAxis("j2Horizontal") < 0)
             {
-                ChangePlayer("j2", -1, _playerId);
+                ChangePlayer("j2", -1, PlayerId);
                 j2Delay = true;
             }
 
@@ -141,12 +140,12 @@ public class onlinePlayerSelect : playerSelect
         {
             if (Input.GetAxis("j3Horizontal") > 0)
             {
-                ChangePlayer("j3", 1, _playerId);
+                ChangePlayer("j3", 1, PlayerId);
                 j3Delay = true;
             }
             else if (Input.GetAxis("j3Horizontal") < 0)
             {
-                ChangePlayer("j3", -1, _playerId);
+                ChangePlayer("j3", -1, PlayerId);
                 j3Delay = true;
             }
 
@@ -156,12 +155,12 @@ public class onlinePlayerSelect : playerSelect
         {
             if (Input.GetAxis("j4Horizontal") > 0)
             {
-                ChangePlayer("j4", 1, _playerId);
+                ChangePlayer("j4", 1, PlayerId);
                 j4Delay = true;
             }
             else if (Input.GetAxis("j4Horizontal") < 0)
             {
-                ChangePlayer("j4", -1, _playerId);
+                ChangePlayer("j4", -1, PlayerId);
                 j4Delay = true;
             }
 
