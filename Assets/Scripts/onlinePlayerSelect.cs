@@ -11,6 +11,7 @@ public class onlinePlayerSelect : playerSelect
     private string _playerId;
     private bool sure = false;
     private bool first = true;
+    private bool selected;
 
     [HideInInspector]
     public string PlayerId
@@ -233,6 +234,15 @@ public class onlinePlayerSelect : playerSelect
     public void SetAllPlayers(List<Player> players)
     {
         PlayerList = players;
+
+        foreach (var player in PlayerList)
+        {
+            if (player.Set && !pickedClasses.Contains(player.Class))
+            {
+                pickedClasses.Add(player.Class);
+            }
+        }
+
         UpdateSelect(PlayerList);
     }
 
@@ -473,7 +483,6 @@ public class onlinePlayerSelect : playerSelect
         AddInitialPlayer(control, pClass, inputControl);
     }
 
-    private bool selected;
 
     void CheckSubmit()
     {
