@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class networkLobby : Photon.PunBehaviour
 {
-    private List<playerSelect.Player> Players = new List<playerSelect.Player>();
+    private List<playerSelect.Player> Players = null;
 
     [PunRPC]
     public void PlayerAddRPC(string control, int pId)
@@ -81,6 +81,11 @@ public class networkLobby : Photon.PunBehaviour
                     var num = (int)stream.ReceiveNext();
                     var onlineControl = (string)stream.ReceiveNext();
                     var set = (bool)stream.ReceiveNext();
+
+                    if (Players == null)
+                    {
+                        Players = new List<playerSelect.Player>();
+                    }
 
                     if (Players.All(a => a.Control != control))
                     {

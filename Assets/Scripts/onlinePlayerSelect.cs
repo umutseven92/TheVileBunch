@@ -11,6 +11,7 @@ public class onlinePlayerSelect : playerSelect
     private bool sure = false;
     private bool first = true;
     private bool selected;
+    private bool again;
 
     [HideInInspector]
     public string PlayerId
@@ -238,6 +239,14 @@ public class onlinePlayerSelect : playerSelect
 
     public void SetAllPlayers(List<Player> players)
     {
+        if (players == null)
+        {
+            again = true;
+            return;
+        }
+
+        again = false;
+
         PlayerList = players;
 
         foreach (var player in PlayerList)
@@ -398,27 +407,34 @@ public class onlinePlayerSelect : playerSelect
         UpdateSelect(PlayerList);
     }
 
+    public double joinDelay = 0.500d;
+    private double joinCounter = 0.600d;
 
     public override void Update()
     {
-        if (first)
+        if (first || again)
         {
-            if (!PhotonNetwork.isMasterClient)
+            if (joinCounter > joinDelay)
             {
-                pView.RPC("PlayerJoinRPC", PhotonTargets.All, pView.viewID);
-            }
-            else
-            {
-                Master = true;
-            }
+                if (!PhotonNetwork.isMasterClient)
+                {
+                    pView.RPC("PlayerJoinRPC", PhotonTargets.All, pView.viewID);
+                }
+                else
+                {
+                    Master = true;
+                }
 
-            first = false;
+                first = false;
+                joinCounter = 0.000d;
+            }
         }
 
         base.Update();
 
         UpdateSelect(PlayerList);
 
+        joinCounter += 1 * Time.deltaTime;
     }
 
     public override void CheckCancel()
