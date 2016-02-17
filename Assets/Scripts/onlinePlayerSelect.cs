@@ -386,7 +386,8 @@ public class onlinePlayerSelect : playerSelect
             Class = pClass,
             Num = PlayerList.Count,
             Set = false,
-            OnlineControl = inputControl
+            OnlineControl = inputControl,
+            PhotonId = PhotonNetwork.player.ID
         };
 
         PlayerList.Add(p);

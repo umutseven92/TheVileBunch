@@ -93,6 +93,8 @@ public class onlinePlayer : playerControl
         }
 
         Ping = PhotonNetwork.GetPing();
+
+
     }
 
     protected override void FixedUpdate()

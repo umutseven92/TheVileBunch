@@ -649,6 +649,9 @@ public class playerSelect : Photon.PunBehaviour
         public int Num { get; set; }
         public bool Set { get; set; }
         public string OnlineControl { get; set; }
+        public string OnlinePlayerName { get; set; }
+        public int PhotonId { get; set; }
+        public int Ping { get; set; }
     }
 
 }

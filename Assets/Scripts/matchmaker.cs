@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using log4net;
+using UnityEditor;
 using UnityEngine.UI;
 
 public class matchmaker : Photon.PunBehaviour
@@ -57,7 +58,7 @@ public class matchmaker : Photon.PunBehaviour
     private double _counter = -1.000d;
     public double scoreCardMs = 3.000d;
 
-    private KeyValuePair<string, int> winner;
+    private string winner;
     private bool slowMo;
     private bool gameOver;
     private bool start;
@@ -214,7 +215,7 @@ public class matchmaker : Photon.PunBehaviour
 
         if (players.Length == 1)
         {
-            winner = new KeyValuePair<string, int>(players[0].GetComponent<onlinePlayer>()._playerClass, 3);
+            winner = players[0].GetComponent<onlinePlayer>()._playerClass;
             slowMo = true;
             gameOver = true;
         }
@@ -264,14 +265,15 @@ public class matchmaker : Photon.PunBehaviour
     void SetCanvas()
     {
         PhotonNetwork.playerName = comp.OnlinePlayerName;
-        PhotonNetwork.player.TagObject = comp;
 
         // Fill player list
         for (int i = 0; i < PhotonNetwork.playerList.Length; i++)
         {
-            playerNames[i].text = PhotonNetwork.playerList[i].name;
-            //playerClasses[i].text = ((onlinePlayer)PhotonNetwork.playerList[i].TagObject)._playerClass;
-            //playerPings[i].text = ((onlinePlayer)PhotonNetwork.playerList[i].TagObject).Ping.ToString();
+            var player = PhotonNetwork.playerList[i];
+
+            playerNames[i].text = player.name;
+            playerClasses[i].text = playerSelect.PlayerList.First(p => p.PhotonId == player.ID).Class;
+            playerPings[i].text = playerSelect.PlayerList.First(p => p.PhotonId == player.ID).Ping.ToString();
         }
 
         // Clear unused lines
@@ -308,7 +310,7 @@ public class matchmaker : Photon.PunBehaviour
                 slowMo = false;
                 _slowMoCounter = 0.000d;
 
-                SetEndGameCard(winner.Key);
+                SetEndGameCard(winner);
             }
         }
     }
