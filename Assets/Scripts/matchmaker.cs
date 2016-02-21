@@ -215,7 +215,9 @@ public class matchmaker : Photon.PunBehaviour
 
         if (players.Length == 1)
         {
-            winner = players[0].GetComponent<onlinePlayer>()._playerClass;
+            var winnerComp = players[0].GetComponent<onlinePlayer>();
+
+            winner = winnerComp._playerClass;
             slowMo = true;
             gameOver = true;
         }
