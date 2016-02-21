@@ -265,15 +265,16 @@ public class matchmaker : Photon.PunBehaviour
     void SetCanvas()
     {
         PhotonNetwork.playerName = comp.OnlinePlayerName;
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player").Where(p => p.transform.position != Vector3.zero).ToArray();
 
         // Fill player list
-        for (int i = 0; i < PhotonNetwork.playerList.Length; i++)
+        for (int i = 0; i < playerSelect.PlayerList.Count; i++)
         {
-            var player = PhotonNetwork.playerList[i];
+            var player = playerSelect.PlayerList[i];
 
-            playerNames[i].text = player.name;
-            playerClasses[i].text = playerSelect.PlayerList.First(p => p.PhotonId == player.ID).Class;
-            playerPings[i].text = playerSelect.PlayerList.First(p => p.PhotonId == player.ID).Ping.ToString();
+            playerNames[i].text = player.OnlinePlayerName;
+            playerClasses[i].text = player.Class;
+            playerPings[i].text = player.Ping.ToString();
         }
 
         // Clear unused lines
