@@ -14,10 +14,10 @@ public class networkLobby : Photon.PunBehaviour
     }
 
     [PunRPC]
-    public void PlayerAddInitialRPC(string control, string pClass, string inputControl, int pId)
+    public void PlayerAddInitialRPC(string control, string pClass, string playerName, string inputControl, int pId)
     {
         var pView = PhotonView.Find(pId);
-        pView.GetComponentInParent<onlinePlayerSelect>().OnlineAddInitialPlayer(control, pClass, inputControl);
+        pView.GetComponentInParent<onlinePlayerSelect>().OnlineAddInitialPlayer(control, pClass, playerName, inputControl);
     }
 
     [PunRPC]
@@ -63,6 +63,7 @@ public class networkLobby : Photon.PunBehaviour
                     stream.SendNext(p.Num);
                     stream.SendNext(p.OnlineControl);
                     stream.SendNext(p.Set);
+                    stream.SendNext(p.OnlinePlayerName);
                 }
             }
         }
@@ -81,6 +82,7 @@ public class networkLobby : Photon.PunBehaviour
                     var num = (int)stream.ReceiveNext();
                     var onlineControl = (string)stream.ReceiveNext();
                     var set = (bool)stream.ReceiveNext();
+                    var playerName = (string)stream.ReceiveNext();
 
                     if (Players == null)
                     {
@@ -95,7 +97,8 @@ public class networkLobby : Photon.PunBehaviour
                             Class = pClass,
                             Num = num,
                             OnlineControl = onlineControl,
-                            Set = set
+                            Set = set,
+                            OnlinePlayerName = playerName
                         };
 
                         Players.Add(player);

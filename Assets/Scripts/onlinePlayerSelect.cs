@@ -229,7 +229,7 @@ public class onlinePlayerSelect : playerSelect
 
     protected override void AddInitialPlayer(string control, string pClass, string inputControl)
     {
-        pView.RPC("PlayerAddInitialRPC", PhotonTargets.All, control, pClass, inputControl, pView.viewID);
+        pView.RPC("PlayerAddInitialRPC", PhotonTargets.All, control, pClass, PlayerPrefs.GetString(global.PlayerName), inputControl, pView.viewID);
     }
 
     protected override void RemovePlayer(string control)
@@ -378,7 +378,7 @@ public class onlinePlayerSelect : playerSelect
         base.UpdatePlayButton();
     }
 
-    public void OnlineAddInitialPlayer(string control, string pClass, string inputControl = null)
+    public void OnlineAddInitialPlayer(string control, string pClass, string playerName, string inputControl = null)
     {
         var p = new Player
         {
@@ -386,7 +386,8 @@ public class onlinePlayerSelect : playerSelect
             Class = pClass,
             Num = PlayerList.Count,
             Set = false,
-            OnlineControl = inputControl
+            OnlineControl = inputControl,
+            OnlinePlayerName = playerName
         };
 
         PlayerList.Add(p);
