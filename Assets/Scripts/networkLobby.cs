@@ -14,7 +14,7 @@ public class networkLobby : Photon.PunBehaviour
     }
 
     [PunRPC]
-    public void PlayerAddInitialRPC(string control, string pClass, string id, string inputControl, int pId)
+    public void PlayerAddInitialRPC(string control, string pClass, string inputControl, int pId)
     {
         var pView = PhotonView.Find(pId);
         pView.GetComponentInParent<onlinePlayerSelect>().OnlineAddInitialPlayer(control, pClass, inputControl);
