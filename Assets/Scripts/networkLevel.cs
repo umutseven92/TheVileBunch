@@ -24,5 +24,18 @@ public class networkLevel : Photon.PunBehaviour
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
+        if (stream.isWriting)
+        {
+            stream.SendNext(PlayerPrefs.GetString(global.PlayerId));
+            stream.SendNext(PhotonNetwork.GetPing());
+        }
+        else
+        {
+            var id = (string) stream.ReceiveNext();
+            var ping = (int) stream.ReceiveNext();
+
+            playerSelect.PlayerList.Find(p => p.Control == id).Ping = ping;
+        }
+
     }
 }

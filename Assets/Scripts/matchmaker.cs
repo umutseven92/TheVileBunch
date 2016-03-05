@@ -327,20 +327,8 @@ public class matchmaker : Photon.PunBehaviour
         BtnEndGameExit.Select();
     }
 
-    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
-        if (stream.isWriting)
-        {
-            stream.SendNext(pId);
-            stream.SendNext(PhotonNetwork.GetPing());
-        }
-        else
-        {
-            var id = (string) stream.ReceiveNext();
-            var ping = (int) stream.ReceiveNext();
-
-            playerSelect.PlayerList.Find(p => p.Control == id).Ping = ping;
-        }
     }
 
     public override void OnPhotonPlayerConnected(PhotonPlayer newPlayer)
