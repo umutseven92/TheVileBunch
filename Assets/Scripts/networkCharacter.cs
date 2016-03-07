@@ -1,4 +1,5 @@
-﻿using log4net;
+﻿using System.Security.Cryptography;
+using log4net;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,6 +11,7 @@ public class networkCharacter : Photon.MonoBehaviour
     private int _health;
     private int _ammo;
     private float _fraction;
+    
 
     private readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -99,7 +101,6 @@ public class networkCharacter : Photon.MonoBehaviour
 
             // Ping
             stream.SendNext(PhotonNetwork.GetPing());
-
         }
         else
         {
