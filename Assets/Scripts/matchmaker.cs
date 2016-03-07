@@ -268,6 +268,8 @@ public class matchmaker : Photon.PunBehaviour
     {
         PhotonNetwork.playerName = comp.OnlinePlayerName;
 
+        playerSelect.PlayerList.Find(p => p.Control == pId).Ping = PhotonNetwork.GetPing();
+
         // Fill player list
         for (int i = 0; i < playerSelect.PlayerList.Count; i++)
         {

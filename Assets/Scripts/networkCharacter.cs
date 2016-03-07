@@ -93,6 +93,13 @@ public class networkCharacter : Photon.MonoBehaviour
 
             // Ammo
             stream.SendNext(ply.Ammo);
+
+            // Id
+            stream.SendNext(PlayerPrefs.GetString(global.PlayerId));
+
+            // Ping
+            stream.SendNext(PhotonNetwork.GetPing());
+
         }
         else
         {
@@ -114,6 +121,15 @@ public class networkCharacter : Photon.MonoBehaviour
             _ammo = (int)stream.ReceiveNext();
 
             _fraction = 0;
+
+            // Id
+            var id = (string) stream.ReceiveNext();
+
+            // Ping
+            var ping = (int) stream.ReceiveNext();
+
+            playerSelect.PlayerList.Find(p => p.Control == id).Ping = ping;
+
         }
     }
 
