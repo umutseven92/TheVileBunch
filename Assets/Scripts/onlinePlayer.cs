@@ -247,7 +247,24 @@ public class onlinePlayer : playerControl
         OnlinebXSpeed = bXSpeed;
         OnlinebYSpeed = bYSpeed;
 
-        _pView.RPC("ShootRPC", PhotonTargets.All, _pView.viewID, bXPos, bYPos, bXSpeed, bYSpeed);
+        //_pView.RPC("ShootRPC", PhotonTargets.All, _pView.viewID, bXPos, bYPos, bXSpeed, bYSpeed);
+
+        var pos = new Vector3(transform.position.x + bXPos, transform.position.y + bYPos, transform.position.z); 
+
+        var shotTransform = PhotonNetwork.Instantiate("BulletOnline", pos, Quaternion.identity, 0);
+
+        shotTransform.GetComponent<Rigidbody2D>().velocity = new Vector2(bXSpeed, bYSpeed);
+
+        _audio.PlayOneShot(GunShot);
+        GunLight.enabled = true;
+        _gunLight = true;
+        Ammo--;
+        _ammoChanged = true;
+        _ammoCounter = 0.000d;
+
+        AmmoText.enabled = true;
+
+        VibrateGamePad(playerNum);
 
         bXPos = 0;
         bYPos = 0;
@@ -259,6 +276,4 @@ public class onlinePlayer : playerControl
     {
         _pView.RPC("SlashRPC", PhotonTargets.All, _pView.viewID);
     }
-
-
 }

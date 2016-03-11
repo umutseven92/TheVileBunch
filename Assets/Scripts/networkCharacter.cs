@@ -11,7 +11,6 @@ public class networkCharacter : Photon.MonoBehaviour
     private int _health;
     private int _ammo;
     private float _fraction;
-    
 
     private readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 

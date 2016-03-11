@@ -1,9 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class projectileScript : MonoBehaviour
+public class projectileScript : Photon.PunBehaviour 
 {
-    public bool Multi;
 
     // Use this for initialization
     void Start()
@@ -20,4 +19,6 @@ public class projectileScript : MonoBehaviour
             Destroy(gameObject);
         }
     }
+
+
 }
