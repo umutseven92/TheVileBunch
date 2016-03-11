@@ -86,7 +86,7 @@ public class localPlayer : playerControl
         }
 
         // Bullet
-        if (other.name.StartsWith("Bullet(Clone)"))
+        if (other.name.StartsWith("Bullet"))
         {
             if (!_hit)
             {
