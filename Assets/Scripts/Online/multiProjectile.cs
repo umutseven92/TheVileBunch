@@ -24,5 +24,4 @@ public class multiProjectile : projectileScript {
             _correctBulletPos = (Vector3)stream.ReceiveNext();
         }
     }
-
 }
