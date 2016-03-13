@@ -49,4 +49,7 @@ MonoBehaviour:
   - PlayerJoinRPC
   - RemoveFromPlayerListRPC
   - RemoveSetFromPlayerListRPC
+  - VoteRpc
+  - DecreaseVoteRpc
+  - IncreaseVoteRpc
   DisableAutoOpenWizard: 1
