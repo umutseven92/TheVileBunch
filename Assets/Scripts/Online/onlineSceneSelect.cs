@@ -1,11 +1,13 @@
-﻿using UnityEngine;
+﻿using log4net;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class onlineSceneSelect : sceneSelect
 {
-    public Text LevelText;
     public Text BackText;
     public Button[] LevelSelectButtons;
+
+    private readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
     private bool sure = false;
 
@@ -13,45 +15,34 @@ public class onlineSceneSelect : sceneSelect
     {
         base.Start();
 
-
         if (!PhotonNetwork.isMasterClient)
         {
+            BackText.text = "Quit";
+
             foreach (var button in LevelSelectButtons)
             {
                 button.enabled = false;
             }
-            PlayButton.enabled = false;
         }
-
-        BackText.text = "Quit";
-
-        PlayButton.onClick.AddListener(() =>
-        {
-            switch (LevelText.text)
-            {
-                case "Dunes":
-                    PhotonNetwork.LoadLevel("DunesOnlineLoading");
-                    break;
-                case "Caves":
-                    PhotonNetwork.LoadLevel("CavesOnlineLoading");
-                    break;
-                default:
-                    Debug.LogError(LevelText.text + " not found!");
-                    break;
-            }
-        });
 
         BackButton.onClick.AddListener(() =>
         {
-            if (!sure)
+            if (PhotonNetwork.isMasterClient)
             {
-                BackText.text = "Sure?";
-                sure = true;
+                PhotonNetwork.LoadLevel("OnlinePlayerSelect");
             }
             else
             {
-                PhotonNetwork.Disconnect();
-                Application.LoadLevel("Menu");
+                if (!sure)
+                {
+                    BackText.text = "Sure?";
+                    sure = true;
+                }
+                else
+                {
+                    PhotonNetwork.Disconnect();
+                    Application.LoadLevel("Menu");
+                }
             }
         });
     }
@@ -60,14 +51,4 @@ public class onlineSceneSelect : sceneSelect
         GUILayout.Label(PhotonNetwork.connectionStateDetailed.ToString());
     }
 
-    protected override void Update()
-    {
-        base.Update();
-
-        if (Input.GetButtonDown("kCancel") || Input.GetButtonDown("j1Cancel") || Input.GetButtonDown("j2Cancel") ||
-            Input.GetButtonDown("j3Cancel") || Input.GetButtonDown("j4Cancel"))
-        {
-            PhotonNetwork.LoadLevel("OnlinePlayerSelect");
-        }
-    }
 }
