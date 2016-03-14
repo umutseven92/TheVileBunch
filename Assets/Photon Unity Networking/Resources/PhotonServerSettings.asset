@@ -52,4 +52,6 @@ MonoBehaviour:
   - VoteRpc
   - DecreaseVoteRpc
   - IncreaseVoteRpc
+  - DecreaseVoteRPC
+  - IncreaseVoteRPC
   DisableAutoOpenWizard: 1
