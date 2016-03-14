@@ -34,6 +34,7 @@ public class onlineSceneSelect : sceneSelect
     private PhotonView _pView;
     private bool voted;
     private double timerCounter;
+    private bool done = false;
 
     private OnlineLevel VotedOn;
 
@@ -149,12 +150,21 @@ public class onlineSceneSelect : sceneSelect
 
     void CheckTimer()
     {
-        timerCounter -= 1 * UnityEngine.Time.deltaTime;
-        if (timerCounter <= 0)
+        if (!done)
         {
-            if (PhotonNetwork.isMasterClient)
+            if (_cavesVote + _dunesVote + _mountainVote + _saloonVote >= playerSelect.PlayerList.Count && timerCounter > 5)
             {
-                ChooseLevel();
+                timerCounter = 5;
+            }
+
+            timerCounter -= 1 * UnityEngine.Time.deltaTime;
+            if (timerCounter <= 0)
+            {
+                if (PhotonNetwork.isMasterClient)
+                {
+                    done = true;
+                    ChooseLevel();
+                }
             }
         }
     }
@@ -168,7 +178,6 @@ public class onlineSceneSelect : sceneSelect
             {OnlineLevel.Saloon, _saloonVote},
             {OnlineLevel.Mountain, _mountainVote}
         };
-
 
         var map = dict.Where(a => a.Value == dict.Values.Max()).ToList();
 
