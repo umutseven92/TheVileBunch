@@ -75,7 +75,7 @@ public class onlineSceneSelect : sceneSelect
         {
             if (voted)
             {
-                _pView.RPC("DecreaseVoteRPC", PhotonTargets.All, VotedOn, _pView.viewID);
+                _pView.RPC("DecreaseVoteRPC", PhotonTargets.All, (int)VotedOn, _pView.viewID);
             }
             _pView.RPC("IncreaseVoteRPC", PhotonTargets.All, OnlineLevel.Dunes, _pView.viewID);
 
@@ -87,7 +87,7 @@ public class onlineSceneSelect : sceneSelect
         {
             if (voted)
             {
-                _pView.RPC("DecreaseVoteRPC", PhotonTargets.All, VotedOn, _pView.viewID);
+                _pView.RPC("DecreaseVoteRPC", PhotonTargets.All, (int)VotedOn, _pView.viewID);
             }
             _pView.RPC("IncreaseVoteRPC", PhotonTargets.All, OnlineLevel.Caves, _pView.viewID);
 
@@ -99,7 +99,7 @@ public class onlineSceneSelect : sceneSelect
         {
             if (voted)
             {
-                _pView.RPC("DecreaseVoteRPC", PhotonTargets.All, VotedOn, _pView.viewID);
+                _pView.RPC("DecreaseVoteRPC", PhotonTargets.All, (int)VotedOn, _pView.viewID);
             }
 
             _pView.RPC("IncreaseVoteRPC", PhotonTargets.All, OnlineLevel.Saloon, _pView.viewID);
@@ -112,7 +112,7 @@ public class onlineSceneSelect : sceneSelect
         {
             if (voted)
             {
-                _pView.RPC("DecreaseVoteRPC", PhotonTargets.All, VotedOn, _pView.viewID);
+                _pView.RPC("DecreaseVoteRPC", PhotonTargets.All, (int)VotedOn, _pView.viewID);
             }
 
             _pView.RPC("IncreaseVoteRPC", PhotonTargets.All, OnlineLevel.Mountain, _pView.viewID);
