@@ -13,6 +13,7 @@ GameObject:
   - 61: {fileID: 6177266}
   - 114: {fileID: 11479990}
   - 114: {fileID: 11450940}
+  - 114: {fileID: 11468966}
   m_Layer: 9
   m_Name: BulletOnline
   m_TagString: Bullet
@@ -74,6 +75,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49ae00ee7e3d4d54791afd565f94a320, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &11468966
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 122416}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8992a56d86935f84da8a04a043251b9f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &11479990
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -94,7 +106,7 @@ MonoBehaviour:
   onSerializeRigidBodyOption: 2
   ownershipTransfer: 0
   ObservedComponents:
-  - {fileID: 11450940}
+  - {fileID: 11468966}
   ObservedComponentsFoldoutOpen: 1
   viewIdField: 0
   instantiationId: -1
@@ -208,7 +220,7 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: ObservedComponents.Array.data[0]
       value: 
-      objectReference: {fileID: 11450940}
+      objectReference: {fileID: 11468966}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 122416}

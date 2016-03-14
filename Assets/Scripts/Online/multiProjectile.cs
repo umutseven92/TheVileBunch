@@ -1,27 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class multiProjectile : projectileScript {
+public class multiProjectile : projectileScript
+{
+    private PhotonView pView;
 
-    private Vector3 _correctBulletPos;
-
-    void Update()
+    protected override void Start()
     {
-        if (!photonView.isMine)
-        {
-            photonView.transform.position = Vector3.Lerp(transform.position, _correctBulletPos, Time.deltaTime * 20);
-        }
+        base.Start();
+        pView = GetComponentInParent<PhotonView>();
     }
 
-    void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    void OnDestroy()
     {
-        if (stream.isWriting)
-        {
-            stream.SendNext(transform.position);
-        }
-        else
-        {
-            _correctBulletPos = (Vector3)stream.ReceiveNext();
-        }
     }
 }

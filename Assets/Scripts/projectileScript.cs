@@ -5,7 +5,7 @@ public class projectileScript : Photon.PunBehaviour
 {
 
     // Use this for initialization
-    void Start()
+    protected virtual void Start()
     {
         Destroy(gameObject, 3);
     }
@@ -19,6 +19,4 @@ public class projectileScript : Photon.PunBehaviour
             Destroy(gameObject);
         }
     }
-
-
 }

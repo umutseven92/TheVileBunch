@@ -22,8 +22,8 @@ public class menuScript : MonoBehaviour
     {
         Version.text = "v" + global.GameVersion;
 
-        PhotonNetwork.sendRate = 60;
-        PhotonNetwork.sendRateOnSerialize = 60;
+        PhotonNetwork.sendRate = 50;
+        PhotonNetwork.sendRateOnSerialize = 50;
 
         Time.timeScale = 1.0f;
 
