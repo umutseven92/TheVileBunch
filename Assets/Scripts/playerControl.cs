@@ -127,8 +127,6 @@ public abstract class playerControl : MonoBehaviour
     private double _spawnedCounter = 0.000d;
     public double _spawnedMs = 2.000d;
 
-    private bool _bulletUp;
-    private bool _bulletDown;
     private bool _bulletRight;
     private bool _bulletLeft;
     protected bool _aiming;
@@ -292,23 +290,6 @@ public abstract class playerControl : MonoBehaviour
         _horizontal = h;
         _vertical = v;
 
-        if (v > DirectionLock && v > 0)
-        {
-            _bulletUp = true;
-            _bulletDown = false;
-        }
-        else if (v < -DirectionLock && v < 0)
-        {
-            _bulletUp = false;
-            _bulletDown = true;
-        }
-
-        if (v < DirectionLock && v > -DirectionLock)
-        {
-            _bulletUp = false;
-            _bulletDown = false;
-        }
-
         if (h > DirectionLock && h > 0)
         {
             _bulletRight = true;
@@ -397,7 +378,7 @@ public abstract class playerControl : MonoBehaviour
         var bYPos = 0f;
         var bRotation = 0f;
 
-        if (!_bulletUp && !_bulletDown && !_bulletRight && !_bulletLeft)
+        if (!_bulletRight && !_bulletLeft)
         {
             if (FacingRight)
             {
@@ -417,42 +398,6 @@ public abstract class playerControl : MonoBehaviour
         else if (_bulletLeft)
         {
             bXPos = -GunOffset;
-        }
-
-        if (_bulletUp)
-        {
-            bYPos = GunOffset;
-
-            if (_bulletRight)
-            {
-                bRotation += 45 - 180;
-            }
-            if (_bulletLeft)
-            {
-                bRotation += 45;
-            }
-            else
-            {
-                bRotation += 90;
-            }
-
-        }
-        else if (_bulletDown)
-        {
-            bYPos = -GunOffset;
-
-            if (_bulletRight)
-            {
-                bRotation += 45 + 90;
-            }
-            if (_bulletLeft)
-            {
-                bRotation += 45 - 90;
-            }
-            else
-            {
-                bRotation -= 90;
-            }
         }
 
         line.position = new Vector3(transform.position.x + bXPos, transform.position.y + bYPos, transform.position.z);
@@ -721,7 +666,7 @@ public abstract class playerControl : MonoBehaviour
 
     protected virtual void Shoot()
     {
-        if (!_bulletUp && !_bulletDown && !_bulletRight && !_bulletLeft)
+        if (!_bulletRight && !_bulletLeft)
         {
             if (FacingRight)
             {
@@ -743,18 +688,6 @@ public abstract class playerControl : MonoBehaviour
             bXSpeed = -BulletSpeed;
             bXPos = -GunOffset;
         }
-
-        if (_bulletUp)
-        {
-            bYSpeed = BulletSpeed;
-            bYPos = GunOffset;
-        }
-        else if (_bulletDown)
-        {
-            bYSpeed = -BulletSpeed;
-            bYPos = -GunOffset;
-        }
-
     }
 
 
