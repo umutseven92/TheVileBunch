@@ -54,7 +54,7 @@ public class onlinePlayer : playerControl
                 Jump = true;
             }
 
-            if (Input.GetButtonUp(Control + "Fire") && Ammo > 0 && Enabled)
+            if (Input.GetButtonUp(Control + "Fire") && Ammo > 0 && Enabled && !_hit)
             {
                 if (_aimCanceled)
                 {

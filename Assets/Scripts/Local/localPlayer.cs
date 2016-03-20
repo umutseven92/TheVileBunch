@@ -30,7 +30,7 @@ public class localPlayer : playerControl
             Jump = true;
         }
 
-        if (Input.GetButtonUp(Control + "Fire") && !_paused && Ammo > 0)
+        if (Input.GetButtonUp(Control + "Fire") && !_paused && Ammo > 0 && !_hit)
         {
             if (_aimCanceled)
             {
