@@ -295,7 +295,7 @@ public class matchmaker : Photon.PunBehaviour
 
     void OnGUI()
     {
-        GUILayout.Label(PhotonNetwork.connectionStateDetailed.ToString() + "\n" + PhotonNetwork.sendRate + " / " + PhotonNetwork.sendRateOnSerialize);
+        GUILayout.Label(PhotonNetwork.connectionStateDetailed.ToString());
     }
 
     private void SlowMotionTimer()

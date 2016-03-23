@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
+using log4net;
 using UnityEngine.UI;
 
 public class onlineLoadingScreen : Photon.PunBehaviour
@@ -18,6 +19,8 @@ public class onlineLoadingScreen : Photon.PunBehaviour
     private List<string> _diaries = new List<string>();
     private System.Random _rand = new System.Random();
     private bool _ready = false;
+
+    private readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
     void Start()
     {
@@ -47,27 +50,25 @@ public class onlineLoadingScreen : Photon.PunBehaviour
 
         DiaryText.text = _diaries[count];
 
-
         if (!onlineHelper.Joining)
         {
-            if (PhotonNetwork.connectionState != ConnectionState.Connected)
-            {
-                PhotonNetwork.ConnectUsingSettings(global.GameVersion);
-            }
+            PhotonNetwork.CreateRoom(onlineHelper.LobbyName, new RoomOptions() { maxPlayers = 4 }, null);
         }
         else
         {
-            // Join lobby
-            PhotonNetwork.JoinRoom(onlineHelper.LobbyName);
-        }
-    }
-    public override void OnJoinedLobby()
-    {
-        if (!onlineHelper.Joining)
-        {
-            // Create lobby
-            PhotonNetwork.CreateRoom(onlineHelper.LobbyName, new RoomOptions() { maxPlayers = 4 }, null);
+            var roomCount = PhotonNetwork.countOfRooms;
 
+            Log.DebugFormat("{0} rooms online.", roomCount);
+
+            if (roomCount <= 0)
+            {
+                // No rooms online, create
+            }
+            else
+            {
+                // Join lobby
+                PhotonNetwork.JoinRandomRoom();
+            }
         }
     }
 

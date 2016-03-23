@@ -2,13 +2,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class loadOnClick : MonoBehaviour
 {
     public void LoadScene(int level)
     {
-        Application.LoadLevel(level);
+        SceneManager.LoadScene(level);
     }
 
     public void Disconnect()
@@ -18,7 +19,7 @@ public class loadOnClick : MonoBehaviour
 
     public void LoadScene(string levelName)
     {
-        Application.LoadLevel(levelName);
+        SceneManager.LoadScene(levelName);
     }
 
     public void ResetPlayers()
@@ -63,7 +64,7 @@ public class loadOnClick : MonoBehaviour
     {
         playerSelect.PlayerList = new List<playerSelect.Player>();
         Time.timeScale = 1;
-        Application.LoadLevel("LocalPlayerSelect");
+        SceneManager.LoadScene("LocalPlayerSelect");
     }
 
     public void EndMultiGame()
@@ -72,7 +73,13 @@ public class loadOnClick : MonoBehaviour
         PhotonNetwork.automaticallySyncScene = false;
         Time.timeScale = 1;
         PhotonNetwork.Disconnect();
-        Application.LoadLevel("Menu");
+        SceneManager.LoadScene("Menu");
+    }
+
+    public void QuickJoin()
+    {
+        onlineHelper.Joining = true;
+        PhotonNetwork.LoadLevel("OnlineLoading");
     }
 
     public void FocusOn(Transform item)

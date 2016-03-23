@@ -485,9 +485,7 @@ public class onlinePlayerSelect : playerSelect
 
     void OnGUI()
     {
-        GUILayout.Label("Online:\t\t" + PhotonNetwork.playerList.Length + "/" + PhotonNetwork.room.maxPlayers + "\n" +
-                        "Player List:\t" + PlayerList.Count + "/" + 4 + "\n" +
-                        "Selected:\t" + selected);
+        GUILayout.Label(PhotonNetwork.connectionStateDetailed.ToString());
     }
 
     protected override void SelectInitialPlayer(string control, string inputControl)

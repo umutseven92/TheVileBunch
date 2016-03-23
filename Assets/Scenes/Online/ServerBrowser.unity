@@ -275,7 +275,7 @@ RectTransform:
   m_RootOrder: 1
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -74}
+  m_AnchoredPosition: {x: 0, y: -72}
   m_SizeDelta: {x: 486, y: 85}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &784669871
@@ -318,8 +318,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 823571329}
-        m_MethodName: LoadScene
-        m_Mode: 5
+        m_MethodName: QuickJoin
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -805,6 +805,53 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
+--- !u!1 &1637676157
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 224: {fileID: 1637676159}
+  - 114: {fileID: 1637676158}
+  m_Layer: 5
+  m_Name: Scripts
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1637676158
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1637676157}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0ddfb61764c02c46845ecf56e629cf7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Buttons:
+  - {fileID: 1585278400}
+  - {fileID: 784669871}
+--- !u!224 &1637676159
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1637676157}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 90}
+  m_LocalScale: {x: 0.00925531, y: 0.00925531, z: 0.00925531}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 4
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 126.00081}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1858760183
 GameObject:
   m_ObjectHideFlags: 0
@@ -980,10 +1027,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 784669870}
   m_RootOrder: 0
-  m_AnchorMin: {x: 0, y: 0.143}
-  m_AnchorMax: {x: 0.934, y: 1}
-  m_AnchoredPosition: {x: 18.842964, y: -2.5774994}
-  m_SizeDelta: {x: 38, y: 19.155}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0.04298401, y: 3.4225006}
+  m_SizeDelta: {x: 0.085998535, y: 7}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1933208952
 MonoBehaviour:
@@ -1017,7 +1064,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: JOIN LOBBY
+  m_Text: QUICK JOIN
 --- !u!222 &1933208953
 CanvasRenderer:
   m_ObjectHideFlags: 0

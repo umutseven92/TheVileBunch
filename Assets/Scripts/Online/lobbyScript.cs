@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 using log4net;
-using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class lobbyScript : Photon.PunBehaviour
 {
@@ -20,7 +20,7 @@ public class lobbyScript : Photon.PunBehaviour
         onlineHelper.Joining = false;
 
         Log.InfoFormat("Joining {0}..",LobbyName);
-        Application.LoadLevel("OnlineLoading");
+        SceneManager.LoadScene("OnlineLoading");
     }
 
     public void SetLobbyName(string lobbyName)
