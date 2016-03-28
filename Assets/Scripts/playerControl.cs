@@ -286,7 +286,7 @@ public abstract class playerControl : MonoBehaviour
     {
         var jumping = !Grounded;
 
-        if (_hit)
+        if (_spawned)
         {
             _animator.SetInteger("anim", 4);
             return;
