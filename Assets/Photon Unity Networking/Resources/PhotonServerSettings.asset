@@ -18,7 +18,7 @@ MonoBehaviour:
   AppID: d6710a4e-706d-4c6d-be1a-7922b33c73e5
   PreferredRegion: 0
   EnabledRegions: -1
-  JoinLobby: 1
+  JoinLobby: 0
   EnableLobbyStatistics: 0
   RpcList:
   - Chat
@@ -43,4 +43,15 @@ MonoBehaviour:
   - PlayerChangeRPC
   - SceneSelectRPC
   - Ready
+  - AddToPlayerListRPC
+  - ChangeToPlayerListRPC
+  - InitialAddToPlayerListRPC
+  - PlayerJoinRPC
+  - RemoveFromPlayerListRPC
+  - RemoveSetFromPlayerListRPC
+  - VoteRpc
+  - DecreaseVoteRpc
+  - IncreaseVoteRpc
+  - DecreaseVoteRPC
+  - IncreaseVoteRPC
   DisableAutoOpenWizard: 1

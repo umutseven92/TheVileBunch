@@ -13,7 +13,7 @@ GameObject:
   - 61: {fileID: 6137480}
   m_Layer: 0
   m_Name: slash_0
-  m_TagString: Slash
+  m_TagString: Sword
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -118,7 +118,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: m_TagString
-      value: Slash
+      value: Sword
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: m_LocalScale.x

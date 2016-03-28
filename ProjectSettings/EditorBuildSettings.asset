@@ -14,9 +14,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Local/Caves.unity
   - enabled: 1
-    path: Assets/Scenes/Loading/DunesLoading.unity
+    path: Assets/Scenes/Loading/Local/DunesLoading.unity
   - enabled: 1
-    path: Assets/Scenes/Loading/CavesLoading.unity
+    path: Assets/Scenes/Loading/Local/CavesLoading.unity
   - enabled: 1
     path: Assets/Scenes/Local/SceneSelect.unity
   - enabled: 1
@@ -30,10 +30,30 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Online/JoinLobby.unity
   - enabled: 1
-    path: Assets/Scenes/Loading/DunesOnlineLoading.unity
+    path: Assets/Scenes/Loading/Online/DunesOnlineLoading.unity
   - enabled: 1
     path: Assets/Scenes/Online/OnlinePlayerSelect.unity
   - enabled: 1
-    path: Assets/Scenes/Loading/OnlineLoading.unity
+    path: Assets/Scenes/Loading/Online/OnlineLoading.unity
   - enabled: 1
     path: Assets/Scenes/Online/OnlineSceneSelect.unity
+  - enabled: 1
+    path: Assets/Scenes/Loading/Local/SaloonLoading.unity
+  - enabled: 1
+    path: Assets/Scenes/Loading/Local/MountainLoading.unity
+  - enabled: 1
+    path: Assets/Scenes/Loading/Online/CavesOnlineLoading.unity
+  - enabled: 1
+    path: Assets/Scenes/Loading/Online/MountainOnlineLoading.unity
+  - enabled: 1
+    path: Assets/Scenes/Loading/Online/SaloonOnlineLoading.unity
+  - enabled: 1
+    path: Assets/Scenes/Local/Saloon.unity
+  - enabled: 1
+    path: Assets/Scenes/Local/Mountain.unity
+  - enabled: 1
+    path: Assets/Scenes/Online/CavesOnline.unity
+  - enabled: 1
+    path: Assets/Scenes/Online/MountainOnline.unity
+  - enabled: 1
+    path: Assets/Scenes/Online/SaloonOnline.unity
