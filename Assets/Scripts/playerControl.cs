@@ -286,6 +286,12 @@ public abstract class playerControl : MonoBehaviour
     {
         var jumping = !Grounded;
 
+        if (_hit)
+        {
+            _animator.SetInteger("anim", 4);
+            return;
+        }
+
         if (_aiming)
         {
             _animator.SetInteger("anim", 0);
