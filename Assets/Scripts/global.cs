@@ -10,7 +10,7 @@ public class global : MonoBehaviour
         ConfigureAllLogging();
     }
 
-    public static string GameVersion = "0.3.5";
+    public static string GameVersion = "0.4.0";
     public static int FrameRateLimit = 60;
     public static int PhotonSendRate = 60;
 
