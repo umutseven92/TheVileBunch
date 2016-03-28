@@ -25,9 +25,9 @@ public class localPlayer : playerControl
             _softAim = true;
         }
 
-        if (Input.GetButtonDown(Control + "Jump") && (Grounded || _inFrontOfLadder) && !_paused && !_aiming)
+        if (Input.GetButtonDown(Control + "Jump") && (true || _inFrontOfLadder) && !_paused && !_aiming)
         {
-            Jump = true;
+            base.Jump();
         }
 
         if (Input.GetButtonUp(Control + "Fire") && !_paused && Ammo > 0 && !_hit)

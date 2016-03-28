@@ -51,7 +51,7 @@ public class onlinePlayer : playerControl
 
             if (Input.GetButtonDown(Control + "Jump") && (Grounded || _inFrontOfLadder) && !_aiming && Enabled)
             {
-                Jump = true;
+                base.Jump();
             }
 
             if (Input.GetButtonUp(Control + "Fire") && Ammo > 0 && Enabled && !_hit)

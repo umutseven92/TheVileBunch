@@ -12,7 +12,10 @@ public abstract class playerControl : MonoBehaviour
     public bool FacingRight = true;
 
     [HideInInspector]
-    public bool Jump = false;
+    public bool AbleToJump
+    {
+        get { return JumpCount > 0; }
+    }
 
     [HideInInspector]
     public bool Run = false;
@@ -50,6 +53,9 @@ public abstract class playerControl : MonoBehaviour
     [HideInInspector]
     public GameObject _slashCol;
 
+    [HideInInspector]
+    public int JumpCount;
+
     public int Spawn = 3;
     public int StartingAmmo = 3; // Starting ammo
     public int MaxAmmo = 3; // Maximum ammo a player can have
@@ -80,6 +86,8 @@ public abstract class playerControl : MonoBehaviour
     public int MouseAimDeadZone = 50; // Mouse deadzone for aimline snapping
     public double AmmoMs = 2.000d; // Ammo counter visibility after shooting
     public float GravityScale = 4;
+    public int MaxJumpCount = 2; // How many times you can jump
+    public float SecondJumpMultiplier = 1.50f;
 
     public Transform GroundCheck;
     public Transform Bullet;
@@ -136,6 +144,7 @@ public abstract class playerControl : MonoBehaviour
     private Color _playerColor;
     private double vibrationCounter = 0.000d;
     private bool vibrating = false;
+
     protected bool Grounded;
     protected bool _ammoChanged;
 
@@ -189,6 +198,8 @@ public abstract class playerControl : MonoBehaviour
 
         AmmoText.enabled = false;
         SpawnCanvas.enabled = false;
+
+        JumpCount = MaxJumpCount;
     }
 
     private void SetFirst()
@@ -223,6 +234,16 @@ public abstract class playerControl : MonoBehaviour
         var groundedLeft = GroundCheck.GetComponent<BoxCollider2D>().IsTouchingLayers(1 << LayerMask.NameToLayer("Ground"));
 
         Grounded = groundedLeft;
+
+        if (Grounded || _inFrontOfLadder)
+        {
+            JumpCount = MaxJumpCount;
+        }
+    }
+
+    void OnGUI()
+    {
+        GUILayout.Label(Grounded.ToString());
     }
 
     protected virtual void Update()
@@ -236,6 +257,29 @@ public abstract class playerControl : MonoBehaviour
         CheckTimers();
         UpdateSlashColPos();
 
+    }
+
+
+    protected void Jump()
+    {
+        if (AbleToJump)
+        {
+            if (_inFrontOfLadder)
+            {
+                _inFrontOfLadder = false;
+            }
+
+            if (JumpCount == MaxJumpCount)
+            {
+                _rb2D.AddForce(new Vector2(0, JumpForce), ForceMode2D.Impulse);
+            }
+            else
+            {
+                _rb2D.AddForce(new Vector2(0, JumpForce * SecondJumpMultiplier), ForceMode2D.Impulse);
+            }
+
+            JumpCount--;
+        }
     }
 
     protected void HandleAnimations()
@@ -305,17 +349,6 @@ public abstract class playerControl : MonoBehaviour
         {
             _bulletRight = false;
             _bulletLeft = false;
-        }
-
-        if (Jump)
-        {
-            if (_inFrontOfLadder)
-            {
-                _inFrontOfLadder = false;
-            }
-
-            _rb2D.AddForce(new Vector2(0, JumpForce), ForceMode2D.Impulse);
-            Jump = false;
         }
 
         if (_aiming)
