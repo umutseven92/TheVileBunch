@@ -28,8 +28,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Online/CreateLobby.unity
   - enabled: 1
-    path: Assets/Scenes/Online/JoinLobby.unity
-  - enabled: 1
     path: Assets/Scenes/Loading/Online/DunesOnlineLoading.unity
   - enabled: 1
     path: Assets/Scenes/Online/OnlinePlayerSelect.unity
@@ -57,3 +55,7 @@ EditorBuildSettings:
     path: Assets/Scenes/Online/MountainOnline.unity
   - enabled: 1
     path: Assets/Scenes/Online/SaloonOnline.unity
+  - enabled: 1
+    path: Assets/Scenes/Local/GraveyardLocal.unity
+  - enabled: 1
+    path: Assets/Scenes/Online/GraveyardOnline.unity

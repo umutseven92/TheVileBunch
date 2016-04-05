@@ -313,7 +313,10 @@ public class matchmaker : Photon.PunBehaviour
                 slowMo = false;
                 _slowMoCounter = 0.000d;
 
-                SetEndGameCard(winner);
+                onlineSceneHelper.Winner = winner;
+                PhotonNetwork.LoadLevel("GraveyardOnline");
+
+                //SetEndGameCard(winner);
             }
         }
     }

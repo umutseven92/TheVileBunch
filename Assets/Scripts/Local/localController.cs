@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Random = System.Random;
 
@@ -367,7 +368,10 @@ public class localController : MonoBehaviour
                 slowMo = false;
                 slowMoCounter = 0.000d;
 
-                SetEndGameCard(winner.Key);
+                localSceneHelper.Winner = winner.Key;
+                SceneManager.LoadScene("GraveyardLocal");
+
+                //SetEndGameCard(winner.Key);
             }
         }
     }
