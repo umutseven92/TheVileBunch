@@ -5,6 +5,10 @@ using UnityEngine.UI;
 
 public class graveyardOnlineScript : graveyardScript {
 
+	public Text OneOnline;
+	public Text[] TwoOnline;
+	public Text[] ThreeOnline;
+
 	protected override void Start()
 	{
 		base.Start();
@@ -16,34 +20,40 @@ public class graveyardOnlineScript : graveyardScript {
 		switch (playerSelect.PlayerList.Count -1)
 		{
 			case 3:
-				var graveFirstThree = Instantiate(Graveyard, One.gameObject.transform.position, Quaternion.identity) as Transform;
-				var graveSecondThree = Instantiate(Graveyard, One.gameObject.transform.position, Quaternion.identity) as Transform;
-				var graveThirdThree = Instantiate(Graveyard, One.gameObject.transform.position, Quaternion.identity) as Transform;
+				Three[0].text= remaining[0].Class;
+				ThreeGrave[0].GetComponent<SpriteRenderer>().enabled = true;
+				ThreeCanvas[0].GetComponent<Canvas>().enabled = true;
 
-				graveFirstThree.GetComponent<Canvas>().GetComponents<Text>().First(d => d.gameObject.name.Equals("className")).text = remaining[0].Class;
-				graveFirstThree.GetComponent<Canvas>().GetComponents<Text>().First(d => d.gameObject.name.Equals("playerName")).text = remaining[0].OnlinePlayerName;
+				Three[1].text= remaining[1].Class;
+				ThreeGrave[1].GetComponent<SpriteRenderer>().enabled = true;
+				ThreeCanvas[1].GetComponent<Canvas>().enabled = true;
 
-				graveSecondThree.GetComponent<Canvas>().GetComponents<Text>().First(d => d.gameObject.name.Equals("className")).text = remaining[1].Class;
-				graveSecondThree.GetComponent<Canvas>().GetComponents<Text>().First(d => d.gameObject.name.Equals("playerName")).text = remaining[1].OnlinePlayerName;
+				Three[2].text= remaining[2].Class;
+				ThreeGrave[2].GetComponent<SpriteRenderer>().enabled = true;
+				ThreeCanvas[2].GetComponent<Canvas>().enabled = true;
 
-				graveThirdThree.GetComponent<Canvas>().GetComponents<Text>().First(d => d.gameObject.name.Equals("className")).text = remaining[2].Class;
-				graveThirdThree.GetComponent<Canvas>().GetComponents<Text>().First(d => d.gameObject.name.Equals("playerName")).text = remaining[2].OnlinePlayerName;
+				ThreeOnline[0].text = remaining[0].OnlinePlayerName;
+				ThreeOnline[1].text = remaining[1].OnlinePlayerName;
+				ThreeOnline[2].text = remaining[2].OnlinePlayerName;
 				break;
 			case 2:
-				var graveFirstTwo = Instantiate(Graveyard, One.gameObject.transform.position, Quaternion.identity) as Transform;
-				var graveSecondTwo = Instantiate(Graveyard, One.gameObject.transform.position, Quaternion.identity) as Transform;
+				Two[0].text= remaining[0].Class;
+				TwoGrave[0].GetComponent<SpriteRenderer>().enabled = true;
+				TwoCanvas[0].GetComponent<Canvas>().enabled = true;
 
-				graveFirstTwo.GetComponent<Canvas>().GetComponents<Text>().First(d => d.gameObject.name.Equals("className")).text = remaining[0].Class;
-				graveFirstTwo.GetComponent<Canvas>().GetComponents<Text>().First(d => d.gameObject.name.Equals("playerName")).text = remaining[0].OnlinePlayerName;
+				Two[1].text= remaining[1].Class;
+				TwoGrave[1].GetComponent<SpriteRenderer>().enabled = true;
+				TwoCanvas[1].GetComponent<Canvas>().enabled = true;
 
-				graveSecondTwo.GetComponent<Canvas>().GetComponents<Text>().First(d => d.gameObject.name.Equals("className")).text = remaining[1].Class;
-				graveSecondTwo.GetComponent<Canvas>().GetComponents<Text>().First(d => d.gameObject.name.Equals("playerName")).text = remaining[1].OnlinePlayerName;
+				TwoOnline[0].text= remaining[0].OnlinePlayerName;
+				TwoOnline[1].text= remaining[1].OnlinePlayerName;
 				break;
 			case 1:
-				var graveFirstOne = Instantiate(Graveyard, One.gameObject.transform.position, Quaternion.identity) as Transform;
+				One.text= remaining[0].Class;
+				OneGrave.GetComponent<SpriteRenderer>().enabled = true;
+				OneCanvas.GetComponent<Canvas>().enabled = true;
 
-				graveFirstOne.GetComponent<Canvas>().GetComponents<Text>().First(d => d.gameObject.name.Equals("className")).text = remaining[0].Class;
-				graveFirstOne.GetComponent<Canvas>().GetComponents<Text>().First(d => d.gameObject.name.Equals("playerName")).text = remaining[0].OnlinePlayerName;
+				OneOnline.text = remaining[0].OnlinePlayerName;
 				break;
 		}
 	}

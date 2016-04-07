@@ -6,11 +6,18 @@ public class graveyardScript : Photon.PunBehaviour
 {
 	public Text TimerText;
 	public Text WinnerText;
-	public GameObject Graveyard;
 
-	public GameObject One;
-	public GameObject[] Two;
-	public GameObject[] Three;
+	public Text One;
+	public Text[] Two;
+	public Text[] Three;
+
+	public GameObject OneGrave;
+	public GameObject[] TwoGrave;
+	public GameObject[] ThreeGrave;
+
+	public Canvas OneCanvas;
+	public Canvas[] TwoCanvas;
+	public Canvas[] ThreeCanvas;
 
 	public int MaxTimerCount;
 
@@ -23,6 +30,30 @@ public class graveyardScript : Photon.PunBehaviour
 		Time.timeScale = 1;
 		TimerText.text = MaxTimerCount.ToString();
 		_timerCounter = MaxTimerCount;
+
+		OneGrave.GetComponent<SpriteRenderer>().enabled = false;
+
+		foreach (var o in TwoGrave)
+		{
+			o.GetComponent<SpriteRenderer>().enabled = false;
+		}
+
+		foreach (var o in ThreeGrave)
+		{
+			o.GetComponent<SpriteRenderer>().enabled = false;
+		}
+
+		OneCanvas.GetComponent<Canvas>().enabled = false;
+
+		foreach (var c in TwoCanvas)
+		{
+			c.GetComponent<Canvas>().enabled = false;
+		}
+
+		foreach (var c in ThreeCanvas)
+		{
+			c.GetComponent<Canvas>().enabled = false;
+		}
 
 	}
 	

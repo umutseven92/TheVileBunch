@@ -15,12 +15,9 @@ public class localController : MonoBehaviour
     public Vector3 PlayerThreeSpawn = new Vector3(-7.28f, -1.1f, 0);
     public Vector3 PlayerFourSpawn = new Vector3(7.25f, -1.1f, 0);
     public Canvas scoreCanvas;
-    public Canvas endGameCanvas;
     public Canvas pauseCanvas;
 
-    public Button btnEndGameExit;
     public Button btnExit;
-    public Text winnerText;
     public Text CountdownText;
     public Transform Player;
     public AudioSource musicPlayer;
@@ -76,7 +73,6 @@ public class localController : MonoBehaviour
         }
 
         scoreCanvas.enabled = false;
-        endGameCanvas.enabled = false;
         pauseCanvas.enabled = false;
 
         CheckPlayerPrefs();
@@ -234,7 +230,6 @@ public class localController : MonoBehaviour
 
     }
 
-
     void CheckTimers()
     {
         ScoreCardTimer();
@@ -266,14 +261,6 @@ public class localController : MonoBehaviour
         {
             allPlayer.SendMessage("UnPause");
         }
-    }
-
-    void SetEndGameCard(string __winner)
-    {
-        winnerText.text = __winner;
-        PauseAllPlayers();
-        endGameCanvas.enabled = true;
-        btnEndGameExit.Select();
     }
 
     void SetScoreCard()
@@ -370,8 +357,6 @@ public class localController : MonoBehaviour
 
                 localSceneHelper.Winner = winner.Key;
                 SceneManager.LoadScene("GraveyardLocal");
-
-                //SetEndGameCard(winner.Key);
             }
         }
     }

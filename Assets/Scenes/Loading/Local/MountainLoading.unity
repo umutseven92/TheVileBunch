@@ -115,7 +115,7 @@ MonoBehaviour:
   LoadingText: {fileID: 306291599}
   DiaryText: {fileID: 1688739458}
   LoadingMs: 0.7
-  LevelName: Caves
+  LevelName: Mountain
 --- !u!4 &55678377
 Transform:
   m_ObjectHideFlags: 0
@@ -418,6 +418,7 @@ Canvas:
   m_ReceivesEvents: 1
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
   m_SortingLayerID: -1530920183
   m_SortingOrder: 0
   m_TargetDisplay: 0
