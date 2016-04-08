@@ -253,7 +253,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 170880}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.013345569, y: -1.4654534, z: 0}
+  m_LocalPosition: {x: -0.64723545, y: -2.3965778, z: 0}
   m_LocalScale: {x: 0.8, y: 0.8, z: 1}
   m_Children:
   - {fileID: 474538}
@@ -283,8 +283,8 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 150026}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.012, y: -0.465, z: 0}
-  m_LocalScale: {x: 2.6803563, y: 0.5335625, z: 1}
+  m_LocalPosition: {x: -0.031, y: -0.465, z: 0}
+  m_LocalScale: {x: 1.1306001, y: 0.5335625, z: 1}
   m_Children: []
   m_Father: {fileID: 441362}
   m_RootOrder: 0
@@ -516,7 +516,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   FacingRight: 1
-  Jump: 0
   Run: 0
   Control: 
   playerNum: 0
@@ -529,6 +528,7 @@ MonoBehaviour:
   OnlinebXPos: 0
   OnlinebYPos: 0
   _slashCol: {fileID: 0}
+  JumpCount: 0
   Spawn: 3
   StartingAmmo: 3
   MaxAmmo: 3
@@ -559,6 +559,8 @@ MonoBehaviour:
   MouseAimDeadZone: 50
   AmmoMs: 2
   GravityScale: 4
+  MaxJumpCount: 2
+  SecondJumpMultiplier: 1.2
   GroundCheck: {fileID: 474538}
   Bullet: {fileID: 456820, guid: 63fe6d9b80059a248b8c801944bb1866, type: 2}
   Explosion: {fileID: 457782, guid: aae430be8c9c11347a4f22f5ddab16c3, type: 2}
@@ -1056,6 +1058,7 @@ Canvas:
   m_ReceivesEvents: 1
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
   m_SortingLayerID: -1530920183
   m_SortingOrder: 50
   m_TargetDisplay: 0
@@ -1074,6 +1077,7 @@ Canvas:
   m_ReceivesEvents: 1
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
   m_SortingLayerID: -1530920183
   m_SortingOrder: 50
   m_TargetDisplay: 0
@@ -1092,6 +1096,7 @@ Canvas:
   m_ReceivesEvents: 1
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
   m_SortingLayerID: -1530920183
   m_SortingOrder: 2
   m_TargetDisplay: 0
@@ -1110,6 +1115,7 @@ Canvas:
   m_ReceivesEvents: 1
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
   m_SortingLayerID: -1530920183
   m_SortingOrder: 50
   m_TargetDisplay: 0

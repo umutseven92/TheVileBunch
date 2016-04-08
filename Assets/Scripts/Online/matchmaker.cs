@@ -47,9 +47,6 @@ public class matchmaker : Photon.PunBehaviour
     public Vector3 PlayerTwoSpawn;
     public Vector3 PlayerThreeSpawn;
     public Vector3 PlayerFourSpawn;
-    public Text WinnerText;
-    public Canvas EndGameCanvas;
-    public Button BtnEndGameExit;
     public Button btnExit;
 
     private onlinePlayer comp;
@@ -76,7 +73,6 @@ public class matchmaker : Photon.PunBehaviour
         multiCanvas.enabled = false;
         scoreCanvas.enabled = false;
         pauseCanvas.enabled = false;
-        EndGameCanvas.enabled = false;
 
         SetPlayerMenuValues();
         _pView = GetComponentInParent<PhotonView>();
@@ -315,20 +311,8 @@ public class matchmaker : Photon.PunBehaviour
 
                 onlineSceneHelper.Winner = winner;
                 PhotonNetwork.LoadLevel("GraveyardOnline");
-
-                //SetEndGameCard(winner);
             }
         }
-    }
-
-    void SetEndGameCard(string _winner)
-    {
-        WinnerText.text = _winner;
-
-        comp.Enabled = false;
-
-        EndGameCanvas.enabled = true;
-        BtnEndGameExit.Select();
     }
 
     void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)

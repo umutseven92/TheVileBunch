@@ -130,6 +130,7 @@ public abstract class playerControl : MonoBehaviour
     protected double _ammoCounter;
     protected float _horizontal;
     protected float _vertical;
+    private BoxCollider2D _groundCheckCollider;
 
     protected bool _spawned;
     private double _spawnedCounter = 0.000d;
@@ -200,6 +201,7 @@ public abstract class playerControl : MonoBehaviour
         SpawnCanvas.enabled = false;
 
         JumpCount = MaxJumpCount;
+        _groundCheckCollider = GroundCheck.GetComponent<BoxCollider2D>();
     }
 
     private void SetFirst()
@@ -229,21 +231,20 @@ public abstract class playerControl : MonoBehaviour
         }
     }
 
+    private bool tempGrounded = true; 
+
     private void SetGrounded()
     {
-        var groundedLeft = GroundCheck.GetComponent<BoxCollider2D>().IsTouchingLayers(1 << LayerMask.NameToLayer("Ground"));
+        var grounded = _groundCheckCollider.IsTouchingLayers(1 << LayerMask.NameToLayer("Ground"));
 
-        Grounded = groundedLeft;
+        Grounded = grounded;
 
-        if (Grounded || _inFrontOfLadder)
+        if (!tempGrounded && (grounded || _inFrontOfLadder))
         {
             JumpCount = MaxJumpCount;
         }
-    }
 
-    void OnGUI()
-    {
-        GUILayout.Label(Grounded.ToString());
+        tempGrounded = grounded;
     }
 
     protected virtual void Update()
@@ -256,9 +257,7 @@ public abstract class playerControl : MonoBehaviour
 
         CheckTimers();
         UpdateSlashColPos();
-
     }
-
 
     protected void Jump()
     {

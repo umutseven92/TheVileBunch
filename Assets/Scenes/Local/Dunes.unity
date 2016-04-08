@@ -1932,9 +1932,7 @@ MonoBehaviour:
   PlayerFourSpawn: {x: 4.5, y: 3, z: 0}
   scoreCanvas: {fileID: 621714650}
   pauseCanvas: {fileID: 1153497131}
-  btnEndGameExit: {fileID: 0}
   btnExit: {fileID: 1153497132}
-  winnerText: {fileID: 0}
   CountdownText: {fileID: 621714651}
   Player: {fileID: 441362, guid: 4456e3fb88ab8f149aaaf96cbab5e546, type: 2}
   musicPlayer: {fileID: 1986258261}
