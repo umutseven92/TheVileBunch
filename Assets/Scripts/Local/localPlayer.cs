@@ -195,8 +195,6 @@ public class localPlayer : playerControl
         _ammoCounter = 0.000d;
 
         AmmoText.enabled = true;
-
-        VibrateGamePad(playerNum);
     }
 
     protected void Slash()

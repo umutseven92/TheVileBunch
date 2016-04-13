@@ -2,6 +2,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
+using log4net;
 using UnityEngine.UI;
 using XInputDotNetPure;
 
@@ -55,6 +56,8 @@ public abstract class playerControl : MonoBehaviour
 
     [HideInInspector]
     public int JumpCount;
+
+    private readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
     public int Spawn = 3;
     public int StartingAmmo = 3; // Starting ammo
@@ -445,6 +448,7 @@ public abstract class playerControl : MonoBehaviour
 
     protected void LowerHealth(int damage)
     {
+        VibrateGamePad();
         Health -= damage;
         HealthSlider.value -= damage;
     }
@@ -698,8 +702,6 @@ public abstract class playerControl : MonoBehaviour
         _ammoCounter = 0.000d;
 
         AmmoText.enabled = true;
-
-        VibrateGamePad(playerNum);
     }
 
     protected virtual void Shoot()
@@ -729,9 +731,8 @@ public abstract class playerControl : MonoBehaviour
     }
 
 
-    protected void VibrateGamePad(int player)
+    protected void VibrateGamePad()
     {
-        return;
         switch (Control)
         {
             case "j1":
@@ -745,6 +746,9 @@ public abstract class playerControl : MonoBehaviour
                 break;
             case "j4":
                 GamePad.SetVibration(PlayerIndex.Four, 1f, 1f);
+                break;
+            default:
+                Log.Debug("Keyboard, cannot vibrate");
                 break;
         }
 
