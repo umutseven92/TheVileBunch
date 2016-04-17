@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using log4net;
 using UnityEngine.UI;
+using XInputDotNetPure;
 
 public class matchmaker : Photon.PunBehaviour
 {
@@ -211,7 +212,7 @@ public class matchmaker : Photon.PunBehaviour
         if (players.Length == 1)
         {
             var winnerComp = players[0].GetComponent<onlinePlayer>();
-            
+
             winner = winnerComp.OnlineNameText.text;
             slowMo = true;
             gameOver = true;
@@ -310,9 +311,20 @@ public class matchmaker : Photon.PunBehaviour
                 _slowMoCounter = 0.000d;
 
                 onlineSceneHelper.Winner = winner;
+
+                StopVibration();
+
                 PhotonNetwork.LoadLevel("GraveyardOnline");
             }
         }
+    }
+
+    private void StopVibration()
+    {
+        GamePad.SetVibration(PlayerIndex.One, 0f, 0f);
+        GamePad.SetVibration(PlayerIndex.Two, 0f, 0f);
+        GamePad.SetVibration(PlayerIndex.Three, 0f, 0f);
+        GamePad.SetVibration(PlayerIndex.Four, 0f, 0f);
     }
 
     void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)

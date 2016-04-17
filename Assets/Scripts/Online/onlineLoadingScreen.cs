@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 using log4net;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class onlineLoadingScreen : Photon.PunBehaviour
@@ -63,6 +64,8 @@ public class onlineLoadingScreen : Photon.PunBehaviour
             if (roomCount <= 0)
             {
                 // No rooms online, create
+                LoadingText.text = "No rooms found, creating..";
+                SceneManager.LoadScene("CreateLobby");
             }
             else
             {

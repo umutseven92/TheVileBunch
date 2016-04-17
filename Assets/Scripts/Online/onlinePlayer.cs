@@ -49,7 +49,7 @@ public class onlinePlayer : playerControl
                 _softAim = true;
             }
 
-            if (Input.GetButtonDown(Control + "Jump") && (Grounded || _inFrontOfLadder) && !_aiming && Enabled)
+            if (Input.GetButtonDown(Control + "Jump") && (true || _inFrontOfLadder) && !_aiming && Enabled)
             {
                 base.Jump();
             }
