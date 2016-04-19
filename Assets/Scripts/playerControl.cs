@@ -259,6 +259,7 @@ public abstract class playerControl : MonoBehaviour
         SetGrounded();
 
         UpdateSlashColPos();
+        CheckTimers();
     }
 
     protected void Jump()
@@ -408,7 +409,6 @@ public abstract class playerControl : MonoBehaviour
             Flip();
         }
 
-        CheckTimers();
     }
 
     protected void DrawLine()
