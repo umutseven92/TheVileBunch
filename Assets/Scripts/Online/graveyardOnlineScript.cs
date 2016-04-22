@@ -12,10 +12,10 @@ public class graveyardOnlineScript : graveyardScript {
 	protected override void Start()
 	{
 		base.Start();
-		WinnerText.text = WinnerText.text.Replace("{class}", localSceneHelper.Winner);
+		WinnerText.text = WinnerText.text.Replace("{class}", onlineSceneHelper.Winner);
 		var remaining = playerSelect.PlayerList;
 
-		remaining.Remove(remaining.Find(p=>p.Class.Equals(localSceneHelper.Winner)));
+		remaining.Remove(remaining.Find(p=>p.Class.Equals(onlineSceneHelper.Winner)));
 
 		switch (playerSelect.PlayerList.Count -1)
 		{
