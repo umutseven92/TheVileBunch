@@ -15,7 +15,7 @@ public abstract class playerControl : MonoBehaviour
     [HideInInspector]
     public bool AbleToJump
     {
-        get { return JumpCount > 0; }
+        get { return JumpCount > 0 && !_jumped; }
     }
 
     [HideInInspector]
@@ -90,7 +90,8 @@ public abstract class playerControl : MonoBehaviour
     public double AmmoMs = 2.000d; // Ammo counter visibility after shooting
     public float GravityScale = 4;
     public int MaxJumpCount = 2; // How many times you can jump
-    public float SecondJumpMultiplier = 1.50f;
+    public float SecondJumpMultiplier = 1.50f; // How bigger the second jump is
+    public double JumpDelayMs = 0.5d; // Delay between two jumps in a double jump (so the user cant spam it)
 
     public Transform GroundCheck;
     public Transform Bullet;
@@ -136,7 +137,7 @@ public abstract class playerControl : MonoBehaviour
     private BoxCollider2D _groundCheckCollider;
 
     protected bool _spawned;
-    private double _spawnedCounter = 0.000d;
+    private double _spawnedCounter;
     public double _spawnedMs = 2.000d;
 
     private bool _bulletRight;
@@ -146,8 +147,11 @@ public abstract class playerControl : MonoBehaviour
     private double _aimCounter;
     protected bool _aimCanceled;
     private Color _playerColor;
-    private double vibrationCounter = 0.000d;
-    private bool vibrating = false;
+    private double vibrationCounter;
+    private bool vibrating;
+
+    protected bool _jumped;
+    private double jumpDelayCounter;
 
     protected bool Grounded;
     protected bool _ammoChanged;
@@ -157,8 +161,8 @@ public abstract class playerControl : MonoBehaviour
     protected float bXSpeed;
     protected float bYSpeed;
 
-    protected bool _slashDelay = false;
-    private double _slashDelayCounter = 0.000d;
+    protected bool _slashDelay;
+    private double _slashDelayCounter;
     public double SlashDelayMs = 1.000d;
 
 
@@ -266,6 +270,7 @@ public abstract class playerControl : MonoBehaviour
     {
         if (AbleToJump)
         {
+            _jumped = true;
             if (_inFrontOfLadder)
             {
                 _inFrontOfLadder = false;
@@ -273,10 +278,12 @@ public abstract class playerControl : MonoBehaviour
 
             if (JumpCount == MaxJumpCount)
             {
+                // First jump
                 _rb2D.AddForce(new Vector2(0, JumpForce), ForceMode2D.Impulse);
             }
             else
             {
+                // Second jump
                 _rb2D.AddForce(new Vector2(0, JumpForce * SecondJumpMultiplier), ForceMode2D.Impulse);
             }
 
@@ -498,6 +505,7 @@ public abstract class playerControl : MonoBehaviour
         CheckAimTimer();
         CheckVibrationTimer();
         CheckAmmoTimer();
+        CheckJumpDelay();
     }
 
     private void CheckHealthBar()
@@ -538,6 +546,20 @@ public abstract class playerControl : MonoBehaviour
             {
                 _slashDelayCounter = 0.000d;
                 _slashDelay = false;
+            }
+        }
+    }
+
+    private void CheckJumpDelay()
+    {
+        if (_jumped)
+        {
+            jumpDelayCounter += 1*Time.deltaTime;
+
+            if (jumpDelayCounter >= JumpDelayMs)
+            {
+                jumpDelayCounter = 0.000d;
+                _jumped = false;
             }
         }
     }

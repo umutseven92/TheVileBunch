@@ -561,6 +561,7 @@ MonoBehaviour:
   GravityScale: 4
   MaxJumpCount: 2
   SecondJumpMultiplier: 1.2
+  JumpDelayMs: 0.2
   GroundCheck: {fileID: 474538}
   Bullet: {fileID: 456820, guid: 63fe6d9b80059a248b8c801944bb1866, type: 2}
   Explosion: {fileID: 457782, guid: aae430be8c9c11347a4f22f5ddab16c3, type: 2}
