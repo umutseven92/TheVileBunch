@@ -475,11 +475,21 @@ public class playerSelect : Photon.PunBehaviour
 
         for (int i = 0; i < PlayerList.Count; i++)
         {
-            SetClassImage(players[i].Class, playerImages[i]);
-            playerTexts[i].text = players[i].Class;
-            if (players[i].Set)
-            {
+            var player = players[i];
 
+            SetClassImage(players[i].Class, playerImages[i]);
+
+            if (string.IsNullOrEmpty(player.OnlinePlayerName))
+            {
+                playerTexts[i].text = player.Class;
+            }
+            else
+            {
+                playerTexts[i].text = string.Format("{0}\n{1}", player.Class, player.OnlinePlayerName);
+            }
+
+            if (player.Set)
+            {
                 playerButtons[i].sprite = bButton;
 
                 foreach (var h in playerHorizontals[i])

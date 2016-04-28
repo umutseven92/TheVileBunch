@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class onlinePlayerSelect : playerSelect
@@ -27,6 +28,8 @@ public class onlinePlayerSelect : playerSelect
     {
         get; set;
     }
+
+    private SelectStages stage = SelectStages.Disabled;
 
     protected override void Start()
     {
@@ -70,7 +73,7 @@ public class onlinePlayerSelect : playerSelect
         if (Input.GetButtonDown("kCancel") || Input.GetButtonDown("j1Cancel") || Input.GetButtonDown("j2Cancel") ||
             Input.GetButtonDown("j3Cancel") || Input.GetButtonDown("j4Cancel"))
         {
-            if (kStage == SelectStages.Disabled && j1Stage == SelectStages.Disabled && j2Stage == SelectStages.Disabled && j3Stage == SelectStages.Disabled && j4Stage == SelectStages.Disabled)
+            if (stage == SelectStages.Disabled)
             {
                 if (!sure)
                 {
@@ -80,7 +83,7 @@ public class onlinePlayerSelect : playerSelect
                 else
                 {
                     PhotonNetwork.Disconnect();
-                    Application.LoadLevel("Menu");
+                    SceneManager.LoadScene("Menu");
                 }
                 return;
             }
@@ -276,75 +279,75 @@ public class onlinePlayerSelect : playerSelect
         switch (playerToRemove.OnlineControl)
         {
             case "k":
-                if (kStage == SelectStages.Browse)
+                if (stage == SelectStages.Browse)
                 {
-                    kStage = SelectStages.Disabled;
+                    stage = SelectStages.Disabled;
                     kCanHorizontal = false;
                     selected = false;
                 }
-                if (kStage == SelectStages.Chosen)
+                if (stage == SelectStages.Chosen)
                 {
-                    kStage = SelectStages.Browse;
+                    stage = SelectStages.Browse;
                     kCanHorizontal = true;
                 }
                 break;
 
             case "j1":
-                if (j1Stage == SelectStages.Browse)
+                if (stage == SelectStages.Browse)
                 {
-                    j1Stage = SelectStages.Disabled;
+                    stage = SelectStages.Disabled;
                     j1CanHorizontal = false;
                     selected = false;
 
                 }
-                if (j1Stage == SelectStages.Chosen)
+                if (stage == SelectStages.Chosen)
                 {
-                    j1Stage = SelectStages.Browse;
+                    stage = SelectStages.Browse;
                     j1CanHorizontal = true;
                 }
                 break;
 
             case "j2":
-                if (j2Stage == SelectStages.Browse)
+                if (stage == SelectStages.Browse)
                 {
-                    j2Stage = SelectStages.Disabled;
+                    stage = SelectStages.Disabled;
                     j2CanHorizontal = false;
                     selected = false;
 
                 }
-                if (j2Stage == SelectStages.Chosen)
+                if (stage == SelectStages.Chosen)
                 {
-                    j2Stage = SelectStages.Browse;
+                    stage = SelectStages.Browse;
                     j2CanHorizontal = true;
                 }
                 break;
 
             case "j3":
-                if (j3Stage == SelectStages.Browse)
+                if (stage == SelectStages.Browse)
                 {
-                    j3Stage = SelectStages.Disabled;
+                    stage = SelectStages.Disabled;
                     j3CanHorizontal = false;
 
                     selected = false;
                 }
-                if (j3Stage == SelectStages.Chosen)
+                if (stage == SelectStages.Chosen)
                 {
-                    j3Stage = SelectStages.Browse;
+                    stage = SelectStages.Browse;
                     j3CanHorizontal = true;
                 }
                 break;
 
             case "j4":
-                if (j4Stage == SelectStages.Browse)
+                if (stage == SelectStages.Browse)
                 {
-                    j4Stage = SelectStages.Disabled;
+                    stage = SelectStages.Disabled;
                     j4CanHorizontal = false;
                     selected = false;
 
                 }
-                if (j4Stage == SelectStages.Chosen)
+                if (stage == SelectStages.Chosen)
                 {
-                    j4Stage = SelectStages.Browse;
+                    stage = SelectStages.Browse;
                     j4CanHorizontal = true;
                 }
                 break;
@@ -505,6 +508,12 @@ public class onlinePlayerSelect : playerSelect
         AddInitialPlayer(control, pClass, inputControl);
     }
 
+    private void InitialSubmit(string control)
+    {
+        selected = true;
+        SelectInitialPlayer(PlayerId, control);
+        stage = SelectStages.Browse;
+    }
 
     void CheckSubmit()
     {
@@ -512,7 +521,7 @@ public class onlinePlayerSelect : playerSelect
         {
             if (kSubmit)
             {
-                if (kStage == SelectStages.Browse)
+                if (stage == SelectStages.Browse)
                 {
                     if (pickedClasses.Count > 0 && pickedClasses.Contains(PlayerList.Find(c => c.Control == PlayerId).Class))
                     {
@@ -521,14 +530,12 @@ public class onlinePlayerSelect : playerSelect
                     }
 
                     AddPlayer(PlayerId);
-                    kStage = SelectStages.Chosen;
+                    stage = SelectStages.Chosen;
                     kCanHorizontal = false;
                 }
-                if (kStage == SelectStages.Disabled && !selected)
+                if (stage == SelectStages.Disabled && !selected)
                 {
-                    selected = true;
-                    SelectInitialPlayer(PlayerId, "k");
-                    kStage = SelectStages.Browse;
+                    InitialSubmit("k");
                     kCanHorizontal = true;
                 }
                 kSubmit = false;
@@ -538,7 +545,7 @@ public class onlinePlayerSelect : playerSelect
         {
             if (j1Submit)
             {
-                if (j1Stage == SelectStages.Browse)
+                if (stage == SelectStages.Browse)
                 {
                     if (pickedClasses.Count > 0 && pickedClasses.Contains(PlayerList.Find(c => c.Control == PlayerId).Class))
                     {
@@ -546,15 +553,12 @@ public class onlinePlayerSelect : playerSelect
                         return;
                     }
                     AddPlayer(PlayerId);
-                    j1Stage = SelectStages.Chosen;
+                    stage = SelectStages.Chosen;
                     j1CanHorizontal = false;
                 }
-                if (j1Stage == SelectStages.Disabled && !selected)
+                if (stage == SelectStages.Disabled && !selected)
                 {
-
-                    selected = true;
-                    SelectInitialPlayer(PlayerId, "j1");
-                    j1Stage = SelectStages.Browse;
+                    InitialSubmit("j1");
                     j1CanHorizontal = true;
                 }
                 j1Submit = false;
@@ -566,7 +570,7 @@ public class onlinePlayerSelect : playerSelect
         {
             if (j2Submit)
             {
-                if (j2Stage == SelectStages.Browse)
+                if (stage == SelectStages.Browse)
                 {
                     if (pickedClasses.Count > 0 && pickedClasses.Contains(PlayerList.Find(c => c.Control == PlayerId).Class))
                     {
@@ -575,15 +579,13 @@ public class onlinePlayerSelect : playerSelect
                     }
 
                     AddPlayer(PlayerId);
-                    j2Stage = SelectStages.Chosen;
+                    stage = SelectStages.Chosen;
                     j2CanHorizontal = false;
 
                 }
-                if (j2Stage == SelectStages.Disabled && !selected)
+                if (stage == SelectStages.Disabled && !selected)
                 {
-                    selected = true;
-                    SelectInitialPlayer(PlayerId, "j2");
-                    j2Stage = SelectStages.Browse;
+                    InitialSubmit("j2");
                     j2CanHorizontal = true;
 
                 }
@@ -596,7 +598,7 @@ public class onlinePlayerSelect : playerSelect
         {
             if (j3Submit)
             {
-                if (j3Stage == SelectStages.Browse)
+                if (stage == SelectStages.Browse)
                 {
                     if (pickedClasses.Count > 0 && pickedClasses.Contains(PlayerList.Find(c => c.Control == PlayerId).Class))
                     {
@@ -605,18 +607,14 @@ public class onlinePlayerSelect : playerSelect
                     }
 
                     AddPlayer(PlayerId);
-                    j3Stage = SelectStages.Chosen;
+                    stage = SelectStages.Chosen;
                     j3CanHorizontal = false;
 
                 }
-                if (j3Stage == SelectStages.Disabled && !selected)
+                if (stage == SelectStages.Disabled && !selected)
                 {
-
-                    selected = true;
-                    SelectInitialPlayer(PlayerId, "j3");
-                    j3Stage = SelectStages.Browse;
+                    InitialSubmit("j3");
                     j3CanHorizontal = true;
-
                 }
                 j3Submit = false;
 
@@ -627,7 +625,7 @@ public class onlinePlayerSelect : playerSelect
         {
             if (j4Submit)
             {
-                if (j4Stage == SelectStages.Browse)
+                if (stage == SelectStages.Browse)
                 {
                     if (pickedClasses.Count > 0 && pickedClasses.Contains(PlayerList.Find(c => c.Control == PlayerId).Class))
                     {
@@ -636,15 +634,13 @@ public class onlinePlayerSelect : playerSelect
                     }
 
                     AddPlayer(PlayerId);
-                    j4Stage = SelectStages.Chosen;
+                    stage = SelectStages.Chosen;
                     j4CanHorizontal = false;
 
                 }
-                if (j4Stage == SelectStages.Disabled && !selected)
+                if (stage == SelectStages.Disabled && !selected)
                 {
-                    selected = true;
-                    SelectInitialPlayer(PlayerId, "j4");
-                    j4Stage = SelectStages.Browse;
+                    InitialSubmit("j4");
                     j4CanHorizontal = true;
                 }
                 j4Submit = false;

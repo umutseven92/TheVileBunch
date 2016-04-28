@@ -1609,6 +1609,7 @@ MonoBehaviour:
   NextButton: {fileID: 545244353}
   BackButton: {fileID: 1496579996}
   BackText: {fileID: 729461263}
+  joinDelay: 0.5
 --- !u!4 &817648267
 Transform:
   m_ObjectHideFlags: 0
@@ -1752,6 +1753,7 @@ Canvas:
   m_ReceivesEvents: 1
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
   m_SortingLayerID: -1530920183
   m_SortingOrder: 0
   m_TargetDisplay: 0
