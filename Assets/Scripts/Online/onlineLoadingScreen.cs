@@ -21,6 +21,10 @@ public class onlineLoadingScreen : Photon.PunBehaviour
     private System.Random _rand = new System.Random();
     private bool _ready = false;
 
+    private bool creating = false;
+    private double creatingCounter = 0.000d;
+    public double CreateMs = 3.000d;
+
     private readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
     void Start()
@@ -65,12 +69,26 @@ public class onlineLoadingScreen : Photon.PunBehaviour
             {
                 // No rooms online, create
                 LoadingText.text = "No rooms found, creating..";
-                SceneManager.LoadScene("CreateLobby");
+                creating = true;
             }
             else
             {
                 // Join lobby
                 PhotonNetwork.JoinRandomRoom();
+            }
+        }
+    }
+
+    private void CheckCreating()
+    {
+        if (creating)
+        {
+            creatingCounter += 1*Time.deltaTime;
+            if (creatingCounter >= CreateMs)
+            {
+                creatingCounter = 0;
+                creating = false;
+                SceneManager.LoadScene("CreateLobby");
             }
         }
     }

@@ -39,26 +39,6 @@ public class onlinePlayerSelect : playerSelect
 
         pView = GetComponentInParent<PhotonView>();
 
-        Back.onClick.AddListener(() =>
-        {
-            if (!sure)
-            {
-                BackText.text = "Sure?";
-                sure = true;
-            }
-            else
-            {
-                PhotonNetwork.Disconnect();
-
-                if (PlayerList.Count < 1)
-                {
-                    PlayerList = new List<Player>();
-                }
-
-                Application.LoadLevel("Menu");
-            }
-        });
-
         Play.onClick.AddListener(() =>
         {
             if (PhotonNetwork.isMasterClient)
@@ -66,6 +46,8 @@ public class onlinePlayerSelect : playerSelect
                 PhotonNetwork.LoadLevel("OnlineSceneSelect");
             }
         });
+
+        InitialSubmit("Online");
     }
 
     public override void CheckInputs()
@@ -73,7 +55,7 @@ public class onlinePlayerSelect : playerSelect
         if (Input.GetButtonDown("kCancel") || Input.GetButtonDown("j1Cancel") || Input.GetButtonDown("j2Cancel") ||
             Input.GetButtonDown("j3Cancel") || Input.GetButtonDown("j4Cancel"))
         {
-            if (stage == SelectStages.Disabled)
+            if (stage == SelectStages.Browse)
             {
                 if (!sure)
                 {
@@ -83,6 +65,8 @@ public class onlinePlayerSelect : playerSelect
                 else
                 {
                     PhotonNetwork.Disconnect();
+                    PlayerList = new List<Player>();
+
                     SceneManager.LoadScene("Menu");
                 }
                 return;
@@ -279,12 +263,6 @@ public class onlinePlayerSelect : playerSelect
         switch (playerToRemove.OnlineControl)
         {
             case "k":
-                if (stage == SelectStages.Browse)
-                {
-                    stage = SelectStages.Disabled;
-                    kCanHorizontal = false;
-                    selected = false;
-                }
                 if (stage == SelectStages.Chosen)
                 {
                     stage = SelectStages.Browse;
@@ -293,13 +271,6 @@ public class onlinePlayerSelect : playerSelect
                 break;
 
             case "j1":
-                if (stage == SelectStages.Browse)
-                {
-                    stage = SelectStages.Disabled;
-                    j1CanHorizontal = false;
-                    selected = false;
-
-                }
                 if (stage == SelectStages.Chosen)
                 {
                     stage = SelectStages.Browse;
@@ -308,13 +279,6 @@ public class onlinePlayerSelect : playerSelect
                 break;
 
             case "j2":
-                if (stage == SelectStages.Browse)
-                {
-                    stage = SelectStages.Disabled;
-                    j2CanHorizontal = false;
-                    selected = false;
-
-                }
                 if (stage == SelectStages.Chosen)
                 {
                     stage = SelectStages.Browse;
@@ -323,13 +287,6 @@ public class onlinePlayerSelect : playerSelect
                 break;
 
             case "j3":
-                if (stage == SelectStages.Browse)
-                {
-                    stage = SelectStages.Disabled;
-                    j3CanHorizontal = false;
-
-                    selected = false;
-                }
                 if (stage == SelectStages.Chosen)
                 {
                     stage = SelectStages.Browse;
@@ -338,13 +295,6 @@ public class onlinePlayerSelect : playerSelect
                 break;
 
             case "j4":
-                if (stage == SelectStages.Browse)
-                {
-                    stage = SelectStages.Disabled;
-                    j4CanHorizontal = false;
-                    selected = false;
-
-                }
                 if (stage == SelectStages.Chosen)
                 {
                     stage = SelectStages.Browse;
@@ -533,11 +483,6 @@ public class onlinePlayerSelect : playerSelect
                     stage = SelectStages.Chosen;
                     kCanHorizontal = false;
                 }
-                if (stage == SelectStages.Disabled && !selected)
-                {
-                    InitialSubmit("k");
-                    kCanHorizontal = true;
-                }
                 kSubmit = false;
             }
         }
@@ -555,11 +500,6 @@ public class onlinePlayerSelect : playerSelect
                     AddPlayer(PlayerId);
                     stage = SelectStages.Chosen;
                     j1CanHorizontal = false;
-                }
-                if (stage == SelectStages.Disabled && !selected)
-                {
-                    InitialSubmit("j1");
-                    j1CanHorizontal = true;
                 }
                 j1Submit = false;
 
@@ -581,12 +521,6 @@ public class onlinePlayerSelect : playerSelect
                     AddPlayer(PlayerId);
                     stage = SelectStages.Chosen;
                     j2CanHorizontal = false;
-
-                }
-                if (stage == SelectStages.Disabled && !selected)
-                {
-                    InitialSubmit("j2");
-                    j2CanHorizontal = true;
 
                 }
                 j2Submit = false;
@@ -611,11 +545,6 @@ public class onlinePlayerSelect : playerSelect
                     j3CanHorizontal = false;
 
                 }
-                if (stage == SelectStages.Disabled && !selected)
-                {
-                    InitialSubmit("j3");
-                    j3CanHorizontal = true;
-                }
                 j3Submit = false;
 
             }
@@ -637,11 +566,6 @@ public class onlinePlayerSelect : playerSelect
                     stage = SelectStages.Chosen;
                     j4CanHorizontal = false;
 
-                }
-                if (stage == SelectStages.Disabled && !selected)
-                {
-                    InitialSubmit("j4");
-                    j4CanHorizontal = true;
                 }
                 j4Submit = false;
 
