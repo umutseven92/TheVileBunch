@@ -17,6 +17,7 @@ public class onlineLoadingScreen : Photon.PunBehaviour
 
     private double _loadingTextCounter;
     private const string Loading = "Loading";
+    private const string NoRooms = "No rooms found, creating";
     private List<string> _diaries = new List<string>();
     private System.Random _rand = new System.Random();
     private bool _ready = false;
@@ -83,7 +84,7 @@ public class onlineLoadingScreen : Photon.PunBehaviour
     {
         if (creating)
         {
-            creatingCounter += 1*Time.deltaTime;
+            creatingCounter += 1 * Time.deltaTime;
             if (creatingCounter >= CreateMs)
             {
                 creatingCounter = 0;
@@ -105,8 +106,9 @@ public class onlineLoadingScreen : Photon.PunBehaviour
 
     void Update()
     {
-        AnimateLoadingText();
-        if (_ready)
+        CheckCreating();
+        AnimateLoadingText(!creating ? Loading : NoRooms);
+        if (_ready && !creating)
         {
             LoadingText.text = "Loaded";
 
@@ -114,22 +116,22 @@ public class onlineLoadingScreen : Photon.PunBehaviour
         }
     }
 
-    private void AnimateLoadingText()
+    private void AnimateLoadingText(string message)
     {
         _loadingTextCounter += 1 * Time.deltaTime;
         if (_loadingTextCounter >= LoadingMs)
         {
-            AddDot();
+            AddDot(message);
             _loadingTextCounter = 0.000d;
         }
 
     }
 
-    private void AddDot()
+    private void AddDot(string message)
     {
         if (LoadingText.text.Count(c => c == '.') == 3)
         {
-            LoadingText.text = Loading;
+            LoadingText.text = message;
         }
         else
         {
