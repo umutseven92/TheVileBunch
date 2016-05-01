@@ -211,7 +211,7 @@ public class onlinePlayer : playerControl
         // Fall
         if (other.name.StartsWith("FallCollider"))
         {
-            Die(other);
+            transform.position = new Vector3(transform.position.x, 6, transform.position.z);
         }
 
         // Ammo pickup

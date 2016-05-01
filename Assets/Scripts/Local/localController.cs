@@ -53,10 +53,6 @@ public class localController : MonoBehaviour
     public int ammoMsLower = 10;
     private int ammoMs;
 
-    public int healthMsUpper = 40;
-    public int healthMsLower = 20;
-    private int healthMs;
-
     private bool ammoOnScreen = false;
     private bool healthOnScreen = false;
 
@@ -86,7 +82,6 @@ public class localController : MonoBehaviour
         }
 
         ammoMs = CalculateNewAmmoRange();
-        healthMs = CalculateNewHealthRange();
     }
 
     private void CheckPlayerPrefs()
@@ -155,38 +150,10 @@ public class localController : MonoBehaviour
         }
     }
 
-    void SpawnRandomHealth(Transform pickup)
-    {
-        var pos = _rand.Next(0, pickupSpawns.Length);
-        var spawn = pickupSpawns[pos];
-
-        if (GameObject.FindGameObjectsWithTag("healthPickup").Length <= 0)
-        {
-            var aPickup = GameObject.FindGameObjectWithTag("ammoPickup");
-
-            if (aPickup == null)
-            {
-                Instantiate(pickup, new Vector3(spawn.position.x, spawn.position.y, spawn.position.z), Quaternion.identity);
-
-            }
-            else
-            {
-                if (new Vector2(aPickup.transform.position.x, aPickup.transform.position.y) != new Vector2(spawn.position.x, spawn.position.y))
-                {
-                    Instantiate(pickup, new Vector3(spawn.position.x, spawn.position.y, spawn.position.z), Quaternion.identity);
-                }
-            }
-        }
-    }
 
     int CalculateNewAmmoRange()
     {
         return _rand.Next(ammoMsLower, ammoMsUpper);
-    }
-
-    int CalculateNewHealthRange()
-    {
-        return _rand.Next(healthMsLower, healthMsUpper);
     }
 
     void CreatePlayers(int playerCount)
@@ -312,7 +279,6 @@ public class localController : MonoBehaviour
     void PickupTimers()
     {
         AmmoTimer();
-        //HealthTimer();
     }
 
     private void AmmoTimer()
@@ -326,18 +292,6 @@ public class localController : MonoBehaviour
             ammoMs = CalculateNewAmmoRange();
         }
 
-    }
-
-    private void HealthTimer()
-    {
-        _healthCounter += 1 * Time.deltaTime;
-
-        if (_healthCounter >= healthMs)
-        {
-            SpawnRandomHealth(HealthPickup);
-            _healthCounter = 0;
-            healthMs = CalculateNewHealthRange();
-        }
     }
 
     private void SlowMotionTimer()

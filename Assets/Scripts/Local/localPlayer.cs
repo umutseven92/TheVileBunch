@@ -106,7 +106,8 @@ public class localPlayer : playerControl
         // Fall
         if (other.name.StartsWith("FallCollider"))
         {
-            Die(other);
+            // Teleport to the top 
+            transform.position = new Vector3(transform.position.x, 6, transform.position.z);
         }
 
         // Ammo pickup
