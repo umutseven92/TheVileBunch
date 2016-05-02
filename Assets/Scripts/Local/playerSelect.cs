@@ -73,11 +73,11 @@ public class playerSelect : Photon.PunBehaviour
     protected bool j3Cancel = true;
     protected bool j4Cancel = true;
 
-    protected bool kCanHorizontal = false;
-    protected bool j1CanHorizontal = false;
-    protected bool j2CanHorizontal = false;
-    protected bool j3CanHorizontal = false;
-    protected bool j4CanHorizontal = false;
+    protected bool kCanHorizontal = true;
+    protected bool j1CanHorizontal = true;
+    protected bool j2CanHorizontal = true;
+    protected bool j3CanHorizontal = true;
+    protected bool j4CanHorizontal = true;
 
     protected enum SelectStages
     {

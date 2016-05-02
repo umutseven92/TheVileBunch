@@ -260,52 +260,14 @@ public class onlinePlayerSelect : playerSelect
         }
         Player playerToRemove = PlayerList.First(p => p.Control == control);
 
-        switch (playerToRemove.OnlineControl)
+        if (stage == SelectStages.Chosen)
         {
-            case "k":
-                if (stage == SelectStages.Chosen)
-                {
-                    stage = SelectStages.Browse;
-                    kCanHorizontal = true;
-                }
-                break;
-
-            case "j1":
-                if (stage == SelectStages.Chosen)
-                {
-                    stage = SelectStages.Browse;
-                    j1CanHorizontal = true;
-                }
-                break;
-
-            case "j2":
-                if (stage == SelectStages.Chosen)
-                {
-                    stage = SelectStages.Browse;
-                    j2CanHorizontal = true;
-                }
-                break;
-
-            case "j3":
-                if (stage == SelectStages.Chosen)
-                {
-                    stage = SelectStages.Browse;
-                    j3CanHorizontal = true;
-                }
-                break;
-
-            case "j4":
-                if (stage == SelectStages.Chosen)
-                {
-                    stage = SelectStages.Browse;
-                    j4CanHorizontal = true;
-                }
-                break;
-
-            default:
-                Debug.LogError(control + " not found!");
-                break;
-
+            stage = SelectStages.Browse;
+            kCanHorizontal = true;
+            j1CanHorizontal = true;
+            j2CanHorizontal = true;
+            j3CanHorizontal = true;
+            j4CanHorizontal = true;
         }
 
         if (playerToRemove.Set)
@@ -394,6 +356,12 @@ public class onlinePlayerSelect : playerSelect
     public override void CheckCancel()
     {
         base.CheckCancel();
+
+        if (stage == SelectStages.Browse)
+        {
+            return;
+        }
+
         if (Input.GetButton("kCancel"))
         {
             if (kCancel)
