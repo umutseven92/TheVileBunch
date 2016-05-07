@@ -28,7 +28,7 @@ public class networkCharacter : Photon.MonoBehaviour
             // Lerp() gets a fraction value between 0 and 1. This is how far we went from A to B.
             // Our fraction variable would reach 1 in 100ms if we multiply deltaTime by 10.
             // We want it to take a bit longer, so we multiply with 9 instead.
-            _fraction = _fraction + Time.deltaTime * 9;
+            _fraction = _fraction + Time.deltaTime * global.PhotonSendRate;
             //photonView.GetComponent<Rigidbody2D>().position = Vector3.Lerp(transform.position, _correctPlayerPos, _fraction);
             photonView.transform.position = Vector3.Lerp(transform.position, _correctPlayerPos, Time.deltaTime * 20);
 
