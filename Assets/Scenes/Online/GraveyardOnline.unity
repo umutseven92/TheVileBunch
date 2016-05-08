@@ -685,6 +685,7 @@ MonoBehaviour:
   - {fileID: 1473558053}
   - {fileID: 244467597}
   BtnPlayAgain: {fileID: 2052668227}
+  BtnExit: {fileID: 1212090296}
 --- !u!1 &888012190
 GameObject:
   m_ObjectHideFlags: 0

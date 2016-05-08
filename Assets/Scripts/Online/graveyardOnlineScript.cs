@@ -12,6 +12,7 @@ public class graveyardOnlineScript : graveyardScript
     public Text[] ThreeOnline;
 
     public Button BtnPlayAgain;
+    public Button BtnExit;
 
     private bool playAgain;
 
@@ -69,7 +70,9 @@ public class graveyardOnlineScript : graveyardScript
     private void PlayAgainButtonPressed()
     {
         BtnPlayAgain.enabled = false;
-
+        BtnPlayAgain.image.color = Color.gray;
+        BtnExit.enabled = false;
+        BtnExit.image.color = Color.gray;
         playAgain = true;
     }
 
@@ -85,7 +88,7 @@ public class graveyardOnlineScript : graveyardScript
                     playerSelect.PlayerList = new List<playerSelect.Player>();
                     PhotonNetwork.automaticallySyncScene = false;
                     Time.timeScale = 1;
-                    PhotonNetwork.LoadLevel("OnlinePlayerSelect");
+                    PhotonNetwork.LoadLevel("OnlineLoading");
                 }
             }
             else
