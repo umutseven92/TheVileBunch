@@ -56,6 +56,12 @@ public class onlineLoadingScreen : Photon.PunBehaviour
 
         DiaryText.text = _diaries[count];
 
+        if (PhotonNetwork.inRoom)
+        {
+            _ready = true;
+            return;
+        }
+
         if (!onlineHelper.Joining)
         {
             PhotonNetwork.CreateRoom(onlineHelper.LobbyName, new RoomOptions() { maxPlayers = 4 }, null);

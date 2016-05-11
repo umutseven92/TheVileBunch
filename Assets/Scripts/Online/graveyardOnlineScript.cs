@@ -1,12 +1,10 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class graveyardOnlineScript : graveyardScript
 {
-
     public Text OneOnline;
     public Text[] TwoOnline;
     public Text[] ThreeOnline;
@@ -14,7 +12,9 @@ public class graveyardOnlineScript : graveyardScript
     public Button BtnPlayAgain;
     public Button BtnExit;
 
-    private bool playAgain;
+    public Text txtPlayAgain;
+
+    private bool _playAgain;
 
     protected override void Start()
     {
@@ -70,10 +70,9 @@ public class graveyardOnlineScript : graveyardScript
     private void PlayAgainButtonPressed()
     {
         BtnPlayAgain.enabled = false;
-        BtnPlayAgain.image.color = Color.gray;
-        BtnExit.enabled = false;
-        BtnExit.image.color = Color.gray;
-        playAgain = true;
+        txtPlayAgain.color = Color.gray;
+        onlineHelper.Joining = true;
+        _playAgain = true;
     }
 
     protected override void Update()
@@ -81,7 +80,7 @@ public class graveyardOnlineScript : graveyardScript
         base.Update();
         if (done)
         {
-            if (playAgain)
+            if (_playAgain)
             {
                 if (PhotonNetwork.isMasterClient)
                 {
