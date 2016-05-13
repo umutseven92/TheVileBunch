@@ -28,14 +28,9 @@ public class onlineLoadingScreen : Photon.PunBehaviour
 
     private readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-    void Start()
+    void LoadTips(string tips)
     {
-        GameObject speaker = GameObject.Find("Speaker");
-        if (speaker != null) speaker.GetComponent<AudioSource>().Stop();
-
-        var tips = Resources.Load("tips") as TextAsset;
-
-        using (var reader = XmlReader.Create(new StringReader(tips.text)))
+        using (var reader = XmlReader.Create(new StringReader(tips)))
         {
             while (reader.Read())
             {
@@ -53,8 +48,17 @@ public class onlineLoadingScreen : Photon.PunBehaviour
         }
 
         var count = _rand.Next(0, _diaries.Count);
-
         DiaryText.text = _diaries[count];
+    }
+
+    void Start()
+    {
+        GameObject speaker = GameObject.Find("Speaker");
+        if (speaker != null) speaker.GetComponent<AudioSource>().Stop();
+
+        var tips = Resources.Load("tips") as TextAsset;
+
+        LoadTips(tips.text);
 
         if (PhotonNetwork.inRoom)
         {

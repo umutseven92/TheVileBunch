@@ -115,8 +115,16 @@ public class localController : MonoBehaviour
             paused = !paused;
         }
 
+
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player").Where(p => p.transform.position != Vector3.zero).ToArray();
         CheckTimers();
+
+        if (Input.GetKey(KeyCode.P))
+        {
+            var player = players[0].transform;
+            Camera.main.orthographicSize -= 0.1f;
+            Camera.main.transform.position = new Vector3(player.position.x - Camera.main.orthographicSize / 6, player.position.y - Camera.main.orthographicSize * Camera.main.aspect / 8, Camera.main.transform.position.z);
+        }
 
         if (players.Length == 1)
         {

@@ -3,7 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Xml;
+using UnityEditor.VersionControl;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class loadingScreen : Photon.PunBehaviour
@@ -18,14 +21,9 @@ public class loadingScreen : Photon.PunBehaviour
     private List<string> _diaries = new List<string>();
     private System.Random _rand = new System.Random();
 
-    void Start()
+    void LoadTips(string tips)
     {
-        GameObject speaker = GameObject.Find("Speaker");
-        if (speaker != null) speaker.GetComponent<AudioSource>().Stop();
-
-        var tips = Resources.Load("tips") as TextAsset;
-
-        using (var reader = XmlReader.Create(new StringReader(tips.text)))
+        using (var reader = XmlReader.Create(new StringReader(tips)))
         {
             while (reader.Read())
             {
@@ -43,17 +41,25 @@ public class loadingScreen : Photon.PunBehaviour
         }
 
         var count = _rand.Next(0, _diaries.Count);
-
         DiaryText.text = _diaries[count];
+    }
+
+    void Start()
+    {
+        GameObject speaker = GameObject.Find("Speaker");
+        if (speaker != null) speaker.GetComponent<AudioSource>().Stop();
+        var tips = Resources.Load("tips") as TextAsset;
+
+        LoadTips(tips.text);
     }
 
     void Update()
     {
         AnimateLoadingText();
-        if (Application.GetStreamProgressForLevel(LevelName) == 1)
+        if (Application.GetStreamProgressForLevel(LevelName) >= 1)
         {
             LoadingText.text = "Loaded";
-            Application.LoadLevel(LevelName);
+            SceneManager.LoadScene(LevelName);
         }
 
     }

@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using log4net;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class localPlayerSelect : playerSelect
 {
@@ -12,7 +13,7 @@ public class localPlayerSelect : playerSelect
         {
             if (kStage == SelectStages.Disabled && j1Stage == SelectStages.Disabled && j2Stage == SelectStages.Disabled && j3Stage == SelectStages.Disabled && j4Stage == SelectStages.Disabled)
             {
-                Application.LoadLevel("Menu");
+                SceneManager.LoadScene("Menu");
                 return;
             }
         }
@@ -64,6 +65,42 @@ public class localPlayerSelect : playerSelect
                 j4Cancel = false;
             }
         }
+    }
+
+    protected override void ConvertToController()
+    {
+        //foreach (var button in playerButtons)
+        //{
+        //    if (button.sprite.name.Equals("spacebutton"))
+        //    {
+        //        button.sprite = startButton;
+        //    }
+        //    else
+        //    {
+        //        button.sprite = bButton;
+        //    }
+        //}
+
+        NextButton.sprite = aButton;
+        BackButton.sprite = bButton;
+    }
+
+    protected override void ConvertToKB()
+    {
+        //foreach (var button in playerButtons)
+        //{
+        //    if (button.sprite.name.Equals("startbutton"))
+        //    {
+        //        button.sprite = spaceButton;
+        //    }
+        //    else
+        //    {
+        //        button.sprite = escButton;
+        //    }
+        //}
+
+        NextButton.sprite = enterButton;
+        BackButton.sprite = escButton;
     }
 
     void CheckSubmit()

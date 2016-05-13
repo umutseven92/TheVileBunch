@@ -10,9 +10,9 @@ public class global : MonoBehaviour
         ConfigureAllLogging();
     }
 
-    public static string GameVersion = "0.4.5";
-    public static int FrameRateLimit = 20;
-    public static int PhotonSendRate = 20;
+    public static string GameVersion = "0.4.6";
+    public static int FrameRateLimit = 60;
+    public static int PhotonSendRate = 60;
 
     // Player Pref values
     public static string Music = "Music";
