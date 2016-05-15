@@ -69,36 +69,12 @@ public class localPlayerSelect : playerSelect
 
     protected override void ConvertToController()
     {
-        //foreach (var button in playerButtons)
-        //{
-        //    if (button.sprite.name.Equals("spacebutton"))
-        //    {
-        //        button.sprite = startButton;
-        //    }
-        //    else
-        //    {
-        //        button.sprite = bButton;
-        //    }
-        //}
-
         NextButton.sprite = aButton;
         BackButton.sprite = bButton;
     }
 
     protected override void ConvertToKB()
     {
-        //foreach (var button in playerButtons)
-        //{
-        //    if (button.sprite.name.Equals("startbutton"))
-        //    {
-        //        button.sprite = spaceButton;
-        //    }
-        //    else
-        //    {
-        //        button.sprite = escButton;
-        //    }
-        //}
-
         NextButton.sprite = enterButton;
         BackButton.sprite = escButton;
     }

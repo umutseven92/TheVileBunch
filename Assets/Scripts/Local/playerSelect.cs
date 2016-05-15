@@ -730,7 +730,11 @@ public class playerSelect : Photon.PunBehaviour
 
     public class Player
     {
-        public string Control { get; set; } // This is PlayerID on online
+        /// <summary>
+        /// On single player, this is k for keyboard, or j1 through j4 for controller.
+        /// On online play, this is players ID.
+        /// </summary>
+        public string Control { get; set; } 
         public string Class { get; set; }
         public int Num { get; set; }
         public bool Set { get; set; }

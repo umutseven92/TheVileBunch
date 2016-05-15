@@ -1,14 +1,14 @@
-# =============== #
-# Unity generated #
-# =============== #
+
+# Unity 
 Temp/
 Library/
 out/
 logs/
 
-# ===================================== #
-# Visual Studio / MonoDevelop generated #
-# ===================================== #
+# Doxygen
+Docs/
+
+# Visual Studio / MonoDevelop 
 ExportedObj/
 obj/
 *.svd
@@ -21,9 +21,7 @@ obj/
 *.unityproj
 *.booproj
 
-# ============ #
-# OS generated #
-# ============ #
+# OS 
 .DS_Store
 .DS_Store?
 ._*

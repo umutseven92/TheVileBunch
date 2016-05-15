@@ -1,6 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using log4net;
 using UnityEngine.UI;
@@ -8,6 +6,11 @@ using XInputDotNetPure;
 
 public class matchmaker : Photon.PunBehaviour
 {
+    public GameObject Fade;
+    private const double MAX_ALPHA = 255f;
+    private double alphaPerSec;
+    public float SlowMoScale = 0.2f;
+
     public AudioSource musicPlayer;
     public AudioSource dingPlayer;
     public Canvas multiCanvas;
@@ -128,6 +131,8 @@ public class matchmaker : Photon.PunBehaviour
                 comp._slashCol.SendMessage("GetPlayerNum", comp.playerNum);
             }
         });
+
+        alphaPerSec = (MAX_ALPHA / (SlowMoMs * (1 / SlowMoScale)) / 50) ;
 
         _pView.RPC("Ready", PhotonTargets.All, pId);
     }
@@ -299,9 +304,14 @@ public class matchmaker : Photon.PunBehaviour
     {
         if (slowMo)
         {
-            Time.timeScale = 0.2f;
+            Time.timeScale = SlowMoScale;
             musicPlayer.pitch = 0.5f;
             _slowMoCounter += 1 * Time.deltaTime;
+
+            var tmp = Fade.GetComponent<SpriteRenderer>().color;
+            tmp.a += float.Parse(alphaPerSec.ToString())* Time.deltaTime;
+
+            Fade.GetComponent<SpriteRenderer>().color = tmp;
 
             if (_slowMoCounter >= SlowMoMs)
             {

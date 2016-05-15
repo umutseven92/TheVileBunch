@@ -10,7 +10,7 @@ public class onlinePlayer : playerControl
     public string OnlinePlayerName;
 
     [HideInInspector]
-    public bool Enabled; // Control for online, enable after spawn
+    public bool Enabled; //!< Control for online, enable after spawn
 
     public Text OnlineNameText;
 
