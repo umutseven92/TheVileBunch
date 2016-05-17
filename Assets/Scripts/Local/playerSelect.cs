@@ -14,7 +14,6 @@ public class playerSelect : Photon.PunBehaviour
     public AudioClip ReadyClip;
 
     public Button Play;
-    public Button Back;
 
     public Text P1Text;
     public Text P2Text;
