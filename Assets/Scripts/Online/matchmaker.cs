@@ -134,6 +134,8 @@ public class matchmaker : Photon.PunBehaviour
 
         alphaPerSec = (MAX_ALPHA / (SlowMoMs * (1 / SlowMoScale)) / 50) ;
 
+        var pickup = PhotonNetwork.Instantiate("OnlineAmmoPickup", new Vector3(3.5f, 3, 0), Quaternion.identity, 0);
+
         _pView.RPC("Ready", PhotonTargets.All, pId);
     }
 

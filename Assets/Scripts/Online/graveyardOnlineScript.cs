@@ -12,8 +12,6 @@ public class graveyardOnlineScript : graveyardScript
     public Button BtnPlayAgain;
     public Button BtnExit;
 
-    public Text txtPlayAgain;
-
     private bool _playAgain;
 
     protected override void Start()
@@ -70,7 +68,8 @@ public class graveyardOnlineScript : graveyardScript
     private void PlayAgainButtonPressed()
     {
         BtnPlayAgain.enabled = false;
-        txtPlayAgain.color = Color.gray;
+        BtnPlayAgain.GetComponentInChildren<Text>().text = "";
+        BtnExit.Select();
         onlineHelper.Joining = true;
         _playAgain = true;
     }
@@ -82,13 +81,9 @@ public class graveyardOnlineScript : graveyardScript
         {
             if (_playAgain)
             {
-                if (PhotonNetwork.isMasterClient)
-                {
-                    playerSelect.PlayerList = new List<playerSelect.Player>();
-                    PhotonNetwork.automaticallySyncScene = false;
-                    Time.timeScale = 1;
-                    PhotonNetwork.LoadLevel("OnlineLoading");
-                }
+                playerSelect.PlayerList = new List<playerSelect.Player>();
+                Time.timeScale = 1;
+                PhotonNetwork.LoadLevel("OnlineLoading");
             }
             else
             {

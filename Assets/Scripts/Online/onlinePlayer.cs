@@ -192,6 +192,7 @@ public class onlinePlayer : playerControl
             {
                 Log.InfoFormat("Player {0}({1}) shot in client", _pView.viewID, OnlinePlayerName);
                 _pView.RPC("BulletHitRPC", PhotonTargets.All, _pView.viewID);
+                PhotonNetwork.SendOutgoingCommands();
             }
         }
 
@@ -204,6 +205,8 @@ public class onlinePlayer : playerControl
                 {
                     Log.InfoFormat("Player {0}({1}) stabbed in client", _pView.viewID, OnlinePlayerName);
                     _pView.RPC("SlashHitRPC", PhotonTargets.All, _pView.viewID);
+                    PhotonNetwork.SendOutgoingCommands();
+
                 }
             }
         }
@@ -211,9 +214,8 @@ public class onlinePlayer : playerControl
         // Fall
         if (other.name.StartsWith("FallCollider"))
         {
-            transform.position = new Vector3(transform.position.x - 6, transform.position.y, transform.position.z);
+            // Teleport to the top 
             transform.position = new Vector3(transform.position.x, 6, transform.position.z);
-            transform.position = new Vector3(transform.position.x + 6, transform.position.y, transform.position.z);
         }
 
         // Ammo pickup
@@ -228,14 +230,9 @@ public class onlinePlayer : playerControl
 
             _ammoChanged = true;
             _ammoCounter = 0.000d;
-        }
+            _pView.RPC("AmmoPickedRPC", PhotonTargets.All, _pView.viewID);
 
-        // Health pickup
-        if (other.name.StartsWith("Health"))
-        {
-            _audio.PlayOneShot(HealthClip);
-            _healed = true;
-            GiveHealth(HealthPickup);
+            PhotonNetwork.Destroy(other.gameObject);
         }
 
     }
@@ -250,10 +247,13 @@ public class onlinePlayer : playerControl
         OnlinebYSpeed = bYSpeed;
 
         _pView.RPC("ShootRPC", PhotonTargets.All, _pView.viewID, bXPos, bYPos, bXSpeed, bYSpeed);
+        PhotonNetwork.SendOutgoingCommands();
+
     }
 
     protected void Slash()
     {
         _pView.RPC("SlashRPC", PhotonTargets.All, _pView.viewID);
+        PhotonNetwork.SendOutgoingCommands();
     }
 }
