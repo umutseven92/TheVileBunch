@@ -2,7 +2,7 @@
 # Unity 
 Temp/
 Library/
-out/
+Builds/
 logs/
 
 # Doxygen

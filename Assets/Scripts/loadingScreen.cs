@@ -1,11 +1,8 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Xml;
-using UnityEditor.VersionControl;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
