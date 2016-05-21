@@ -10,4 +10,8 @@ public class ammoPickupScript : Photon.MonoBehaviour
             PhotonNetwork.Destroy(gameObject);
         }
     }
+
+    void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+    }
 }
