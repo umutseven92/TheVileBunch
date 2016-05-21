@@ -27,9 +27,8 @@ public class networkCharacter : Photon.MonoBehaviour
             // Lerp() gets a fraction value between 0 and 1. This is how far we went from A to B.
             // Our fraction variable would reach 1 in 100ms if we multiply deltaTime by 10.
             // We want it to take a bit longer, so we multiply with 9 instead.
-            _fraction = _fraction + Time.deltaTime * global.PhotonSendRate;
+            // _fraction = _fraction + Time.deltaTime * global.PhotonSendRate;
             //photonView.GetComponent<Rigidbody2D>().position = Vector3.Lerp(transform.position, _correctPlayerPos, _fraction);
-
             Vector2 screenPosition = Camera.main.WorldToScreenPoint(photonView.transform.position);
 
             if (screenPosition.y > Screen.height || screenPosition.y < 0)
@@ -38,7 +37,7 @@ public class networkCharacter : Photon.MonoBehaviour
             }
             else
             {
-                photonView.transform.position = Vector3.Lerp(transform.position, _correctPlayerPos,  _fraction);
+                photonView.transform.position = Vector3.Lerp(transform.position, _correctPlayerPos, Time.deltaTime * 20);
             }
 
             SetOrientation(net);
@@ -131,10 +130,10 @@ public class networkCharacter : Photon.MonoBehaviour
             _fraction = 0;
 
             // Id
-            var id = (string) stream.ReceiveNext();
+            var id = (string)stream.ReceiveNext();
 
             // Ping
-            var ping = (int) stream.ReceiveNext();
+            var ping = (int)stream.ReceiveNext();
 
             playerSelect.PlayerList.Find(p => p.Control == id).Ping = ping;
 
@@ -166,7 +165,6 @@ public class networkCharacter : Photon.MonoBehaviour
         Log.InfoFormat("Player {0} shot in server", pId);
         RPCBase(pId).HitByBullet();
     }
-
 
     private static onlinePlayer RPCBase(int pId)
     {

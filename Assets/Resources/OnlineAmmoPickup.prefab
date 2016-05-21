@@ -28,7 +28,7 @@ GameObject:
   - 61: {fileID: 6183716}
   - 114: {fileID: 11407834}
   m_Layer: 0
-  m_Name: OnlineAmmoPickupParent
+  m_Name: OnlineAmmoPickup
   m_TagString: ammoPickup
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
