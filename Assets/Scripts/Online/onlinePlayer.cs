@@ -230,9 +230,9 @@ public class onlinePlayer : playerControl
 
             _ammoChanged = true;
             _ammoCounter = 0.000d;
-            _pView.RPC("AmmoPickedRPC", PhotonTargets.All, _pView.viewID);
+            //_pView.RPC("AmmoPickedRPC", PhotonTargets.All, _pView.viewID);
 
-            PhotonNetwork.Destroy(other.gameObject);
+            //PhotonNetwork.Destroy(other.gameObject);
         }
 
     }
