@@ -111,7 +111,7 @@ public class playerSelect : Photon.PunBehaviour
 
     protected List<string> pickedClasses = new List<string>();
     protected List<string> _classes = new List<string>();
-    private const string SelectText = "Press Start\n(Space)";
+    private const string SelectText = "";
 
 
     // Use this for initialization
