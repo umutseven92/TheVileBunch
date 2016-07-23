@@ -1927,6 +1927,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   score: 0
   Fade: {fileID: 1764733398}
+  SlowMoScale: 0.2
   PlayerOneSpawn: {x: -7, y: 0, z: 0}
   PlayerTwoSpawn: {x: 7, y: 0, z: 0}
   PlayerThreeSpawn: {x: -4.5, y: 3, z: 0}

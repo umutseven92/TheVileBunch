@@ -132,9 +132,12 @@ public class matchmaker : Photon.PunBehaviour
             }
         });
 
-        alphaPerSec = (MAX_ALPHA / (SlowMoMs * (1 / SlowMoScale)) / 50) ;
+        alphaPerSec = (MAX_ALPHA / (SlowMoMs * (1 / SlowMoScale)) / 50);
 
-        var pickup = PhotonNetwork.Instantiate("OnlineAmmoPickup", new Vector3(3.5f, 3, 0), Quaternion.identity, 0);
+        if (PhotonNetwork.isMasterClient)
+        {
+            var pickup = PhotonNetwork.Instantiate("OnlineAmmoPickup", new Vector3(3.5f, 3, 0), Quaternion.identity, 0);
+        }
 
         _pView.RPC("Ready", PhotonTargets.All, pId);
     }
@@ -311,7 +314,7 @@ public class matchmaker : Photon.PunBehaviour
             _slowMoCounter += 1 * Time.deltaTime;
 
             var tmp = Fade.GetComponent<SpriteRenderer>().color;
-            tmp.a += float.Parse(alphaPerSec.ToString())* Time.deltaTime;
+            tmp.a += float.Parse(alphaPerSec.ToString()) * Time.deltaTime;
 
             Fade.GetComponent<SpriteRenderer>().color = tmp;
 
