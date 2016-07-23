@@ -22,7 +22,7 @@ public class connectScript : Photon.PunBehaviour
     }
 
     public override void OnConnectedToMaster()
-    { 
+    {
         EnableButtons();
     }
 
@@ -36,9 +36,12 @@ public class connectScript : Photon.PunBehaviour
 
     private void DisableButtons()
     {
-        foreach (var button in Buttons)
+        if (PhotonNetwork.connectionState != ConnectionState.Connected)
         {
-            button.interactable = false;
+            foreach (var button in Buttons)
+            {
+                button.interactable = false;
+            }
         }
     }
 

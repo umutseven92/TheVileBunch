@@ -1,12 +1,16 @@
 ﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using log4net;
 using UnityEngine.UI;
+using XInputDotNetPure;
 
 public class matchmaker : Photon.PunBehaviour
 {
+    public GameObject Fade;
+    private const double MAX_ALPHA = 255f;
+    private double alphaPerSec;
+    public float SlowMoScale = 0.2f;
+
     public AudioSource musicPlayer;
     public AudioSource dingPlayer;
     public Canvas multiCanvas;
@@ -47,9 +51,6 @@ public class matchmaker : Photon.PunBehaviour
     public Vector3 PlayerTwoSpawn;
     public Vector3 PlayerThreeSpawn;
     public Vector3 PlayerFourSpawn;
-    public Text WinnerText;
-    public Canvas EndGameCanvas;
-    public Button BtnEndGameExit;
     public Button btnExit;
 
     private onlinePlayer comp;
@@ -76,7 +77,6 @@ public class matchmaker : Photon.PunBehaviour
         multiCanvas.enabled = false;
         scoreCanvas.enabled = false;
         pauseCanvas.enabled = false;
-        EndGameCanvas.enabled = false;
 
         SetPlayerMenuValues();
         _pView = GetComponentInParent<PhotonView>();
@@ -131,6 +131,13 @@ public class matchmaker : Photon.PunBehaviour
                 comp._slashCol.SendMessage("GetPlayerNum", comp.playerNum);
             }
         });
+
+        alphaPerSec = (MAX_ALPHA / (SlowMoMs * (1 / SlowMoScale)) / 50);
+
+        if (PhotonNetwork.isMasterClient)
+        {
+            var pickup = PhotonNetwork.Instantiate("OnlineAmmoPickup", new Vector3(3.5f, 3, 0), Quaternion.identity, 0);
+        }
 
         _pView.RPC("Ready", PhotonTargets.All, pId);
     }
@@ -215,7 +222,7 @@ public class matchmaker : Photon.PunBehaviour
         if (players.Length == 1)
         {
             var winnerComp = players[0].GetComponent<onlinePlayer>();
-            
+
             winner = winnerComp.OnlineNameText.text;
             slowMo = true;
             gameOver = true;
@@ -302,9 +309,14 @@ public class matchmaker : Photon.PunBehaviour
     {
         if (slowMo)
         {
-            Time.timeScale = 0.2f;
+            Time.timeScale = SlowMoScale;
             musicPlayer.pitch = 0.5f;
             _slowMoCounter += 1 * Time.deltaTime;
+
+            var tmp = Fade.GetComponent<SpriteRenderer>().color;
+            tmp.a += float.Parse(alphaPerSec.ToString()) * Time.deltaTime;
+
+            Fade.GetComponent<SpriteRenderer>().color = tmp;
 
             if (_slowMoCounter >= SlowMoMs)
             {
@@ -313,19 +325,21 @@ public class matchmaker : Photon.PunBehaviour
                 slowMo = false;
                 _slowMoCounter = 0.000d;
 
-                SetEndGameCard(winner);
+                onlineSceneHelper.Winner = winner;
+
+                StopVibration();
+
+                PhotonNetwork.LoadLevel("GraveyardOnline");
             }
         }
     }
 
-    void SetEndGameCard(string _winner)
+    private void StopVibration()
     {
-        WinnerText.text = _winner;
-
-        comp.Enabled = false;
-
-        EndGameCanvas.enabled = true;
-        BtnEndGameExit.Select();
+        GamePad.SetVibration(PlayerIndex.One, 0f, 0f);
+        GamePad.SetVibration(PlayerIndex.Two, 0f, 0f);
+        GamePad.SetVibration(PlayerIndex.Three, 0f, 0f);
+        GamePad.SetVibration(PlayerIndex.Four, 0f, 0f);
     }
 
     void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)

@@ -1,13 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class ammoPickupScript : MonoBehaviour
+public class ammoPickupScript : Photon.MonoBehaviour 
 {
     void OnTriggerEnter2D(Collider2D other)
     {
         if (other.name.StartsWith("Player"))
         {
-            Destroy(gameObject);
+            PhotonNetwork.Destroy(gameObject);
         }
+    }
+
+    void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
     }
 }

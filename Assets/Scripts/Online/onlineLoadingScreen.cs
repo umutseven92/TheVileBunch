@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 using log4net;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class onlineLoadingScreen : Photon.PunBehaviour
@@ -16,20 +17,20 @@ public class onlineLoadingScreen : Photon.PunBehaviour
 
     private double _loadingTextCounter;
     private const string Loading = "Loading";
+    private const string NoRooms = "No rooms found, creating";
     private List<string> _diaries = new List<string>();
     private System.Random _rand = new System.Random();
     private bool _ready = false;
 
+    private bool creating = false;
+    private double creatingCounter = 0.000d;
+    public double CreateMs = 3.000d;
+
     private readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-    void Start()
+    void LoadTips(string tips)
     {
-        GameObject speaker = GameObject.Find("Speaker");
-        if (speaker != null) speaker.GetComponent<AudioSource>().Stop();
-
-        var tips = Resources.Load("tips") as TextAsset;
-
-        using (var reader = XmlReader.Create(new StringReader(tips.text)))
+        using (var reader = XmlReader.Create(new StringReader(tips)))
         {
             while (reader.Read())
             {
@@ -47,8 +48,23 @@ public class onlineLoadingScreen : Photon.PunBehaviour
         }
 
         var count = _rand.Next(0, _diaries.Count);
-
         DiaryText.text = _diaries[count];
+    }
+
+    void Start()
+    {
+        GameObject speaker = GameObject.Find("Speaker");
+        if (speaker != null) speaker.GetComponent<AudioSource>().Stop();
+
+        var tips = Resources.Load("tips") as TextAsset;
+
+        LoadTips(tips.text);
+
+        if (PhotonNetwork.inRoom)
+        {
+            _ready = true;
+            return;
+        }
 
         if (!onlineHelper.Joining)
         {
@@ -63,11 +79,27 @@ public class onlineLoadingScreen : Photon.PunBehaviour
             if (roomCount <= 0)
             {
                 // No rooms online, create
+                LoadingText.text = "No rooms found, creating..";
+                creating = true;
             }
             else
             {
                 // Join lobby
                 PhotonNetwork.JoinRandomRoom();
+            }
+        }
+    }
+
+    private void CheckCreating()
+    {
+        if (creating)
+        {
+            creatingCounter += 1 * Time.deltaTime;
+            if (creatingCounter >= CreateMs)
+            {
+                creatingCounter = 0;
+                creating = false;
+                SceneManager.LoadScene("CreateLobby");
             }
         }
     }
@@ -84,8 +116,9 @@ public class onlineLoadingScreen : Photon.PunBehaviour
 
     void Update()
     {
-        AnimateLoadingText();
-        if (_ready)
+        CheckCreating();
+        AnimateLoadingText(!creating ? Loading : NoRooms);
+        if (_ready && !creating)
         {
             LoadingText.text = "Loaded";
 
@@ -93,22 +126,22 @@ public class onlineLoadingScreen : Photon.PunBehaviour
         }
     }
 
-    private void AnimateLoadingText()
+    private void AnimateLoadingText(string message)
     {
         _loadingTextCounter += 1 * Time.deltaTime;
         if (_loadingTextCounter >= LoadingMs)
         {
-            AddDot();
+            AddDot(message);
             _loadingTextCounter = 0.000d;
         }
 
     }
 
-    private void AddDot()
+    private void AddDot(string message)
     {
         if (LoadingText.text.Count(c => c == '.') == 3)
         {
-            LoadingText.text = Loading;
+            LoadingText.text = message;
         }
         else
         {

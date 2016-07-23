@@ -10,7 +10,7 @@ public class onlinePlayer : playerControl
     public string OnlinePlayerName;
 
     [HideInInspector]
-    public bool Enabled; // Control for online, enable after spawn
+    public bool Enabled; //!< Control for online, enable after spawn
 
     public Text OnlineNameText;
 
@@ -49,7 +49,7 @@ public class onlinePlayer : playerControl
                 _softAim = true;
             }
 
-            if (Input.GetButtonDown(Control + "Jump") && (Grounded || _inFrontOfLadder) && !_aiming && Enabled)
+            if (Input.GetButtonDown(Control + "Jump") && (true || _inFrontOfLadder) && !_aiming && Enabled)
             {
                 base.Jump();
             }
@@ -192,6 +192,7 @@ public class onlinePlayer : playerControl
             {
                 Log.InfoFormat("Player {0}({1}) shot in client", _pView.viewID, OnlinePlayerName);
                 _pView.RPC("BulletHitRPC", PhotonTargets.All, _pView.viewID);
+                PhotonNetwork.SendOutgoingCommands();
             }
         }
 
@@ -204,6 +205,8 @@ public class onlinePlayer : playerControl
                 {
                     Log.InfoFormat("Player {0}({1}) stabbed in client", _pView.viewID, OnlinePlayerName);
                     _pView.RPC("SlashHitRPC", PhotonTargets.All, _pView.viewID);
+                    PhotonNetwork.SendOutgoingCommands();
+
                 }
             }
         }
@@ -211,7 +214,8 @@ public class onlinePlayer : playerControl
         // Fall
         if (other.name.StartsWith("FallCollider"))
         {
-            Die(other);
+            // Teleport to the top 
+            transform.position = new Vector3(transform.position.x, 6, transform.position.z);
         }
 
         // Ammo pickup
@@ -226,14 +230,9 @@ public class onlinePlayer : playerControl
 
             _ammoChanged = true;
             _ammoCounter = 0.000d;
-        }
+            //_pView.RPC("AmmoPickedRPC", PhotonTargets.All, _pView.viewID);
 
-        // Health pickup
-        if (other.name.StartsWith("Health"))
-        {
-            _audio.PlayOneShot(HealthClip);
-            _healed = true;
-            GiveHealth(HealthPickup);
+            //PhotonNetwork.Destroy(other.gameObject);
         }
 
     }
@@ -248,10 +247,13 @@ public class onlinePlayer : playerControl
         OnlinebYSpeed = bYSpeed;
 
         _pView.RPC("ShootRPC", PhotonTargets.All, _pView.viewID, bXPos, bYPos, bXSpeed, bYSpeed);
+        PhotonNetwork.SendOutgoingCommands();
+
     }
 
     protected void Slash()
     {
         _pView.RPC("SlashRPC", PhotonTargets.All, _pView.viewID);
+        PhotonNetwork.SendOutgoingCommands();
     }
 }

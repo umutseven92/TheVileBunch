@@ -2,6 +2,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
+using log4net;
 using UnityEngine.UI;
 using XInputDotNetPure;
 
@@ -14,7 +15,7 @@ public abstract class playerControl : MonoBehaviour
     [HideInInspector]
     public bool AbleToJump
     {
-        get { return JumpCount > 0; }
+        get { return JumpCount > 0 && !_jumped; }
     }
 
     [HideInInspector]
@@ -56,38 +57,41 @@ public abstract class playerControl : MonoBehaviour
     [HideInInspector]
     public int JumpCount;
 
+    private readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
     public int Spawn = 3;
-    public int StartingAmmo = 3; // Starting ammo
-    public int MaxAmmo = 3; // Maximum ammo a player can have
-    public int StartingHealth = 3; // Starting health
-    public int MaxHealth = 3; // Maximum health a player can have
-    public int BulletDamage = 2; // How much damage one bullet causes
-    public int SwordDamage = 1; // How much damage a sword slash causes
-    public float MoveForce = 365f; // Player move force
-    public float MaxSpeed = 5f; // Player max speed
-    public float JumpForce = 10f; // Player jump force
-    public float BulletSpeed = 20f; // Speed of the bullet
-    public float MovementLock = 0.2f; // Analog stick movement start value
-    public float GunLightSpeed = 0.30f; // How fast does gun light appear
-    public float SlashOffset = 0.5f; // How far the player slashes
-    public float GunOffset = 0.5f; // How far the player shoots 
-    public double SlashingMs = 0.3d; // How long does slashing take
-    public double HitMs = 2.000d; // Invulnerability timer after getting hit
-    public double HealedMs = 2.000d; // Health bar visibility after healed
-    public double GunLightMs = 0.200d; // How log does gun light stays
-    public double Flash = 0.200d; // Player invulnerability flash frequency
-    public int PushX = 500; // How far in the X plane player flies when hit
-    public int PushY = 400; // How far in the Y plane player flies when hit
-    public int AmmoPickup = 3; // How much ammo does ammo pickup give
-    public int HealthPickup = 3; // How much health does health pickup give
-    public float DirectionLock = 0.2f; // Analog direction start value
-    public double AimMs = 0.15d; // How long to press before player starts aiming
-    public double VibrationMs = 0.500d; // How long to vibrate after shooting
-    public int MouseAimDeadZone = 50; // Mouse deadzone for aimline snapping
-    public double AmmoMs = 2.000d; // Ammo counter visibility after shooting
-    public float GravityScale = 4;
-    public int MaxJumpCount = 2; // How many times you can jump
-    public float SecondJumpMultiplier = 1.50f;
+    public int StartingAmmo = 3; //!< Starting ammo
+    public int MaxAmmo = 3; //!< Maximum ammo a player can have
+    public int StartingHealth = 3; //!< Starting health
+    public int MaxHealth = 3; //!< Maximum health a player can have
+    public int BulletDamage = 2; //!< How much damage one bullet causes
+    public int SwordDamage = 1; //!< How much damage a sword slash causes
+    public float MoveForce = 365f; //!< Player move force
+    public float MaxSpeed = 5f; //!< Player max speed
+    public float JumpForce = 10f; //!< Player jump force
+    public float BulletSpeed = 20f; //!< Speed of the bullet
+    public float MovementLock = 0.2f; //!< Analog stick movement start value
+    public float GunLightSpeed = 0.30f; //!< How fast does gun light appear
+    public float SlashOffset = 0.5f; //!< How far the player slashes
+    public float GunOffset = 0.5f; //!< How far the player shoots 
+    public double SlashingMs = 0.3d; //!< How long does slashing take
+    public double HitMs = 2.000d; //!< Invulnerability timer after getting hit
+    public double HealedMs = 2.000d; //!< Health bar visibility after healed
+    public double GunLightMs = 0.200d; //!< How log does gun light stays
+    public double Flash = 0.200d; //!< Player invulnerability flash frequency
+    public int PushX = 500; //!< How far in the X plane player flies when hit
+    public int PushY = 400; //!< How far in the Y plane player flies when hit
+    public int AmmoPickup = 3; //!< How much ammo does ammo pickup give
+    public int HealthPickup = 3; //!< How much health does health pickup give
+    public float DirectionLock = 0.2f; //!< Analog direction start value
+    public double AimMs = 0.15d; //!< How long to press before player starts aiming
+    public double VibrationMs = 0.500d; //!< How long to vibrate after shooting
+    public int MouseAimDeadZone = 50; //!< Mouse deadzone for aimline snapping
+    public double AmmoMs = 2.000d; //!< Ammo counter visibility after shooting
+    public float GravityScale = 4; //!< The amount of gravity inflicted on the player. Use this for ladders & ropes
+    public int MaxJumpCount = 2; //!< How many times you can jump
+    public float SecondJumpMultiplier = 1.50f; //!< How bigger the second jump is
+    public double JumpDelayMs = 0.5d; //!< Delay between two jumps in a double jump (so the user cant spam it)
 
     public Transform GroundCheck;
     public Transform Bullet;
@@ -130,9 +134,10 @@ public abstract class playerControl : MonoBehaviour
     protected double _ammoCounter;
     protected float _horizontal;
     protected float _vertical;
+    private BoxCollider2D _groundCheckCollider;
 
     protected bool _spawned;
-    private double _spawnedCounter = 0.000d;
+    private double _spawnedCounter;
     public double _spawnedMs = 2.000d;
 
     private bool _bulletRight;
@@ -142,8 +147,11 @@ public abstract class playerControl : MonoBehaviour
     private double _aimCounter;
     protected bool _aimCanceled;
     private Color _playerColor;
-    private double vibrationCounter = 0.000d;
-    private bool vibrating = false;
+    private double vibrationCounter;
+    private bool vibrating;
+
+    protected bool _jumped;
+    private double jumpDelayCounter;
 
     protected bool Grounded;
     protected bool _ammoChanged;
@@ -153,8 +161,8 @@ public abstract class playerControl : MonoBehaviour
     protected float bXSpeed;
     protected float bYSpeed;
 
-    protected bool _slashDelay = false;
-    private double _slashDelayCounter = 0.000d;
+    protected bool _slashDelay;
+    private double _slashDelayCounter;
     public double SlashDelayMs = 1.000d;
 
 
@@ -200,6 +208,7 @@ public abstract class playerControl : MonoBehaviour
         SpawnCanvas.enabled = false;
 
         JumpCount = MaxJumpCount;
+        _groundCheckCollider = GroundCheck.GetComponent<BoxCollider2D>();
     }
 
     private void SetFirst()
@@ -229,21 +238,20 @@ public abstract class playerControl : MonoBehaviour
         }
     }
 
+    private bool tempGrounded = true; 
+
     private void SetGrounded()
     {
-        var groundedLeft = GroundCheck.GetComponent<BoxCollider2D>().IsTouchingLayers(1 << LayerMask.NameToLayer("Ground"));
+        var grounded = _groundCheckCollider.IsTouchingLayers(1 << LayerMask.NameToLayer("Ground"));
 
-        Grounded = groundedLeft;
+        Grounded = grounded;
 
-        if (Grounded || _inFrontOfLadder)
+        if (!tempGrounded && (grounded || _inFrontOfLadder))
         {
             JumpCount = MaxJumpCount;
         }
-    }
 
-    void OnGUI()
-    {
-        GUILayout.Label(Grounded.ToString());
+        tempGrounded = grounded;
     }
 
     protected virtual void Update()
@@ -254,16 +262,15 @@ public abstract class playerControl : MonoBehaviour
 
         SetGrounded();
 
-        CheckTimers();
         UpdateSlashColPos();
-
+        CheckTimers();
     }
-
 
     protected void Jump()
     {
         if (AbleToJump)
         {
+            _jumped = true;
             if (_inFrontOfLadder)
             {
                 _inFrontOfLadder = false;
@@ -271,10 +278,12 @@ public abstract class playerControl : MonoBehaviour
 
             if (JumpCount == MaxJumpCount)
             {
+                // First jump
                 _rb2D.AddForce(new Vector2(0, JumpForce), ForceMode2D.Impulse);
             }
             else
             {
+                // Second jump
                 _rb2D.AddForce(new Vector2(0, JumpForce * SecondJumpMultiplier), ForceMode2D.Impulse);
             }
 
@@ -406,6 +415,7 @@ public abstract class playerControl : MonoBehaviour
         {
             Flip();
         }
+
     }
 
     protected void DrawLine()
@@ -446,6 +456,7 @@ public abstract class playerControl : MonoBehaviour
 
     protected void LowerHealth(int damage)
     {
+        VibrateGamePad();
         Health -= damage;
         HealthSlider.value -= damage;
     }
@@ -494,6 +505,7 @@ public abstract class playerControl : MonoBehaviour
         CheckAimTimer();
         CheckVibrationTimer();
         CheckAmmoTimer();
+        CheckJumpDelay();
     }
 
     private void CheckHealthBar()
@@ -534,6 +546,20 @@ public abstract class playerControl : MonoBehaviour
             {
                 _slashDelayCounter = 0.000d;
                 _slashDelay = false;
+            }
+        }
+    }
+
+    private void CheckJumpDelay()
+    {
+        if (_jumped)
+        {
+            jumpDelayCounter += 1*Time.deltaTime;
+
+            if (jumpDelayCounter >= JumpDelayMs)
+            {
+                jumpDelayCounter = 0.000d;
+                _jumped = false;
             }
         }
     }
@@ -699,8 +725,6 @@ public abstract class playerControl : MonoBehaviour
         _ammoCounter = 0.000d;
 
         AmmoText.enabled = true;
-
-        VibrateGamePad(playerNum);
     }
 
     protected virtual void Shoot()
@@ -730,9 +754,8 @@ public abstract class playerControl : MonoBehaviour
     }
 
 
-    protected void VibrateGamePad(int player)
+    protected void VibrateGamePad()
     {
-        return;
         switch (Control)
         {
             case "j1":
@@ -746,6 +769,9 @@ public abstract class playerControl : MonoBehaviour
                 break;
             case "j4":
                 GamePad.SetVibration(PlayerIndex.Four, 1f, 1f);
+                break;
+            default:
+                Log.Debug("Keyboard, cannot vibrate");
                 break;
         }
 

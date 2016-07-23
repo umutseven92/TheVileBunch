@@ -1,6 +1,9 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
+using System.Timers;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Random = System.Random;
 
@@ -9,17 +12,19 @@ public class localController : MonoBehaviour
     [HideInInspector]
     public int score = 0;
 
+    public GameObject Fade;
+    private const double MAX_ALPHA = 255f;
+    private double alphaPerSec;
+    public float SlowMoScale = 0.2f;
+
     public Vector3 PlayerOneSpawn = new Vector3(-6.98f, 3.06f, 0);
     public Vector3 PlayerTwoSpawn = new Vector3(7.02f, 3.06f, 0);
     public Vector3 PlayerThreeSpawn = new Vector3(-7.28f, -1.1f, 0);
     public Vector3 PlayerFourSpawn = new Vector3(7.25f, -1.1f, 0);
     public Canvas scoreCanvas;
-    public Canvas endGameCanvas;
     public Canvas pauseCanvas;
 
-    public Button btnEndGameExit;
     public Button btnExit;
-    public Text winnerText;
     public Text CountdownText;
     public Transform Player;
     public AudioSource musicPlayer;
@@ -55,10 +60,6 @@ public class localController : MonoBehaviour
     public int ammoMsLower = 10;
     private int ammoMs;
 
-    public int healthMsUpper = 40;
-    public int healthMsLower = 20;
-    private int healthMs;
-
     private bool ammoOnScreen = false;
     private bool healthOnScreen = false;
 
@@ -75,7 +76,6 @@ public class localController : MonoBehaviour
         }
 
         scoreCanvas.enabled = false;
-        endGameCanvas.enabled = false;
         pauseCanvas.enabled = false;
 
         CheckPlayerPrefs();
@@ -89,7 +89,8 @@ public class localController : MonoBehaviour
         }
 
         ammoMs = CalculateNewAmmoRange();
-        healthMs = CalculateNewHealthRange();
+
+        alphaPerSec = (MAX_ALPHA / (slowMoMs * (1 / SlowMoScale)) / 50) ;
     }
 
     private void CheckPlayerPrefs()
@@ -123,15 +124,36 @@ public class localController : MonoBehaviour
             paused = !paused;
         }
 
-        GameObject[] players = GameObject.FindGameObjectsWithTag("Player").Where(p => p.transform.position != Vector3.zero).ToArray();
+
+        var players = GameObject.FindGameObjectsWithTag("Player").Where(p => p.transform.position != Vector3.zero).ToArray();
         CheckTimers();
+
+        if (Debug.isDebugBuild)
+        {
+            players = CheckDevModeEndGame(players);
+        }
 
         if (players.Length == 1)
         {
+            // Game over
             winner = new KeyValuePair<string, int>(players[0].GetComponent<localPlayer>()._playerClass, 3);
             slowMo = true;
             gameOver = true;
         }
+    }
+
+    /// <summary>
+    /// End game early
+    /// </summary>
+    /// <param name="players"></param>
+    /// <returns></returns>
+    private GameObject[] CheckDevModeEndGame(GameObject[] players)
+    {
+        if (Input.GetButtonDown("DevMode"))
+        {
+           return new[] {players[0]};
+        }
+        return players;
     }
 
 
@@ -158,38 +180,10 @@ public class localController : MonoBehaviour
         }
     }
 
-    void SpawnRandomHealth(Transform pickup)
-    {
-        var pos = _rand.Next(0, pickupSpawns.Length);
-        var spawn = pickupSpawns[pos];
-
-        if (GameObject.FindGameObjectsWithTag("healthPickup").Length <= 0)
-        {
-            var aPickup = GameObject.FindGameObjectWithTag("ammoPickup");
-
-            if (aPickup == null)
-            {
-                Instantiate(pickup, new Vector3(spawn.position.x, spawn.position.y, spawn.position.z), Quaternion.identity);
-
-            }
-            else
-            {
-                if (new Vector2(aPickup.transform.position.x, aPickup.transform.position.y) != new Vector2(spawn.position.x, spawn.position.y))
-                {
-                    Instantiate(pickup, new Vector3(spawn.position.x, spawn.position.y, spawn.position.z), Quaternion.identity);
-                }
-            }
-        }
-    }
 
     int CalculateNewAmmoRange()
     {
         return _rand.Next(ammoMsLower, ammoMsUpper);
-    }
-
-    int CalculateNewHealthRange()
-    {
-        return _rand.Next(healthMsLower, healthMsUpper);
     }
 
     void CreatePlayers(int playerCount)
@@ -233,7 +227,6 @@ public class localController : MonoBehaviour
 
     }
 
-
     void CheckTimers()
     {
         ScoreCardTimer();
@@ -265,14 +258,6 @@ public class localController : MonoBehaviour
         {
             allPlayer.SendMessage("UnPause");
         }
-    }
-
-    void SetEndGameCard(string __winner)
-    {
-        winnerText.text = __winner;
-        PauseAllPlayers();
-        endGameCanvas.enabled = true;
-        btnEndGameExit.Select();
     }
 
     void SetScoreCard()
@@ -324,7 +309,6 @@ public class localController : MonoBehaviour
     void PickupTimers()
     {
         AmmoTimer();
-        //HealthTimer();
     }
 
     private void AmmoTimer()
@@ -340,25 +324,19 @@ public class localController : MonoBehaviour
 
     }
 
-    private void HealthTimer()
-    {
-        _healthCounter += 1 * Time.deltaTime;
-
-        if (_healthCounter >= healthMs)
-        {
-            SpawnRandomHealth(HealthPickup);
-            _healthCounter = 0;
-            healthMs = CalculateNewHealthRange();
-        }
-    }
 
     private void SlowMotionTimer()
     {
         if (slowMo)
         {
-            Time.timeScale = 0.2f;
+            Time.timeScale = SlowMoScale;
             musicPlayer.pitch = 0.5f;
             slowMoCounter += 1 * Time.deltaTime;
+
+            var tmp = Fade.GetComponent<SpriteRenderer>().color;
+            tmp.a += float.Parse(alphaPerSec.ToString())* Time.deltaTime;
+
+            Fade.GetComponent<SpriteRenderer>().color = tmp;
 
             if (slowMoCounter >= slowMoMs)
             {
@@ -367,7 +345,8 @@ public class localController : MonoBehaviour
                 slowMo = false;
                 slowMoCounter = 0.000d;
 
-                SetEndGameCard(winner.Key);
+                localSceneHelper.Winner = winner.Key;
+                SceneManager.LoadScene("GraveyardLocal");
             }
         }
     }

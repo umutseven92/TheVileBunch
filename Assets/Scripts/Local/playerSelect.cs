@@ -14,7 +14,6 @@ public class playerSelect : Photon.PunBehaviour
     public AudioClip ReadyClip;
 
     public Button Play;
-    public Button Back;
 
     public Text P1Text;
     public Text P2Text;
@@ -49,11 +48,14 @@ public class playerSelect : Photon.PunBehaviour
     private Sprite prospectorImage;
     private Sprite freemanImage;
 
-    public Transform NextButton;
-    public Transform BackButton;
-    private Sprite aButton;
-    private Sprite bButton;
-    private Sprite startButton;
+    public Image NextButton;
+    public Image BackButton;
+    protected Sprite aButton;
+    protected Sprite bButton;
+    protected Sprite startButton;
+    protected Sprite escButton;
+    protected Sprite spaceButton;
+    protected Sprite enterButton;
 
     protected bool kDelay = false;
     protected bool j1Delay = false;
@@ -73,11 +75,11 @@ public class playerSelect : Photon.PunBehaviour
     protected bool j3Cancel = true;
     protected bool j4Cancel = true;
 
-    protected bool kCanHorizontal = false;
-    protected bool j1CanHorizontal = false;
-    protected bool j2CanHorizontal = false;
-    protected bool j3CanHorizontal = false;
-    protected bool j4CanHorizontal = false;
+    protected bool kCanHorizontal = true;
+    protected bool j1CanHorizontal = true;
+    protected bool j2CanHorizontal = true;
+    protected bool j3CanHorizontal = true;
+    protected bool j4CanHorizontal = true;
 
     protected enum SelectStages
     {
@@ -85,6 +87,14 @@ public class playerSelect : Photon.PunBehaviour
         Chosen,
         Disabled
     }
+
+    private enum ControlKeys
+    {
+        Controller,
+        Keyboard,
+    }
+
+    private ControlKeys controlKey;
 
     protected SelectStages kStage = SelectStages.Disabled;
     protected SelectStages j1Stage = SelectStages.Disabled;
@@ -95,13 +105,13 @@ public class playerSelect : Photon.PunBehaviour
     public static List<Player> PlayerList = new List<Player>();
 
     private List<Image> playerImages = new List<Image>();
-    private List<Image> playerButtons = new List<Image>();
+    protected List<Image> playerButtons = new List<Image>();
     private List<Text> playerTexts = new List<Text>();
     private List<List<Button>> playerHorizontals = new List<List<Button>>();
 
     protected List<string> pickedClasses = new List<string>();
     protected List<string> _classes = new List<string>();
-    private const string SelectText = "Press Start\n(Space)";
+    private const string SelectText = "";
 
 
     // Use this for initialization
@@ -112,9 +122,24 @@ public class playerSelect : Photon.PunBehaviour
         dancerImage = Resources.Load<Sprite>("dancer");
         prospectorImage = Resources.Load<Sprite>("prospector");
         freemanImage = Resources.Load<Sprite>("freeman");
+
         aButton = Resources.Load<Sprite>("abutton");
         bButton = Resources.Load<Sprite>("bbutton");
+        escButton = Resources.Load<Sprite>("escbutton");
+        enterButton = Resources.Load<Sprite>("enterbutton");
         startButton = Resources.Load<Sprite>("startbutton");
+        spaceButton = Resources.Load<Sprite>("spacebutton");
+
+        if (Input.GetJoystickNames().Length > 0)
+        {
+            controlKey = ControlKeys.Controller;
+            ConvertToController();
+        }
+        else
+        {
+            controlKey = ControlKeys.Keyboard;
+            ConvertToKB();
+        }
 
         _classes.Add("The Cowboy");
         _classes.Add("The Dancer");
@@ -146,8 +171,8 @@ public class playerSelect : Photon.PunBehaviour
         p3Button.sprite = startButton;
         p4Button.sprite = startButton;
 
-        NextButton.GetComponent<SpriteRenderer>().enabled = false;
-        BackButton.GetComponent<SpriteRenderer>().enabled = true;
+        NextButton.enabled = false;
+        BackButton.enabled = true;
 
         var speaker = GameObject.Find("Speaker");
 
@@ -166,6 +191,7 @@ public class playerSelect : Photon.PunBehaviour
     {
         CheckInputs();
         UpdatePlayButton();
+        UpdateControlSprites();
     }
 
     public virtual void CheckInputs()
@@ -178,15 +204,50 @@ public class playerSelect : Photon.PunBehaviour
         CheckBackButton();
     }
 
+    protected void UpdateControlSprites()
+    {
+        if (Input.anyKeyDown)
+        {
+            if (!CheckGamepadInput())
+            {
+                if (controlKey == ControlKeys.Controller)
+                {
+                    ConvertToKB();
+                    controlKey = ControlKeys.Keyboard;
+                }
+            }
+        }
+
+        if (CheckGamepadInput() && controlKey == ControlKeys.Keyboard)
+        {
+            ConvertToController();
+            controlKey = ControlKeys.Controller;
+        }
+    }
+
+    private bool CheckGamepadInput()
+    {
+        return Input.GetButtonDown("jA") || Input.GetButtonDown("jB") || Input.GetButtonDown("jX") ||
+               Input.GetButtonDown("jY") || Input.GetButtonDown("jStart");
+    }
+
+    protected virtual void ConvertToKB()
+    {
+    }
+
+    protected virtual void ConvertToController()
+    {
+    }
+
     void CheckBackButton()
     {
         if (kStage == SelectStages.Disabled && j1Stage == SelectStages.Disabled && j2Stage == SelectStages.Disabled && j3Stage == SelectStages.Disabled && j4Stage == SelectStages.Disabled)
         {
-            BackButton.GetComponent<SpriteRenderer>().enabled = true;
+            BackButton.enabled = true;
         }
         else
         {
-            BackButton.GetComponent<SpriteRenderer>().enabled = false;
+            BackButton.enabled = false;
         }
     }
 
@@ -475,12 +536,29 @@ public class playerSelect : Photon.PunBehaviour
 
         for (int i = 0; i < PlayerList.Count; i++)
         {
-            SetClassImage(players[i].Class, playerImages[i]);
-            playerTexts[i].text = players[i].Class;
-            if (players[i].Set)
-            {
+            var player = players[i];
 
-                playerButtons[i].sprite = bButton;
+            SetClassImage(players[i].Class, playerImages[i]);
+
+            if (string.IsNullOrEmpty(player.OnlinePlayerName))
+            {
+                playerTexts[i].text = player.Class;
+            }
+            else
+            {
+                playerTexts[i].text = string.Format("{0}\n{1}", player.Class, player.OnlinePlayerName);
+            }
+
+            if (player.Set)
+            {
+                if (player.Control.StartsWith("j"))
+                {
+                    playerButtons[i].sprite = bButton;
+                }
+                else
+                {
+                    playerButtons[i].sprite = escButton;
+                }
 
                 foreach (var h in playerHorizontals[i])
                 {
@@ -491,7 +569,14 @@ public class playerSelect : Photon.PunBehaviour
             }
             else
             {
-                playerButtons[i].sprite = startButton;
+                if (player.Control.StartsWith("j"))
+                {
+                    playerButtons[i].sprite = startButton;
+                }
+                else
+                {
+                    playerButtons[i].sprite = spaceButton;
+                }
 
                 foreach (var h in playerHorizontals[i])
                 {
@@ -632,19 +717,23 @@ public class playerSelect : Photon.PunBehaviour
         if (PlayerList.Count(o => o.Set) >= 2)
         {
             Play.enabled = true;
-            NextButton.GetComponent<SpriteRenderer>().enabled = true;
+            NextButton.enabled = true;
             Play.Select();
         }
         else
         {
-            NextButton.GetComponent<SpriteRenderer>().enabled = false;
+            NextButton.enabled = false;
             Play.enabled = false;
         }
     }
 
     public class Player
     {
-        public string Control { get; set; } // This is PlayerID on online
+        /// <summary>
+        /// On single player, this is k for keyboard, or j1 through j4 for controller.
+        /// On online play, this is players ID.
+        /// </summary>
+        public string Control { get; set; } 
         public string Class { get; set; }
         public int Num { get; set; }
         public bool Set { get; set; }
