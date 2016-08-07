@@ -105,7 +105,10 @@ public class playerSelect : Photon.PunBehaviour
     public static List<Player> PlayerList = new List<Player>();
 
     private List<Image> playerImages = new List<Image>();
-    protected List<Image> playerButtons = new List<Image>();
+
+    [HideInInspector]
+    public List<Image> playerButtons = new List<Image>();
+
     private List<Text> playerTexts = new List<Text>();
     private List<List<Button>> playerHorizontals = new List<List<Button>>();
 
