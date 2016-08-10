@@ -17,16 +17,16 @@ public class localController : MonoBehaviour
     private double alphaPerSec;
     public float SlowMoScale = 0.2f;
 
-    public Vector3 PlayerOneSpawn = new Vector3(-6.98f, 3.06f, 0);
-    public Vector3 PlayerTwoSpawn = new Vector3(7.02f, 3.06f, 0);
-    public Vector3 PlayerThreeSpawn = new Vector3(-7.28f, -1.1f, 0);
-    public Vector3 PlayerFourSpawn = new Vector3(7.25f, -1.1f, 0);
+    public Vector3[] PlayerSpawns;
+
     public Canvas scoreCanvas;
     public Canvas pauseCanvas;
 
     public Button btnExit;
     public Text CountdownText;
     public Transform Player;
+    public Transform Freeman;
+
     public AudioSource musicPlayer;
     public AudioSource dingPlayer;
 
@@ -90,7 +90,8 @@ public class localController : MonoBehaviour
 
         ammoMs = CalculateNewAmmoRange();
 
-        alphaPerSec = (MAX_ALPHA / (slowMoMs * (1 / SlowMoScale)) / 50) ;
+        alphaPerSec = (MAX_ALPHA / (slowMoMs * (1 / SlowMoScale)) / 50);
+
     }
 
     private void CheckPlayerPrefs()
@@ -151,7 +152,7 @@ public class localController : MonoBehaviour
     {
         if (Input.GetButtonDown("DevMode"))
         {
-           return new[] {players[0]};
+            return new[] { players[0] };
         }
         return players;
     }
@@ -188,43 +189,33 @@ public class localController : MonoBehaviour
 
     void CreatePlayers(int playerCount)
     {
-        switch (playerCount)
+        for (int i = 1; i <= playerCount; i++)
         {
-            case 2:
-                GameObject go = Instantiate(Player.gameObject, PlayerOneSpawn, Quaternion.identity) as GameObject;
-                go.SendMessage("PlayerNumber", 1);
+            var pClass = playerSelect.PlayerList[i - 1].Class;
 
-                GameObject go2 = Instantiate(Player.gameObject, PlayerTwoSpawn, Quaternion.identity) as GameObject;
-                go2.SendMessage("PlayerNumber", 2);
-                break;
-            case 3:
-                GameObject go3 = Instantiate(Player.gameObject, PlayerOneSpawn, Quaternion.identity) as GameObject;
-                go3.SendMessage("PlayerNumber", 1);
+            switch (pClass)
+            {
+                case "The Cowboy":
+                    InstatiatePlayer(Player.gameObject, i);
+                    break;
+                case "The Dancer":
+                    InstatiatePlayer(Player.gameObject, i);
+                    break;
+                case "The Freeman":
+                    InstatiatePlayer(Freeman.gameObject, i);
+                    break;
+                case "The Prospector":
+                    InstatiatePlayer(Player.gameObject, i);
+                    break;
+            }
 
-                GameObject go4 = Instantiate(Player.gameObject, PlayerTwoSpawn, Quaternion.identity) as GameObject;
-                go4.SendMessage("PlayerNumber", 2);
-
-                GameObject go5 = Instantiate(Player.gameObject, PlayerThreeSpawn, Quaternion.identity) as GameObject;
-                go5.SendMessage("PlayerNumber", 3);
-                break;
-            case 4:
-                GameObject go6 = Instantiate(Player.gameObject, PlayerOneSpawn, Quaternion.identity) as GameObject;
-                go6.SendMessage("PlayerNumber", 1);
-
-                GameObject go7 = Instantiate(Player.gameObject, PlayerTwoSpawn, Quaternion.identity) as GameObject;
-                go7.SendMessage("PlayerNumber", 2);
-
-                GameObject go8 = Instantiate(Player.gameObject, PlayerThreeSpawn, Quaternion.identity) as GameObject;
-                go8.SendMessage("PlayerNumber", 3);
-
-                GameObject go9 = Instantiate(Player.gameObject, PlayerFourSpawn, Quaternion.identity) as GameObject;
-                go9.SendMessage("PlayerNumber", 4);
-                break;
-            default:
-                Debug.LogError("Player count not between 1 and 4!");
-                break;
         }
+    }
 
+    private void InstatiatePlayer(GameObject player, int iteration)
+    {
+        GameObject go = Instantiate(player, PlayerSpawns[iteration - 1], Quaternion.identity) as GameObject;
+        go.SendMessage("PlayerNumber", iteration);
     }
 
     void CheckTimers()
@@ -334,7 +325,7 @@ public class localController : MonoBehaviour
             slowMoCounter += 1 * Time.deltaTime;
 
             var tmp = Fade.GetComponent<SpriteRenderer>().color;
-            tmp.a += float.Parse(alphaPerSec.ToString())* Time.deltaTime;
+            tmp.a += float.Parse(alphaPerSec.ToString()) * Time.deltaTime;
 
             Fade.GetComponent<SpriteRenderer>().color = tmp;
 

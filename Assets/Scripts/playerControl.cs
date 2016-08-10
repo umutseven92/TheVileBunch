@@ -165,6 +165,7 @@ public abstract class playerControl : MonoBehaviour
     private double _slashDelayCounter;
     public double SlashDelayMs = 1.000d;
 
+    private const string ANIMATOR_PARAM = "anim";
 
     private Transform _line;
 
@@ -211,34 +212,8 @@ public abstract class playerControl : MonoBehaviour
         _groundCheckCollider = GroundCheck.GetComponent<BoxCollider2D>();
     }
 
-    private void SetFirst()
-    {
-        if (_first)
-        {
-            switch (playerNum)
-            {
-                case 0:
-                    Flip();
-                    _playerColor = new Color(0f, 0.5f, 0.5f, 1f);
-                    break;
-                case 1:
-                    _playerColor = new Color(0, 0.5f, 0, 1f);
-                    break;
-                case 2:
-                    Flip();
-                    _playerColor = new Color(0, 0.5f, 0.5f, 1f);
-                    break;
-                case 3:
-                    _playerColor = new Color(0.5f, 0.5f, 0.5f, 1f);
-                    break;
-            }
 
-            _sRenderer.color = _playerColor;
-            _first = false;
-        }
-    }
-
-    private bool tempGrounded = true; 
+    private bool tempGrounded = true;
 
     private void SetGrounded()
     {
@@ -256,8 +231,6 @@ public abstract class playerControl : MonoBehaviour
 
     protected virtual void Update()
     {
-        SetFirst();
-
         AmmoText.text = Ammo.ToString();
 
         SetGrounded();
@@ -293,8 +266,39 @@ public abstract class playerControl : MonoBehaviour
 
     protected void HandleAnimations()
     {
+        var param = _animator.GetInteger(ANIMATOR_PARAM);
         var jumping = !Grounded;
 
+
+        if (_slashing)
+        {
+            _animator.SetInteger(ANIMATOR_PARAM, 3);
+        }
+        else if (jumping)
+        {
+            // Jumping
+            _animator.SetInteger(ANIMATOR_PARAM, 2);
+        }
+        else if (_horizontal != 0)
+        {
+            // Running
+            _animator.SetInteger(ANIMATOR_PARAM, 1);
+        }
+        else
+        {
+            // Idle
+            _animator.SetInteger(ANIMATOR_PARAM, 0);
+        }
+
+        var now = _animator.GetInteger(ANIMATOR_PARAM);
+
+        if (param != now)
+        {
+            print("ANIM:\t" + now);
+        }
+
+
+        /*
         if (_spawned)
         {
             _animator.SetInteger("anim", 4);
@@ -327,6 +331,7 @@ public abstract class playerControl : MonoBehaviour
             // Running
             _animator.SetInteger("anim", 1);
         }
+        */
     }
 
 
@@ -554,7 +559,7 @@ public abstract class playerControl : MonoBehaviour
     {
         if (_jumped)
         {
-            jumpDelayCounter += 1*Time.deltaTime;
+            jumpDelayCounter += 1 * Time.deltaTime;
 
             if (jumpDelayCounter >= JumpDelayMs)
             {
