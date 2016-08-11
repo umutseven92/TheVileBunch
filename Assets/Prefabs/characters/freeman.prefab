@@ -509,6 +509,7 @@ MonoBehaviour:
   SlashOffset: 0.5
   GunOffset: 0.6
   SlashingMs: 0.5
+  ShootingMs: 0.5
   HitMs: 2
   HealedMs: 2
   GunLightMs: 0.2
@@ -518,7 +519,7 @@ MonoBehaviour:
   AmmoPickup: 3
   HealthPickup: 3
   DirectionLock: 0.2
-  AimMs: 0.15
+  AimMs: 0.4
   VibrationMs: 0.5
   MouseAimDeadZone: 50
   AmmoMs: 2

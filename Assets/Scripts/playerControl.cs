@@ -75,6 +75,7 @@ public abstract class playerControl : MonoBehaviour
     public float SlashOffset = 0.5f; //!< How far the player slashes
     public float GunOffset = 0.5f; //!< How far the player shoots 
     public double SlashingMs = 0.3d; //!< How long does slashing take
+    public double ShootingMs = 0.3d; //!< How long does shooting take
     public double HitMs = 2.000d; //!< Invulnerability timer after getting hit
     public double HealedMs = 2.000d; //!< Health bar visibility after healed
     public double GunLightMs = 0.200d; //!< How log does gun light stays
@@ -123,6 +124,8 @@ public abstract class playerControl : MonoBehaviour
     private SpriteRenderer _sRenderer;
     private List<playerSelect.Player> _localPlayers;
     protected bool _slashing;
+    protected bool _shooting;
+    private double _shootingCounter;
     private double _slashingCounter;
     protected bool _hit;
     protected bool _healed;
@@ -270,7 +273,15 @@ public abstract class playerControl : MonoBehaviour
         var jumping = !Grounded;
 
 
-        if (_slashing)
+        if (_shooting)
+        {
+            _animator.SetInteger(ANIMATOR_PARAM, 4);
+        }
+        else if (_aiming)
+        {
+            _animator.SetInteger(ANIMATOR_PARAM, 5);
+        }
+        else if (_slashing)
         {
             _animator.SetInteger(ANIMATOR_PARAM, 3);
         }
@@ -503,6 +514,7 @@ public abstract class playerControl : MonoBehaviour
         CheckHealthBar();
         CheckSlashingTimer();
         CheckSlashDelay();
+        CheckShootingTimer();
         CheckHitTimer();
         CheckGunLightTimer();
         CheckHealedTimer();
@@ -542,6 +554,18 @@ public abstract class playerControl : MonoBehaviour
         }
     }
 
+    private void CheckShootingTimer()
+    {
+        if (_shooting)
+        {
+            _shootingCounter += 1 * Time.deltaTime;
+            if (_shootingCounter >= ShootingMs)
+            {
+                _shooting = false;
+                _shootingCounter = 0.000d;
+            }
+        }
+    }
     private void CheckSlashDelay()
     {
         if (_slashDelay)
@@ -734,6 +758,7 @@ public abstract class playerControl : MonoBehaviour
 
     protected virtual void Shoot()
     {
+        _shooting = true;
         if (!_bulletRight && !_bulletLeft)
         {
             if (FacingRight)

@@ -1,11 +1,12 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections;
 
-public class ammoPickupScript : Photon.MonoBehaviour 
-{
+public class onlinePickupScript : Photon.MonoBehaviour {
+
     void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.name.StartsWith("Player"))
+        if (other.name.StartsWith("Player") || other.name.StartsWith("groundCheck",StringComparison.InvariantCultureIgnoreCase))
         {
             PhotonNetwork.Destroy(gameObject);
         }
