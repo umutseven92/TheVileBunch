@@ -128,6 +128,8 @@ public abstract class playerControl : MonoBehaviour
     private double _shootingCounter;
     private double _slashingCounter;
     protected bool _hit;
+    protected bool _hitByMelee;
+    protected bool _hitByBullet;
     protected bool _healed;
     private double _hitCounter;
     private double _healedCounter;
@@ -169,6 +171,20 @@ public abstract class playerControl : MonoBehaviour
     public double SlashDelayMs = 1.000d;
 
     private const string ANIMATOR_PARAM = "anim";
+
+
+    private enum Animations
+    {
+        Idle = 0,
+        Running = 1,
+        Jumping = 2,
+        Melee = 3,
+        Shooting = 4,
+        Aiming = 5,
+        Shot = 6,
+        Stabbed = 7,
+        Die = 8
+    }
 
     private Transform _line;
 
@@ -269,80 +285,50 @@ public abstract class playerControl : MonoBehaviour
 
     protected void HandleAnimations()
     {
-        var param = _animator.GetInteger(ANIMATOR_PARAM);
         var jumping = !Grounded;
 
-
-        if (_shooting)
+        if (_dead)
         {
-            _animator.SetInteger(ANIMATOR_PARAM, 4);
+            _animator.SetInteger(ANIMATOR_PARAM, (int)Animations.Die);
+        }
+        else if (_hitByBullet)
+        {
+            _animator.SetInteger(ANIMATOR_PARAM, (int)Animations.Shot);
+        }
+        else if (_hitByMelee)
+        {
+            _animator.SetInteger(ANIMATOR_PARAM, (int)Animations.Stabbed);
+        }
+        else if (_shooting)
+        {
+            // Shooting
+            _animator.SetInteger(ANIMATOR_PARAM, (int)Animations.Shooting);
         }
         else if (_aiming)
         {
-            _animator.SetInteger(ANIMATOR_PARAM, 5);
+            // Aiming
+            _animator.SetInteger(ANIMATOR_PARAM, (int)Animations.Aiming);
         }
         else if (_slashing)
         {
-            _animator.SetInteger(ANIMATOR_PARAM, 3);
+            // Melee
+            _animator.SetInteger(ANIMATOR_PARAM, (int)Animations.Melee);
         }
         else if (jumping)
         {
             // Jumping
-            _animator.SetInteger(ANIMATOR_PARAM, 2);
+            _animator.SetInteger(ANIMATOR_PARAM, (int)Animations.Jumping);
         }
         else if (_horizontal != 0)
         {
             // Running
-            _animator.SetInteger(ANIMATOR_PARAM, 1);
+            _animator.SetInteger(ANIMATOR_PARAM, (int)Animations.Running);
         }
         else
         {
             // Idle
-            _animator.SetInteger(ANIMATOR_PARAM, 0);
+            _animator.SetInteger(ANIMATOR_PARAM, (int)Animations.Idle);
         }
-
-        var now = _animator.GetInteger(ANIMATOR_PARAM);
-
-        if (param != now)
-        {
-            print("ANIM:\t" + now);
-        }
-
-
-        /*
-        if (_spawned)
-        {
-            _animator.SetInteger("anim", 4);
-            return;
-        }
-
-        if (_aiming)
-        {
-            _animator.SetInteger("anim", 0);
-        }
-        if (_slashing)
-        {
-            // Slash
-            _animator.SetInteger("anim", 3);
-        }
-        if (!_slashing && jumping)
-        {
-            // Jump
-            _animator.SetInteger("anim", 2);
-        }
-        if (!_slashing && !jumping && _horizontal == 0)
-        {
-            // Idle
-            _animator.SetInteger("anim", 0);
-        }
-        if (!_slashing && !jumping &&
-            ((_horizontal > MovementLock && _horizontal > 0) || (_horizontal < -MovementLock && _horizontal < 0)) &&
-            !_aiming)
-        {
-            // Running
-            _animator.SetInteger("anim", 1);
-        }
-        */
     }
 
 
@@ -632,6 +618,8 @@ public abstract class playerControl : MonoBehaviour
             if (_hitCounter >= HitMs)
             {
                 _hit = false;
+                _hitByMelee = false;
+                _hitByBullet = false;
                 _hitCounter = 0.000d;
                 _flashTimer = 0.000d;
                 _sRenderer.enabled = true;
@@ -869,6 +857,15 @@ public abstract class playerControl : MonoBehaviour
                         break;
                 }
                 _spawned = true;
+
+                if (other.name.StartsWith("Bullet", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    _hitByBullet = true;
+                }
+                else if (other.name.StartsWith("slash", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    _hitByMelee = true;
+                }
             }
             else if (Spawn <= 0)
             {
@@ -884,10 +881,12 @@ public abstract class playerControl : MonoBehaviour
 
         if (!other.name.Equals("FallCollider"))
         {
+            /*
             GameObject deadPlayer = Instantiate(DeadPlayer.gameObject, transform.position, transform.rotation) as GameObject;
 
             deadPlayer.SendMessage("SetColor", _playerColor);
             deadPlayer.SendMessage("Die", other.transform.position.x < this.transform.position.x ? "left" : "right");
+            */
         }
         Destroy(gameObject);
     }
