@@ -531,7 +531,7 @@ MonoBehaviour:
   Bullet: {fileID: 456820, guid: 63fe6d9b80059a248b8c801944bb1866, type: 2}
   Explosion: {fileID: 457782, guid: aae430be8c9c11347a4f22f5ddab16c3, type: 2}
   BloodSplatter: {fileID: 461058, guid: 56619b1abbf8cc0408a86f944e489a5b, type: 2}
-  DeadPlayer: {fileID: 477012, guid: d83ce1a25973b4d44aec557843b8c283, type: 2}
+  DeadPlayer: {fileID: 477012, guid: 94a22d9ee4e744543bfac534ae49f71a, type: 2}
   SwordSlash: {fileID: 413908, guid: cf49b905a43eed54c99c4b9838f2b8a7, type: 2}
   Line: {fileID: 429834, guid: d6e30f6cbd2b0bd46bb6f73ecb3d786a, type: 2}
   GunShot: {fileID: 8300000, guid: 82543674d324cd449aaf9328d7647a71, type: 3}

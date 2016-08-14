@@ -54,7 +54,7 @@ public class onlinePlayer : playerControl
                 base.Jump();
             }
 
-            if (Input.GetButtonUp(Control + "Fire") && Ammo > 0 && Enabled && (!_hit || !_hitByMelee))
+            if (Input.GetButtonUp(Control + "Fire") && Ammo > 0 && Enabled && !_hit)
             {
                 if (_aimCanceled)
                 {

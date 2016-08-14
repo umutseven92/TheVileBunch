@@ -1940,10 +1940,6 @@ MonoBehaviour:
   score: 0
   Fade: {fileID: 1764733398}
   SlowMoScale: 0.2
-  PlayerOneSpawn: {x: -7, y: 0, z: 0}
-  PlayerTwoSpawn: {x: 7, y: 0, z: 0}
-  PlayerThreeSpawn: {x: -4.5, y: 3, z: 0}
-  PlayerFourSpawn: {x: 4.5, y: 3, z: 0}
   PlayerSpawns:
   - {x: -7, y: 0, z: 0}
   - {x: 7, y: 0, z: 0}
@@ -1955,6 +1951,7 @@ MonoBehaviour:
   CountdownText: {fileID: 621714651}
   Player: {fileID: 441362, guid: 4456e3fb88ab8f149aaaf96cbab5e546, type: 2}
   Freeman: {fileID: 441362, guid: b1e2c0066fffb094fa454d5680c96c92, type: 2}
+  Cowboy: {fileID: 441362, guid: a03d6cd7b7106da419e3fbcc0556a698, type: 2}
   musicPlayer: {fileID: 1986258261}
   dingPlayer: {fileID: 621714652}
   AmmoPickup: {fileID: 494594, guid: a31c748abd0f1f043b30acd90c30bb62, type: 2}

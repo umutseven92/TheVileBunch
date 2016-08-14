@@ -182,8 +182,7 @@ public abstract class playerControl : MonoBehaviour
         Shooting = 4,
         Aiming = 5,
         Shot = 6,
-        Stabbed = 7,
-        Die = 8
+        Stabbed = 7
     }
 
     private Transform _line;
@@ -287,16 +286,14 @@ public abstract class playerControl : MonoBehaviour
     {
         var jumping = !Grounded;
 
-        if (_dead)
+        if (_hitByBullet)
         {
-            _animator.SetInteger(ANIMATOR_PARAM, (int)Animations.Die);
-        }
-        else if (_hitByBullet)
-        {
+            // Shot
             _animator.SetInteger(ANIMATOR_PARAM, (int)Animations.Shot);
         }
         else if (_hitByMelee)
         {
+            // Slashed
             _animator.SetInteger(ANIMATOR_PARAM, (int)Animations.Stabbed);
         }
         else if (_shooting)
@@ -881,12 +878,7 @@ public abstract class playerControl : MonoBehaviour
 
         if (!other.name.Equals("FallCollider"))
         {
-            /*
-            GameObject deadPlayer = Instantiate(DeadPlayer.gameObject, transform.position, transform.rotation) as GameObject;
-
-            deadPlayer.SendMessage("SetColor", _playerColor);
-            deadPlayer.SendMessage("Die", other.transform.position.x < this.transform.position.x ? "left" : "right");
-            */
+            var deadPlayer = Instantiate(DeadPlayer.gameObject, transform.position, transform.rotation) as GameObject;
         }
         Destroy(gameObject);
     }

@@ -26,6 +26,8 @@ public class localController : MonoBehaviour
     public Text CountdownText;
     public Transform Player;
     public Transform Freeman;
+    public Transform Cowboy;
+
 
     public AudioSource musicPlayer;
     public AudioSource dingPlayer;
@@ -196,7 +198,7 @@ public class localController : MonoBehaviour
             switch (pClass)
             {
                 case "The Cowboy":
-                    InstatiatePlayer(Player.gameObject, i);
+                    InstatiatePlayer(Cowboy.gameObject, i);
                     break;
                 case "The Dancer":
                     InstatiatePlayer(Player.gameObject, i);

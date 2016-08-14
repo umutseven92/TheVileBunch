@@ -116,8 +116,8 @@ GameObject:
   - 50: {fileID: 5009434}
   - 61: {fileID: 6124388}
   - 114: {fileID: 11414428}
-  - 95: {fileID: 9548098}
   - 82: {fileID: 8276650}
+  - 95: {fileID: 9504552}
   m_Layer: 9
   m_Name: cowboy
   m_TagString: Player
@@ -214,8 +214,8 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 170880}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.2910159, y: -2.730638, z: 0}
-  m_LocalScale: {x: 0.8, y: 0.8, z: 1}
+  m_LocalPosition: {x: -3.1056, y: -2.2694, z: -11.82}
+  m_LocalScale: {x: 1.0306274, y: 1.0306276, z: 1.2882845}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 474538}
@@ -370,7 +370,7 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 0
---- !u!95 &9548098
+--- !u!95 &9504552
 Animator:
   serializedVersion: 3
   m_ObjectHideFlags: 1
@@ -379,7 +379,7 @@ Animator:
   m_GameObject: {fileID: 170880}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 5799476a0f5d3f94e9c01507019e0b0a, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -508,7 +508,8 @@ MonoBehaviour:
   GunLightSpeed: 0.3
   SlashOffset: 0.5
   GunOffset: 0.6
-  SlashingMs: 0.3
+  SlashingMs: 0.5
+  ShootingMs: 0.5
   HitMs: 2
   HealedMs: 2
   GunLightMs: 0.2
@@ -518,7 +519,7 @@ MonoBehaviour:
   AmmoPickup: 3
   HealthPickup: 3
   DirectionLock: 0.2
-  AimMs: 0.15
+  AimMs: 0.4
   VibrationMs: 0.5
   MouseAimDeadZone: 50
   AmmoMs: 2
@@ -530,7 +531,7 @@ MonoBehaviour:
   Bullet: {fileID: 456820, guid: 63fe6d9b80059a248b8c801944bb1866, type: 2}
   Explosion: {fileID: 457782, guid: aae430be8c9c11347a4f22f5ddab16c3, type: 2}
   BloodSplatter: {fileID: 461058, guid: 56619b1abbf8cc0408a86f944e489a5b, type: 2}
-  DeadPlayer: {fileID: 477012, guid: d83ce1a25973b4d44aec557843b8c283, type: 2}
+  DeadPlayer: {fileID: 477012, guid: 38b7d1eef332b514badb4ccc6cdc055b, type: 2}
   SwordSlash: {fileID: 413908, guid: cf49b905a43eed54c99c4b9838f2b8a7, type: 2}
   Line: {fileID: 429834, guid: d6e30f6cbd2b0bd46bb6f73ecb3d786a, type: 2}
   GunShot: {fileID: 8300000, guid: 82543674d324cd449aaf9328d7647a71, type: 3}
@@ -828,7 +829,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1530920183
   m_SortingOrder: 1
-  m_Sprite: {fileID: 21300000, guid: 7a426e4916db52b4b9a1a4c242ba00db, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 17f4f8e716ec40841854b5f61331e754, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
