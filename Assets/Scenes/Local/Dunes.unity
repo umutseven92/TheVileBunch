@@ -1949,9 +1949,10 @@ MonoBehaviour:
   pauseCanvas: {fileID: 1153497131}
   btnExit: {fileID: 1153497132}
   CountdownText: {fileID: 621714651}
-  Player: {fileID: 441362, guid: 4456e3fb88ab8f149aaaf96cbab5e546, type: 2}
   Freeman: {fileID: 441362, guid: b1e2c0066fffb094fa454d5680c96c92, type: 2}
   Cowboy: {fileID: 441362, guid: a03d6cd7b7106da419e3fbcc0556a698, type: 2}
+  Dancer: {fileID: 441362, guid: 7cf0c596fc1614246abd21551a6e3586, type: 2}
+  Prospector: {fileID: 0}
   musicPlayer: {fileID: 1986258261}
   dingPlayer: {fileID: 621714652}
   AmmoPickup: {fileID: 494594, guid: a31c748abd0f1f043b30acd90c30bb62, type: 2}

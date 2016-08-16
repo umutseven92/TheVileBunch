@@ -24,10 +24,11 @@ public class localController : MonoBehaviour
 
     public Button btnExit;
     public Text CountdownText;
-    public Transform Player;
+
     public Transform Freeman;
     public Transform Cowboy;
-
+    public Transform Dancer;
+    public Transform Prospector;
 
     public AudioSource musicPlayer;
     public AudioSource dingPlayer;
@@ -201,13 +202,13 @@ public class localController : MonoBehaviour
                     InstatiatePlayer(Cowboy.gameObject, i);
                     break;
                 case "The Dancer":
-                    InstatiatePlayer(Player.gameObject, i);
+                    InstatiatePlayer(Dancer.gameObject, i);
                     break;
                 case "The Freeman":
                     InstatiatePlayer(Freeman.gameObject, i);
                     break;
                 case "The Prospector":
-                    InstatiatePlayer(Player.gameObject, i);
+                    InstatiatePlayer(Prospector.gameObject, i);
                     break;
             }
 
