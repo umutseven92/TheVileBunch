@@ -1952,7 +1952,7 @@ MonoBehaviour:
   Freeman: {fileID: 441362, guid: b1e2c0066fffb094fa454d5680c96c92, type: 2}
   Cowboy: {fileID: 441362, guid: a03d6cd7b7106da419e3fbcc0556a698, type: 2}
   Dancer: {fileID: 441362, guid: 7cf0c596fc1614246abd21551a6e3586, type: 2}
-  Prospector: {fileID: 0}
+  Prospector: {fileID: 441362, guid: cb8d7fa11d9b38647905c8611d8e0817, type: 2}
   musicPlayer: {fileID: 1986258261}
   dingPlayer: {fileID: 621714652}
   AmmoPickup: {fileID: 494594, guid: a31c748abd0f1f043b30acd90c30bb62, type: 2}
