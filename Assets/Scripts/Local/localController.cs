@@ -218,6 +218,11 @@ public class localController : MonoBehaviour
     private void InstatiatePlayer(GameObject player, int iteration)
     {
         GameObject go = Instantiate(player, PlayerSpawns[iteration - 1], Quaternion.identity) as GameObject;
+
+        if (iteration % 2 == 0)
+        {
+            go.GetComponent<SpriteRenderer>().flipX = true;
+        }
         go.SendMessage("PlayerNumber", iteration);
     }
 

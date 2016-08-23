@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using log4net;
+using UnityEngine;
 using log4net.Appender;
 using log4net.Config;
 using log4net.Layout;
@@ -46,5 +47,29 @@ public class global : MonoBehaviour
         unityLogger.ActivateOptions();
 
         BasicConfigurator.Configure(unityLogger, fileAppender);
+    }
+
+    public static void LogDebug(ILog log, string message)
+    {
+        if (Debug.isDebugBuild)
+        {
+            log.Debug(message);
+        }
+    }
+
+    public static void LogInfo(ILog log, string message)
+    {
+        if (Debug.isDebugBuild)
+        {
+            log.Info(message);
+        }
+    }
+
+    public static void LogError(ILog log, string message)
+    {
+        if (Debug.isDebugBuild)
+        {
+            log.Error(message);
+        }
     }
 }

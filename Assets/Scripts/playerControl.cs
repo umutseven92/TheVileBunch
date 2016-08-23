@@ -786,7 +786,7 @@ public abstract class playerControl : MonoBehaviour
                 GamePad.SetVibration(PlayerIndex.Four, 1f, 1f);
                 break;
             default:
-                Log.Debug("Keyboard, cannot vibrate");
+                global.LogDebug(Log, "Keyboard, cannot vibrate");
                 break;
         }
 

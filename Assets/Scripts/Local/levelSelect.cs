@@ -11,7 +11,7 @@ public class levelSelect : MonoBehaviour
     {
         if (string.IsNullOrEmpty(levelLoading))
         {
-            Log.Debug("Level doesn't exist yet.");
+            global.LogDebug(Log, "Level doesn't exist yet.");
             return;
         }
 
@@ -27,7 +27,7 @@ public class levelSelect : MonoBehaviour
     {
         if (string.IsNullOrEmpty(level))
         {
-            Log.Debug("Level doesn't exist yet.");
+            global.LogDebug(Log, "Level doesn't exist yet.");
             return;
         }
 
