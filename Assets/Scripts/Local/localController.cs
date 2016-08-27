@@ -83,6 +83,12 @@ public class localController : MonoBehaviour
 
         CheckPlayerPrefs();
 
+        // Testing the levels
+        if (Debug.isDebugBuild && playerSelect.PlayerList.Count == 0)
+        {
+            CreatePlayers(1);
+        }
+
         CreatePlayers(playerSelect.PlayerList.Count);
         SetScoreCard();
 
@@ -194,7 +200,16 @@ public class localController : MonoBehaviour
     {
         for (int i = 1; i <= playerCount; i++)
         {
-            var pClass = playerSelect.PlayerList[i - 1].Class;
+            string pClass = string.Empty;
+
+            if (Debug.isDebugBuild && playerSelect.PlayerList.Count == 0)
+            {
+                pClass = "The Cowboy";
+            }
+            else
+            {
+                pClass = playerSelect.PlayerList[i - 1].Class;
+            }
 
             switch (pClass)
             {

@@ -110,6 +110,13 @@ public class localPlayer : playerControl
             transform.position = new Vector3(transform.position.x, 6, transform.position.z);
         }
 
+        // RL - LR Collider
+        if (other.name.StartsWith("RLCollider"))
+        {
+            // Teleport to the top 
+            transform.position = new Vector3(transform.position.x, 6, transform.position.z);
+        }
+
         // Ammo pickup
         if (other.name.StartsWith("Ammo"))
         {
