@@ -111,12 +111,17 @@ public class localPlayer : playerControl
         }
 
         // RL - LR Collider
-        if (other.name.StartsWith("RLCollider"))
+        if (other.name.StartsWith("LRCollider"))
         {
             // Teleport to the top 
-            transform.position = new Vector3(transform.position.x, 6, transform.position.z);
+            transform.position = new Vector3(9, transform.position.y, transform.position.z);
         }
 
+        else if (other.name.StartsWith("RLCollider"))
+        {
+            // Teleport to the top 
+            transform.position = new Vector3(-9, transform.position.y, transform.position.z);
+        }
         // Ammo pickup
         if (other.name.StartsWith("Ammo"))
         {
