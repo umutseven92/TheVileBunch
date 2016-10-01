@@ -75,6 +75,7 @@ public abstract class playerControl : MonoBehaviour
     public float SlashOffset = 0.5f; //!< How far the player slashes
     public float GunOffset = 0.5f; //!< How far the player shoots 
     public double SlashingMs = 0.3d; //!< How long does slashing take
+    public double ShootingMs = 0.3d; //!< How long does shooting take
     public double HitMs = 2.000d; //!< Invulnerability timer after getting hit
     public double HealedMs = 2.000d; //!< Health bar visibility after healed
     public double GunLightMs = 0.200d; //!< How log does gun light stays
@@ -123,8 +124,12 @@ public abstract class playerControl : MonoBehaviour
     private SpriteRenderer _sRenderer;
     private List<playerSelect.Player> _localPlayers;
     protected bool _slashing;
+    protected bool _shooting;
+    private double _shootingCounter;
     private double _slashingCounter;
     protected bool _hit;
+    protected bool _hitByMelee;
+    protected bool _hitByBullet;
     protected bool _healed;
     private double _hitCounter;
     private double _healedCounter;
@@ -165,6 +170,20 @@ public abstract class playerControl : MonoBehaviour
     private double _slashDelayCounter;
     public double SlashDelayMs = 1.000d;
 
+    private const string ANIMATOR_PARAM = "anim";
+
+
+    private enum Animations
+    {
+        Idle = 0,
+        Running = 1,
+        Jumping = 2,
+        Melee = 3,
+        Shooting = 4,
+        Aiming = 5,
+        Shot = 6,
+        Stabbed = 7
+    }
 
     private Transform _line;
 
@@ -211,34 +230,8 @@ public abstract class playerControl : MonoBehaviour
         _groundCheckCollider = GroundCheck.GetComponent<BoxCollider2D>();
     }
 
-    private void SetFirst()
-    {
-        if (_first)
-        {
-            switch (playerNum)
-            {
-                case 0:
-                    Flip();
-                    _playerColor = new Color(0f, 0.5f, 0.5f, 1f);
-                    break;
-                case 1:
-                    _playerColor = new Color(0, 0.5f, 0, 1f);
-                    break;
-                case 2:
-                    Flip();
-                    _playerColor = new Color(0, 0.5f, 0.5f, 1f);
-                    break;
-                case 3:
-                    _playerColor = new Color(0.5f, 0.5f, 0.5f, 1f);
-                    break;
-            }
 
-            _sRenderer.color = _playerColor;
-            _first = false;
-        }
-    }
-
-    private bool tempGrounded = true; 
+    private bool tempGrounded = true;
 
     private void SetGrounded()
     {
@@ -256,8 +249,6 @@ public abstract class playerControl : MonoBehaviour
 
     protected virtual void Update()
     {
-        SetFirst();
-
         AmmoText.text = Ammo.ToString();
 
         SetGrounded();
@@ -295,37 +286,45 @@ public abstract class playerControl : MonoBehaviour
     {
         var jumping = !Grounded;
 
-        if (_spawned)
+        if (_hitByBullet)
         {
-            _animator.SetInteger("anim", 4);
-            return;
+            // Shot
+            _animator.SetInteger(ANIMATOR_PARAM, (int)Animations.Shot);
         }
-
-        if (_aiming)
+        else if (_hitByMelee)
         {
-            _animator.SetInteger("anim", 0);
+            // Slashed
+            _animator.SetInteger(ANIMATOR_PARAM, (int)Animations.Stabbed);
         }
-        if (_slashing)
+        else if (_shooting)
         {
-            // Slash
-            _animator.SetInteger("anim", 3);
+            // Shooting
+            _animator.SetInteger(ANIMATOR_PARAM, (int)Animations.Shooting);
         }
-        if (!_slashing && jumping)
+        else if (_aiming)
         {
-            // Jump
-            _animator.SetInteger("anim", 2);
+            // Aiming
+            _animator.SetInteger(ANIMATOR_PARAM, (int)Animations.Aiming);
         }
-        if (!_slashing && !jumping && _horizontal == 0)
+        else if (_slashing)
         {
-            // Idle
-            _animator.SetInteger("anim", 0);
+            // Melee
+            _animator.SetInteger(ANIMATOR_PARAM, (int)Animations.Melee);
         }
-        if (!_slashing && !jumping &&
-            ((_horizontal > MovementLock && _horizontal > 0) || (_horizontal < -MovementLock && _horizontal < 0)) &&
-            !_aiming)
+        else if (jumping)
+        {
+            // Jumping
+            _animator.SetInteger(ANIMATOR_PARAM, (int)Animations.Jumping);
+        }
+        else if (_horizontal != 0)
         {
             // Running
-            _animator.SetInteger("anim", 1);
+            _animator.SetInteger(ANIMATOR_PARAM, (int)Animations.Running);
+        }
+        else
+        {
+            // Idle
+            _animator.SetInteger(ANIMATOR_PARAM, (int)Animations.Idle);
         }
     }
 
@@ -498,6 +497,7 @@ public abstract class playerControl : MonoBehaviour
         CheckHealthBar();
         CheckSlashingTimer();
         CheckSlashDelay();
+        CheckShootingTimer();
         CheckHitTimer();
         CheckGunLightTimer();
         CheckHealedTimer();
@@ -537,6 +537,18 @@ public abstract class playerControl : MonoBehaviour
         }
     }
 
+    private void CheckShootingTimer()
+    {
+        if (_shooting)
+        {
+            _shootingCounter += 1 * Time.deltaTime;
+            if (_shootingCounter >= ShootingMs)
+            {
+                _shooting = false;
+                _shootingCounter = 0.000d;
+            }
+        }
+    }
     private void CheckSlashDelay()
     {
         if (_slashDelay)
@@ -554,7 +566,7 @@ public abstract class playerControl : MonoBehaviour
     {
         if (_jumped)
         {
-            jumpDelayCounter += 1*Time.deltaTime;
+            jumpDelayCounter += 1 * Time.deltaTime;
 
             if (jumpDelayCounter >= JumpDelayMs)
             {
@@ -603,6 +615,8 @@ public abstract class playerControl : MonoBehaviour
             if (_hitCounter >= HitMs)
             {
                 _hit = false;
+                _hitByMelee = false;
+                _hitByBullet = false;
                 _hitCounter = 0.000d;
                 _flashTimer = 0.000d;
                 _sRenderer.enabled = true;
@@ -729,6 +743,7 @@ public abstract class playerControl : MonoBehaviour
 
     protected virtual void Shoot()
     {
+        _shooting = true;
         if (!_bulletRight && !_bulletLeft)
         {
             if (FacingRight)
@@ -771,7 +786,7 @@ public abstract class playerControl : MonoBehaviour
                 GamePad.SetVibration(PlayerIndex.Four, 1f, 1f);
                 break;
             default:
-                Log.Debug("Keyboard, cannot vibrate");
+                global.LogDebug(Log, "Keyboard, cannot vibrate");
                 break;
         }
 
@@ -839,6 +854,15 @@ public abstract class playerControl : MonoBehaviour
                         break;
                 }
                 _spawned = true;
+
+                if (other.name.StartsWith("Bullet", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    _hitByBullet = true;
+                }
+                else if (other.name.StartsWith("slash", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    _hitByMelee = true;
+                }
             }
             else if (Spawn <= 0)
             {
@@ -854,10 +878,7 @@ public abstract class playerControl : MonoBehaviour
 
         if (!other.name.Equals("FallCollider"))
         {
-            GameObject deadPlayer = Instantiate(DeadPlayer.gameObject, transform.position, transform.rotation) as GameObject;
-
-            deadPlayer.SendMessage("SetColor", _playerColor);
-            deadPlayer.SendMessage("Die", other.transform.position.x < this.transform.position.x ? "left" : "right");
+            var deadPlayer = Instantiate(DeadPlayer.gameObject, transform.position, transform.rotation) as GameObject;
         }
         Destroy(gameObject);
     }

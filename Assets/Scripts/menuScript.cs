@@ -27,17 +27,16 @@ public class menuScript : MonoBehaviour
 
         Time.timeScale = 1.0f;
 
-        Log.Info("Initializing game..");
+        global.LogInfo(Log , "Initializing game..");
 
         //Application.targetFrameRate = global.FrameRateLimit;
         CheckPlayerPrefs();
         SetMusic();
-        Log.Debug("MENU");
     }
 
     private void CheckPlayerPrefs()
     {
-        Log.Info("Checking player preferences..");
+        global.LogInfo(Log , "Checking player preferences..");
 
         if (!PlayerPrefs.HasKey(global.Music))
         {
@@ -57,7 +56,7 @@ public class menuScript : MonoBehaviour
         // Player Id is volatile
         PlayerPrefs.SetString(global.PlayerId, id.ToString());
 
-        Log.InfoFormat("Player ID for this session is {0}, machine name {1}", id, Environment.MachineName);
+        global.LogInfo(Log, string.Format("Player ID for this session is {0}, machine name {1}", id, Environment.MachineName));
     }
 
     private void SetMusic()

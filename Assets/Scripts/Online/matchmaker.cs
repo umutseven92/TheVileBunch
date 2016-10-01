@@ -95,6 +95,7 @@ public class matchmaker : Photon.PunBehaviour
             {
                 var pos = new Vector3();
 
+                // Player number
                 switch (p.Num)
                 {
                     case 0:
@@ -114,8 +115,28 @@ public class matchmaker : Photon.PunBehaviour
                         Debug.LogError("Player number not within bounds!");
                         break;
                 }
+               
+                // Player class
+                switch (p.Class)
+                {
+                    case "The Cowboy":
+                        _player = PhotonNetwork.Instantiate("onlineCowboy", pos, Quaternion.identity, 0);
+                        break;
+                    case "The Dancer":
+                        _player = PhotonNetwork.Instantiate("onlineDancer", pos, Quaternion.identity, 0);
+                        break;
+                    case "The Prospector":
+                        _player = PhotonNetwork.Instantiate("onlineProspector", pos, Quaternion.identity, 0);
+                        break;
+                    case "The Freeman":
+                        _player = PhotonNetwork.Instantiate("onlineFreeman", pos, Quaternion.identity, 0);
+                        break;
+                    default:
+                        // BUG
+                        Debug.LogError(string.Format("Player class {0} does not exist!", p.Class));
+                        break;
 
-                _player = PhotonNetwork.Instantiate("PlayerOnline", pos, Quaternion.identity, 0);
+                }
 
                 comp = _player.GetComponent<onlinePlayer>();
                 comp.Control = p.OnlineControl;

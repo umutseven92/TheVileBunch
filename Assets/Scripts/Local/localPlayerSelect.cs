@@ -2,9 +2,12 @@
 using log4net;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class localPlayerSelect : playerSelect
 {
+
+    public GameObject[] spaceButtons;
 
     public override void CheckInputs()
     {
@@ -17,7 +20,6 @@ public class localPlayerSelect : playerSelect
                 return;
             }
         }
-
         base.CheckInputs();
         CheckSubmit();
     }
@@ -223,7 +225,18 @@ public class localPlayerSelect : playerSelect
             }
 
         }
+
+        HandleSpaceButtonImage();
     }
 
+    private void HandleSpaceButtonImage()
+    {
+        var count = PlayerList.Count;
+
+        if (count > 0)
+        {
+            spaceButtons[count - 1].GetComponent<Renderer>().enabled = false;
+        }
+    }
 
 }

@@ -30,7 +30,7 @@ public class localPlayer : playerControl
             base.Jump();
         }
 
-        if (Input.GetButtonUp(Control + "Fire") && !_paused && Ammo > 0 && !_hit)
+        if (Input.GetButtonUp(Control + "Fire") && !_paused && Ammo > 0 && !_hit && !_shooting)
         {
             if (_aimCanceled)
             {
@@ -110,6 +110,18 @@ public class localPlayer : playerControl
             transform.position = new Vector3(transform.position.x, 6, transform.position.z);
         }
 
+        // RL - LR Collider
+        if (other.name.StartsWith("LRCollider"))
+        {
+            // Teleport to the top 
+            transform.position = new Vector3(9, transform.position.y, transform.position.z);
+        }
+
+        else if (other.name.StartsWith("RLCollider"))
+        {
+            // Teleport to the top 
+            transform.position = new Vector3(-9, transform.position.y, transform.position.z);
+        }
         // Ammo pickup
         if (other.name.StartsWith("Ammo"))
         {
