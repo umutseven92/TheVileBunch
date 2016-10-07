@@ -5,7 +5,6 @@ using UnityEngine.UI;
 public class settingsScript : MonoBehaviour
 {
     public Toggle MusicToggle;
-    public InputField NameInput;
 
     [HideInInspector]
     public bool Loaded;
@@ -24,14 +23,7 @@ public class settingsScript : MonoBehaviour
             MusicToggle.GetComponent<Toggle>().isOn = false;
         }
 
-        NameInput.text = PlayerPrefs.GetString(global.PlayerName);
-
         Loaded = true;
 
-    }
-
-    public void SetPlayerName(string playerName)
-    {
-        PlayerPrefs.SetString(global.PlayerName, playerName);
     }
 }
