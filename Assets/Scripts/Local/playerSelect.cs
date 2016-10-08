@@ -19,6 +19,12 @@ public class playerSelect : Photon.PunBehaviour
     public Text P2Text;
     public Text P3Text;
     public Text P4Text;
+
+    public Text P1TextShadow;
+    public Text P2TextShadow;
+    public Text P3TextShadow;
+    public Text P4TextShadow;
+
     public Image p1Image;
     public Image p2Image;
     public Image p3Image;
@@ -110,6 +116,8 @@ public class playerSelect : Photon.PunBehaviour
     public List<Image> playerButtons = new List<Image>();
 
     private List<Text> playerTexts = new List<Text>();
+    private List<Text> playerTextShadows = new List<Text>();
+
     private List<List<Button>> playerHorizontals = new List<List<Button>>();
 
     protected List<string> pickedClasses = new List<string>();
@@ -168,6 +176,11 @@ public class playerSelect : Photon.PunBehaviour
         playerTexts.Add(P2Text);
         playerTexts.Add(P3Text);
         playerTexts.Add(P4Text);
+
+        playerTextShadows.Add(P1TextShadow);
+        playerTextShadows.Add(P2TextShadow);
+        playerTextShadows.Add(P3TextShadow);
+        playerTextShadows.Add(P4TextShadow);
 
         p1Button.sprite = startButton;
         p2Button.sprite = startButton;
@@ -546,10 +559,13 @@ public class playerSelect : Photon.PunBehaviour
             if (string.IsNullOrEmpty(player.OnlinePlayerName))
             {
                 playerTexts[i].text = player.Class;
+                playerTextShadows[i].text = player.Class;
             }
             else
             {
                 playerTexts[i].text = string.Format("{0}\n{1}", player.Class, player.OnlinePlayerName);
+                playerTextShadows[i].text = string.Format("{0}\n{1}", player.Class, player.OnlinePlayerName);
+
             }
 
             if (player.Set)

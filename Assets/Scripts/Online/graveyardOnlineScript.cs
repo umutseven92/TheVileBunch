@@ -18,6 +18,8 @@ public class graveyardOnlineScript : graveyardScript
     {
         base.Start();
         WinnerText.text = WinnerText.text.Replace("{class}", onlineSceneHelper.Winner);
+        WinnerTextShadow.text = WinnerTextShadow.text.Replace("{class}", onlineSceneHelper.Winner);
+
         var remaining = playerSelect.PlayerList;
 
         remaining.Remove(remaining.Find(p => p.Class.Equals(onlineSceneHelper.Winner)));
