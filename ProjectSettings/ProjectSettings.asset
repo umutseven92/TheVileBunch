@@ -494,7 +494,7 @@ PlayerSettings:
   - WebGL::template
   - additionalIl2CppArgs::additionalIl2CppArgs
   Analytics_ServiceEnabled::Analytics_ServiceEnabled: False
-  Build_ServiceEnabled::Build_ServiceEnabled: True
+  Build_ServiceEnabled::Build_ServiceEnabled: False
   Collab_ServiceEnabled::Collab_ServiceEnabled: False
   ErrorHub_ServiceEnabled::ErrorHub_ServiceEnabled: False
   Game_Performance_ServiceEnabled::Game_Performance_ServiceEnabled: False
@@ -543,7 +543,7 @@ PlayerSettings:
   XboxOne::VR::enabledDevices: []
   iOS::VR::enabledDevices: []
   tvOS::VR::enabledDevices: []
-  cloudProjectId: 54a241cc-e85e-40aa-9e64-502107e6322f
-  projectName: Frontier Strain
+  cloudProjectId: f610dbc5-e552-488d-ab42-35047ff3caf9
+  projectName: The Vile Bunch (1)
   organizationId: graviton-studios
   cloudEnabled: 0
