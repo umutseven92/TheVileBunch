@@ -54,6 +54,8 @@ public class playerSelect : Photon.PunBehaviour
     private Sprite prospectorImage;
     private Sprite freemanImage;
 
+    private Sprite backgroundImage;
+
     public Image NextButton;
     public Image BackButton;
     protected Sprite aButton;
@@ -133,6 +135,7 @@ public class playerSelect : Photon.PunBehaviour
         dancerImage = Resources.Load<Sprite>("dancer");
         prospectorImage = Resources.Load<Sprite>("prospector");
         freemanImage = Resources.Load<Sprite>("freeman");
+        backgroundImage = Resources.Load<Sprite>("selectBG");
 
         aButton = Resources.Load<Sprite>("abutton");
         bButton = Resources.Load<Sprite>("bbutton");
@@ -539,15 +542,10 @@ public class playerSelect : Photon.PunBehaviour
 
     protected void UpdateSelect(List<Player> players)
     {
-        P1Text.text = SelectText;
-        P2Text.text = SelectText;
-        P3Text.text = SelectText;
-        P4Text.text = SelectText;
+        P1Text.text = P2Text.text = P3Text.text = P4Text.text = SelectText;
+        P1TextShadow.text = P2TextShadow.text = P3TextShadow.text = P4TextShadow.text = SelectText;
 
-        p1Image.sprite = null;
-        p2Image.sprite = null;
-        p3Image.sprite = null;
-        p4Image.sprite = null;
+        p1Image.sprite = p2Image.sprite = p3Image.sprite = p4Image.sprite = backgroundImage;
 
 
         for (int i = 0; i < PlayerList.Count; i++)
@@ -752,7 +750,7 @@ public class playerSelect : Photon.PunBehaviour
         /// On single player, this is k for keyboard, or j1 through j4 for controller.
         /// On online play, this is players ID.
         /// </summary>
-        public string Control { get; set; } 
+        public string Control { get; set; }
         public string Class { get; set; }
         public int Num { get; set; }
         public bool Set { get; set; }
