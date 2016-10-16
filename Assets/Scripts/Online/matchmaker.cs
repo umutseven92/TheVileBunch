@@ -78,6 +78,7 @@ public class matchmaker : NetworkBehaviour
 		scoreCanvas.enabled = false;
 		pauseCanvas.enabled = false;
 
+		return;
 		SetPlayerMenuValues();
 
 		pId = PlayerPrefs.GetString(global.PlayerId);
@@ -219,6 +220,7 @@ public class matchmaker : NetworkBehaviour
 
 	void Update()
 	{
+		return;
 		CheckTimers();
 		SetCanvas();
 		CheckInputs();

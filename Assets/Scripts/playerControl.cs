@@ -3,10 +3,11 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 using log4net;
+using UnityEngine.Networking;
 using UnityEngine.UI;
 using XInputDotNetPure;
 
-public abstract class playerControl : MonoBehaviour
+public abstract class playerControl : NetworkBehaviour 
 {
 
     [HideInInspector]

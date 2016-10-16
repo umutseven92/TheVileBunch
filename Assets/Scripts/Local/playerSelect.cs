@@ -6,7 +6,7 @@ using log4net;
 using UnityEngine.UI;
 using XInputDotNetPure;
 
-public class playerSelect 
+public class playerSelect :MonoBehaviour
 {
     public AudioClip Clip;
     public AudioClip DirClip;

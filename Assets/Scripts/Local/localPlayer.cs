@@ -5,235 +5,244 @@ using System.Linq;
 
 public class localPlayer : playerControl
 {
-    private bool _paused;
+	private bool _paused;
 
-    private List<playerSelect.Player> _localPlayers;
+	private List<playerSelect.Player> _localPlayers;
 
-    protected override void Awake()
-    {
-        base.Awake();
+	protected override void Awake()
+	{
+		if (string.IsNullOrEmpty(Control) && Debug.isDebugBuild)
+		{
+			Control = "j1";
+		}
+		base.Awake();
 
-        _localPlayers = playerSelect.PlayerList;
-    }
+		_localPlayers = playerSelect.PlayerList;
+	}
 
-    protected override void Update()
-    {
-        base.Update();
+	protected override void Update()
+	{
+		if(!isLocalPlayer)
+		{
+			return;
+		}	
 
-        if (Input.GetButtonDown(Control + "Fire") && !_paused && Ammo > 0)
-        {
-            _softAim = true;
-        }
+		base.Update();
 
-        if (Input.GetButtonDown(Control + "Jump") && (true || _inFrontOfLadder) && !_paused && !_aiming)
-        {
-            base.Jump();
-        }
+		if (Input.GetButtonDown(Control + "Fire") && !_paused && Ammo > 0)
+		{
+			_softAim = true;
+		}
 
-        if (Input.GetButtonUp(Control + "Fire") && !_paused && Ammo > 0 && !_hit && !_shooting)
-        {
-            if (_aimCanceled)
-            {
-                _aimCanceled = false;
-                return;
-            }
-            Shoot();
-            AimLine.GetComponent<SpriteRenderer>().enabled = false;
-            _aiming = false;
-            _softAim = false;
-        }
+		if (Input.GetButtonDown(Control + "Jump") && (true || _inFrontOfLadder) && !_paused && !_aiming)
+		{
+			base.Jump();
+		}
 
-        if (Input.GetButtonDown(Control + "Slash") && !_paused && !_slashing && !_aiming && !_slashDelay)
-        {
-            Slash();
-        }
+		if (Input.GetButtonUp(Control + "Fire") && !_paused && Ammo > 0 && !_hit && !_shooting)
+		{
+			if (_aimCanceled)
+			{
+				_aimCanceled = false;
+				return;
+			}
+			Shoot();
+			AimLine.GetComponent<SpriteRenderer>().enabled = false;
+			_aiming = false;
+			_softAim = false;
+		}
 
-        if (Input.GetButtonDown(Control + "Slash") && !_paused && !_slashing && _aiming)
-        {
-            _aiming = false;
-            AimLine.GetComponent<SpriteRenderer>().enabled = false;
-            _aimCanceled = true;
-        }
+		if (Input.GetButtonDown(Control + "Slash") && !_paused && !_slashing && !_aiming && !_slashDelay)
+		{
+			Slash();
+		}
 
-        _up = Input.GetAxis(Control + "Vertical") > 0.3f;
+		if (Input.GetButtonDown(Control + "Slash") && !_paused && !_slashing && _aiming)
+		{
+			_aiming = false;
+			AimLine.GetComponent<SpriteRenderer>().enabled = false;
+			_aimCanceled = true;
+		}
 
-        HandleAnimations();
+		_up = Input.GetAxis(Control + "Vertical") > 0.3f;
 
-        if (_aiming)
-        {
-            DrawLine();
-        }
+		HandleAnimations();
 
-        // _paused = _spawned;
-    }
+		if (_aiming)
+		{
+			DrawLine();
+		}
 
-    protected override void FixedUpdate()
-    {
-        if (_paused)
-        {
-            return;
-        }
+		// _paused = _spawned;
+	}
 
-        base.FixedUpdate();
-    }
+	protected override void FixedUpdate()
+	{
+		if (_paused)
+		{
+			return;
+		}
 
-    void OnTriggerEnter2D(Collider2D other)
-    {
-        // Rope
-        if (other.name.StartsWith("ropeAttached") && _up)
-        {
-            _inFrontOfLadder = true;
-        }
+		base.FixedUpdate();
+	}
 
-        // Bullet
-        if (other.name.StartsWith("Bullet"))
-        {
-            if (!_hit)
-            {
-                _hit = true;
+	void OnTriggerEnter2D(Collider2D other)
+	{
+		// Rope
+		if (other.name.StartsWith("ropeAttached") && _up)
+		{
+			_inFrontOfLadder = true;
+		}
 
-                LowerHealth(BulletDamage);
+		// Bullet
+		if (other.name.StartsWith("Bullet"))
+		{
+			if (!_hit)
+			{
+				_hit = true;
 
-                // Small push
-                _rb2D.AddForce(other.gameObject.transform.position.x < this.transform.position.x
-                    ? new Vector2(PushX, PushY)
-                    : new Vector2(-PushY, PushY));
+				LowerHealth(BulletDamage);
 
-                CheckHealth(other);
-            }
-        }
+				// Small push
+				_rb2D.AddForce(other.gameObject.transform.position.x < this.transform.position.x
+					? new Vector2(PushX, PushY)
+					: new Vector2(-PushY, PushY));
 
-        // Fall
-        if (other.name.StartsWith("FallCollider"))
-        {
-            // Teleport to the top 
-            transform.position = new Vector3(transform.position.x, 6, transform.position.z);
-        }
+				CheckHealth(other);
+			}
+		}
 
-        // RL - LR Collider
-        if (other.name.StartsWith("LRCollider"))
-        {
-            // Teleport to the top 
-            transform.position = new Vector3(9, transform.position.y, transform.position.z);
-        }
+		// Fall
+		if (other.name.StartsWith("FallCollider"))
+		{
+			// Teleport to the top 
+			transform.position = new Vector3(transform.position.x, 6, transform.position.z);
+		}
 
-        else if (other.name.StartsWith("RLCollider"))
-        {
-            // Teleport to the top 
-            transform.position = new Vector3(-9, transform.position.y, transform.position.z);
-        }
-        // Ammo pickup
-        if (other.name.StartsWith("Ammo"))
-        {
-            _audio.PlayOneShot(AmmoClip);
-            Ammo += AmmoPickup;
-            if (Ammo > MaxAmmo)
-            {
-                Ammo = MaxAmmo;
-            }
+		// RL - LR Collider
+		if (other.name.StartsWith("LRCollider"))
+		{
+			// Teleport to the top 
+			transform.position = new Vector3(9, transform.position.y, transform.position.z);
+		}
 
-            _ammoChanged = true;
-            _ammoCounter = 0.000d;
-        }
+		else if (other.name.StartsWith("RLCollider"))
+		{
+			// Teleport to the top 
+			transform.position = new Vector3(-9, transform.position.y, transform.position.z);
+		}
+		// Ammo pickup
+		if (other.name.StartsWith("Ammo"))
+		{
+			_audio.PlayOneShot(AmmoClip);
+			Ammo += AmmoPickup;
+			if (Ammo > MaxAmmo)
+			{
+				Ammo = MaxAmmo;
+			}
 
-        // Health pickup
-        if (other.name.StartsWith("Health"))
-        {
-            _audio.PlayOneShot(HealthClip);
-            _healed = true;
-            GiveHealth(HealthPickup);
-        }
+			_ammoChanged = true;
+			_ammoCounter = 0.000d;
+		}
 
-        // Sword slash
-        if (other.name.StartsWith("slash"))
-        {
-            if (other.GetComponent<slashScript>().num != playerNum && other.GetComponent<slashScript>().slashing)
-            {
-                if (!_hit)
-                {
-                    _hit = true;
-                    LowerHealth(SwordDamage);
+		// Health pickup
+		if (other.name.StartsWith("Health"))
+		{
+			_audio.PlayOneShot(HealthClip);
+			_healed = true;
+			GiveHealth(HealthPickup);
+		}
 
-                    if (Health > 0)
-                    {
-                        float pX = 0f;
+		// Sword slash
+		if (other.name.StartsWith("slash"))
+		{
+			if (other.GetComponent<slashScript>().num != playerNum && other.GetComponent<slashScript>().slashing)
+			{
+				if (!_hit)
+				{
+					_hit = true;
+					LowerHealth(SwordDamage);
 
-                        var go = GameObject.FindGameObjectsWithTag("Player");
+					if (Health > 0)
+					{
+						float pX = 0f;
 
-                        var gList = new List<GameObject>(go);
-                        gList.RemoveAt(0);
-                        go = gList.ToArray();
+						var go = GameObject.FindGameObjectsWithTag("Player");
 
-                        foreach (
-                            var g in
-                                go.Where(
-                                    g =>
-                                        g.gameObject.GetComponent<playerControl>().playerNum ==
-                                        other.GetComponent<slashScript>().num))
-                        {
-                            pX = g.transform.position.x;
-                        }
+						var gList = new List<GameObject>(go);
+						gList.RemoveAt(0);
+						go = gList.ToArray();
 
-                        // Small push
-                        _rb2D.AddForce(pX < transform.position.x
-                            ? new Vector2(PushX, PushY)
-                            : new Vector2(-PushX, PushY));
-                    }
-                    CheckHealth(other);
-                }
-            }
-        }
+						foreach (
+							var g in
+								go.Where(
+									g =>
+										g.gameObject.GetComponent<playerControl>().playerNum ==
+										other.GetComponent<slashScript>().num))
+						{
+							pX = g.transform.position.x;
+						}
 
-    }
+						// Small push
+						_rb2D.AddForce(pX < transform.position.x
+							? new Vector2(PushX, PushY)
+							: new Vector2(-PushX, PushY));
+					}
+					CheckHealth(other);
+				}
+			}
+		}
 
-    protected override void Shoot()
-    {
-        base.Shoot();
+	}
 
-        var shotTransform = Instantiate(Bullet) as Transform;
-        shotTransform.position = new Vector3(transform.position.x + bXPos, transform.position.y + bYPos, transform.position.z);
+	protected override void Shoot()
+	{
+		base.Shoot();
 
-        shotTransform.GetComponent<Rigidbody2D>().velocity = new Vector2(bXSpeed, bYSpeed);
+		var shotTransform = Instantiate(Bullet) as Transform;
+		shotTransform.position = new Vector3(transform.position.x + bXPos, transform.position.y + bYPos, transform.position.z);
 
-        bXPos = 0;
-        bYPos = 0;
-        bXSpeed = 0;
-        bYSpeed = 0;
+		shotTransform.GetComponent<Rigidbody2D>().velocity = new Vector2(bXSpeed, bYSpeed);
 
-        _audio.PlayOneShot(GunShot);
-        GunLight.enabled = true;
-        _gunLight = true;
-        Ammo--;
-        _ammoChanged = true;
-        _ammoCounter = 0.000d;
+		bXPos = 0;
+		bYPos = 0;
+		bXSpeed = 0;
+		bYSpeed = 0;
 
-        AmmoText.enabled = true;
-    }
+		_audio.PlayOneShot(GunShot);
+		GunLight.enabled = true;
+		_gunLight = true;
+		Ammo--;
+		_ammoChanged = true;
+		_ammoCounter = 0.000d;
 
-    protected void Slash()
-    {
-        _slashing = true;
+		AmmoText.enabled = true;
+	}
 
-        _slashCol.SendMessage("GetCol", _slashing);
-        _audio.PlayOneShot(SlashClip);
-    }
-    void Pause()
-    {
-        _paused = true;
-    }
+	protected void Slash()
+	{
+		_slashing = true;
 
-    void UnPause()
-    {
-        _paused = false;
-    }
-    void PlayerNumber(int num)
-    {
-        playerNum = num;
-        Control = _localPlayers[num - 1].Control;
+		_slashCol.SendMessage("GetCol", _slashing);
+		_audio.PlayOneShot(SlashClip);
+	}
+	void Pause()
+	{
+		_paused = true;
+	}
 
-        _playerClass = _localPlayers[num - 1].Class;
+	void UnPause()
+	{
+		_paused = false;
+	}
+	void PlayerNumber(int num)
+	{
+		playerNum = num;
+		Control = _localPlayers[num - 1].Control;
 
-        _slashCol.SendMessage("GetPlayerNum", playerNum);
-    }
+		_playerClass = _localPlayers[num - 1].Class;
+
+		_slashCol.SendMessage("GetPlayerNum", playerNum);
+	}
 
 }
