@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class graveyardScript : Photon.PunBehaviour 
+public class graveyardScript : MonoBehaviour
 {
 	public Text TimerText;
 	public Text WinnerText;

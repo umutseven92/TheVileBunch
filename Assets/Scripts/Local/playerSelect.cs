@@ -6,7 +6,7 @@ using log4net;
 using UnityEngine.UI;
 using XInputDotNetPure;
 
-public class playerSelect : Photon.PunBehaviour
+public class playerSelect 
 {
     public AudioClip Clip;
     public AudioClip DirClip;

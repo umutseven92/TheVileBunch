@@ -5,95 +5,92 @@ using System.Linq;
 using System.Xml;
 using UnityEngine.UI;
 
-public class onlineLevelLoadingScreen : Photon.PunBehaviour
+public class onlineLevelLoadingScreen :MonoBehaviour
 {
 
-    public Text LoadingText;
-    public Text DiaryText;
-    public double LoadingMs = 1.500d;
-    public string LevelName;
+	public Text LoadingText;
+	public Text DiaryText;
+	public double LoadingMs = 1.500d;
+	public string LevelName;
 
-    private double _loadingTextCounter;
-    private const string Loading = "Loading";
-    private List<string> _diaries = new List<string>();
-    private System.Random _rand = new System.Random();
-    private bool _ready = false;
+	private double _loadingTextCounter;
+	private const string Loading = "Loading";
+	private List<string> _diaries = new List<string>();
+	private System.Random _rand = new System.Random();
+	private bool _ready = false;
 
-    void Start()
-    {
-        PhotonNetwork.automaticallySyncScene = false;
-        if (PhotonNetwork.isMasterClient)
-        {
-            PhotonNetwork.room.open = false;
-            PhotonNetwork.room.visible = false;
-        }
+	void Start()
+	{
+		/*
+		PhotonNetwork.automaticallySyncScene = false;
+		if (PhotonNetwork.isMasterClient)
+		{
+			PhotonNetwork.room.open = false;
+			PhotonNetwork.room.visible = false;
+		}
+		*/
+		GameObject speaker = GameObject.Find("Speaker");
 
-        GameObject speaker = GameObject.Find("Speaker");
+		if (speaker != null) speaker.GetComponent<AudioSource>().Stop();
 
-        if (speaker != null) speaker.GetComponent<AudioSource>().Stop();
+		var tips = Resources.Load("tips") as TextAsset;
 
-        var tips = Resources.Load("tips") as TextAsset;
+		using (var reader = XmlReader.Create(new StringReader(tips.text)))
+		{
+			while (reader.Read())
+			{
+				if (reader.IsStartElement())
+				{
+					if (reader.Name.Equals("tip"))
+					{
+						if (reader.Read())
+						{
+							_diaries.Add(reader.Value.Trim());
+						}
+					}
+				}
+			}
+		}
 
-        using (var reader = XmlReader.Create(new StringReader(tips.text)))
-        {
-            while (reader.Read())
-            {
-                if (reader.IsStartElement())
-                {
-                    if (reader.Name.Equals("tip"))
-                    {
-                        if (reader.Read())
-                        {
-                            _diaries.Add(reader.Value.Trim());
-                        }
-                    }
-                }
-            }
-        }
+		var count = _rand.Next(0, _diaries.Count);
 
-        var count = _rand.Next(0, _diaries.Count);
-
-        DiaryText.text = _diaries[count];
+		DiaryText.text = _diaries[count];
 
 
-    }
+	}
 
-    void OnGUI()
-    {
-        GUILayout.Label(PhotonNetwork.connectionStateDetailed.ToString());
-    }
 
-    void Update()
-    {
-        AnimateLoadingText();
-        if (Application.GetStreamProgressForLevel(LevelName) == 1)
-        {
-            LoadingText.text = "Loaded";
-            PhotonNetwork.LoadLevel(LevelName);
-        }
+	void Update()
+	{
+		AnimateLoadingText();
+		if (Application.GetStreamProgressForLevel(LevelName) == 1)
+		{
+			LoadingText.text = "Loaded";
+		  //  PhotonNetwork.LoadLevel(LevelName);
+		}
 
-    }
+	}
 
-    private void AnimateLoadingText()
-    {
-        _loadingTextCounter += 1 * Time.deltaTime;
-        if (_loadingTextCounter >= LoadingMs)
-        {
-            AddDot();
-            _loadingTextCounter = 0.000d;
-        }
+	private void AnimateLoadingText()
+	{
+		_loadingTextCounter += 1 * Time.deltaTime;
+		if (_loadingTextCounter >= LoadingMs)
+		{
+			AddDot();
+			_loadingTextCounter = 0.000d;
+		}
 
-    }
+	}
 
-    private void AddDot()
-    {
-        if (LoadingText.text.Count(c => c == '.') == 3)
-        {
-            LoadingText.text = Loading;
-        }
-        else
-        {
-            LoadingText.text += ".";
-        }
-    }
+	private void AddDot()
+	{
+		if (LoadingText.text.Count(c => c == '.') == 3)
+		{
+			LoadingText.text = Loading;
+		}
+		else
+		{
+			LoadingText.text += ".";
+		}
+	}
 }

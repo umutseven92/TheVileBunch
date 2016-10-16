@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class connectScript : Photon.PunBehaviour
+public class connectScript : MonoBehaviour
 {
     public Button[] Buttons;
 
@@ -10,21 +10,17 @@ public class connectScript : Photon.PunBehaviour
     {
         DisableButtons();
 
-        if (PhotonNetwork.connectionState != ConnectionState.Connected)
-        {
-            PhotonNetwork.ConnectUsingSettings(global.GameVersion);
-        }
+        //if (PhotonNetwork.connectionState != ConnectionState.Connected)
+        //{
+        //    PhotonNetwork.ConnectUsingSettings(global.GameVersion);
+        //}
     }
 
-    void OnGUI()
-    {
-        GUILayout.Label(PhotonNetwork.connectionStateDetailed.ToString());
-    }
 
-    public override void OnConnectedToMaster()
-    {
-        EnableButtons();
-    }
+    //public override void OnConnectedToMaster()
+    //{
+    //    EnableButtons();
+    //}
 
     private void EnableButtons()
     {
@@ -36,13 +32,13 @@ public class connectScript : Photon.PunBehaviour
 
     private void DisableButtons()
     {
-        if (PhotonNetwork.connectionState != ConnectionState.Connected)
-        {
-            foreach (var button in Buttons)
-            {
-                button.interactable = false;
-            }
-        }
+        //if (PhotonNetwork.connectionState != ConnectionState.Connected)
+        //{
+        //    foreach (var button in Buttons)
+        //    {
+        //        button.interactable = false;
+        //    }
+        //}
     }
 
 }

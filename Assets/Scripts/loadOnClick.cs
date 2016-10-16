@@ -14,7 +14,7 @@ public class loadOnClick : MonoBehaviour
 
     public void Disconnect()
     {
-        PhotonNetwork.Disconnect();
+        //PhotonNetwork.Disconnect();
     }
 
     public void LoadScene(string levelName)
@@ -70,16 +70,16 @@ public class loadOnClick : MonoBehaviour
     public void EndMultiGame()
     {
         playerSelect.PlayerList = new List<playerSelect.Player>();
-        PhotonNetwork.automaticallySyncScene = false;
+        //PhotonNetwork.automaticallySyncScene = false;
         Time.timeScale = 1;
-        PhotonNetwork.Disconnect();
+        //PhotonNetwork.Disconnect();
         SceneManager.LoadScene("Menu");
     }
 
     public void QuickJoin()
     {
         onlineHelper.Joining = true;
-        PhotonNetwork.LoadLevel("OnlineLoading");
+        //PhotonNetwork.LoadLevel("OnlineLoading");
     }
 
     public void FocusOn(Transform item)

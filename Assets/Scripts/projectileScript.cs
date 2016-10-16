@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class projectileScript : Photon.PunBehaviour 
+public class projectileScript: MonoBehaviour
 {
 
     // Use this for initialization

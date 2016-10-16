@@ -8,7 +8,6 @@ public class onlinePlayerSelect : playerSelect
 {
     public Text BackText;
 
-    private PhotonView pView;
     private bool sure = false;
     private bool first = true;
     private bool selected;
@@ -35,17 +34,17 @@ public class onlinePlayerSelect : playerSelect
     {
         base.Start();
 
-        PhotonNetwork.automaticallySyncScene = true;
+        //PhotonNetwork.automaticallySyncScene = true;
 
-        pView = GetComponentInParent<PhotonView>();
+        //pView = GetComponentInParent<PhotonView>();
 
-        Play.onClick.AddListener(() =>
-        {
-            if (PhotonNetwork.isMasterClient)
-            {
-                PhotonNetwork.LoadLevel("OnlineSceneSelect");
-            }
-        });
+        //Play.onClick.AddListener(() =>
+        //{
+        //    if (PhotonNetwork.isMasterClient)
+        //    {
+        //        PhotonNetwork.LoadLevel("OnlineSceneSelect");
+        //    }
+        //});
 
         InitialSubmit("Online");
     }
@@ -64,7 +63,7 @@ public class onlinePlayerSelect : playerSelect
                 }
                 else
                 {
-                    PhotonNetwork.Disconnect();
+                    //PhotonNetwork.Disconnect();
                     PlayerList = new List<Player>();
 
                     SceneManager.LoadScene("Menu");
@@ -217,7 +216,7 @@ public class onlinePlayerSelect : playerSelect
                 break;
         }
 
-        pView.RPC("PlayerChangeRPC", PhotonTargets.All, control, dir, playerId, delay, pView.viewID);
+     //   pView.RPC("PlayerChangeRPC", PhotonTargets.All, control, dir, playerId, delay, pView.viewID);
     }
 
     public void OnlineChangePlayer(string control, int dir, bool delay, string playerId)
@@ -247,17 +246,17 @@ public class onlinePlayerSelect : playerSelect
 
     protected override void AddPlayer(string control)
     {
-        pView.RPC("PlayerAddRPC", PhotonTargets.All, control, pView.viewID);
+       // pView.RPC("PlayerAddRPC", PhotonTargets.All, control, pView.viewID);
     }
 
     protected override void AddInitialPlayer(string control, string pClass, string inputControl)
     {
-        pView.RPC("PlayerAddInitialRPC", PhotonTargets.All, control, pClass, PlayerPrefs.GetString(global.PlayerName), inputControl, pView.viewID);
+        //pView.RPC("PlayerAddInitialRPC", PhotonTargets.All, control, pClass, PlayerPrefs.GetString(global.PlayerName), inputControl, pView.viewID);
     }
 
     protected override void RemovePlayer(string control)
     {
-        pView.RPC("PlayerRemoveRPC", PhotonTargets.All, control, pView.viewID);
+        //pView.RPC("PlayerRemoveRPC", PhotonTargets.All, control, pView.viewID);
     }
 
     public void SetAllPlayers(List<Player> players)
@@ -321,10 +320,10 @@ public class onlinePlayerSelect : playerSelect
 
     protected override void UpdatePlayButton()
     {
-        if (!PhotonNetwork.isMasterClient)
-        {
-            return;
-        }
+        //if (!PhotonNetwork.isMasterClient)
+        //{
+        //    return;
+        //}
 
         base.UpdatePlayButton();
     }
@@ -368,14 +367,14 @@ public class onlinePlayerSelect : playerSelect
         {
             if (joinCounter > joinDelay)
             {
-                if (!PhotonNetwork.isMasterClient)
-                {
-                    pView.RPC("PlayerJoinRPC", PhotonTargets.All, pView.viewID);
-                }
-                else
-                {
-                    Master = true;
-                }
+                //if (!PhotonNetwork.isMasterClient)
+                //{
+                //    pView.RPC("PlayerJoinRPC", PhotonTargets.All, pView.viewID);
+                //}
+                //else
+                //{
+                //    Master = true;
+                //}
 
                 first = false;
                 joinCounter = 0.000d;
@@ -440,10 +439,6 @@ public class onlinePlayerSelect : playerSelect
         }
     }
 
-    void OnGUI()
-    {
-        GUILayout.Label(PhotonNetwork.connectionStateDetailed.ToString());
-    }
 
     protected override void SelectInitialPlayer(string control, string inputControl)
     {
