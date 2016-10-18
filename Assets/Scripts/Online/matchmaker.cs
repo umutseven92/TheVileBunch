@@ -144,9 +144,11 @@ public class matchmaker : NetworkBehaviour
 
 				_player.GetComponent<Rigidbody2D>().isKinematic = false;
 
+				/*
 				comp.OnlinePlayerName = PlayerPrefs.GetString(global.PlayerName);
 				comp.OnlineNameText.text = PlayerPrefs.GetString(global.PlayerName);
 				comp._slashCol.SendMessage("GetPlayerNum", comp.playerNum);
+				*/
 			}
 		});
 
@@ -199,7 +201,7 @@ public class matchmaker : NetworkBehaviour
 				scoreCanvas.enabled = false;
 				start = false;
 				musicPlayer.UnPause();
-				comp.Enabled = true;
+				//comp.Enabled = true;
 				_counter = 0.000d;
 			}
 		}
@@ -236,7 +238,7 @@ public class matchmaker : NetworkBehaviour
 		{
 			var winnerComp = players[0].GetComponent<onlinePlayer>();
 
-			winner = winnerComp.OnlineNameText.text;
+		//	winner = winnerComp.OnlineNameText.text;
 			slowMo = true;
 			gameOver = true;
 		}
@@ -267,7 +269,7 @@ public class matchmaker : NetworkBehaviour
 
 				if (paused)
 				{
-					comp.Enabled = true;
+				//	comp.Enabled = true;
 					GameObject myEventSystem = GameObject.Find("EventSystem");
 					myEventSystem.GetComponent<UnityEngine.EventSystems.EventSystem>().SetSelectedGameObject(null);
 
@@ -275,7 +277,7 @@ public class matchmaker : NetworkBehaviour
 				}
 				else
 				{
-					comp.Enabled = false;
+				//	comp.Enabled = false;
 					pauseCanvas.enabled = true;
 					btnExit.Select();
 				}
