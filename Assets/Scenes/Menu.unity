@@ -765,6 +765,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7233007ac2b8ab140b8e9964d4ad7ea8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ResolutionDropdown: {fileID: 0}
+  FullScreenToggle: {fileID: 0}
 --- !u!1 &832657415
 GameObject:
   m_ObjectHideFlags: 0

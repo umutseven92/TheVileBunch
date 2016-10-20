@@ -32,7 +32,7 @@ public abstract class playerControl : NetworkBehaviour
 	public string _playerClass;
 
 	[HideInInspector]
-	public int Health;
+	public abstract int Health { get; set; }
 
 	[HideInInspector]
 	public int Ammo;
@@ -615,27 +615,26 @@ public abstract class playerControl : NetworkBehaviour
 
 	}
 
-	protected void LowerHealth(int damage)
+	protected virtual void LowerHealth(int damage)
 	{
 		VibrateGamePad();
 		Health -= damage;
-		HealthSlider.value -= damage;
 	}
 
-	protected void GiveHealth(int health)
+
+	protected virtual void UpdateHealthSlider(int health)
+	{
+		HealthSlider.value = health;
+	}
+
+	protected virtual void GiveHealth(int health)
 	{
 		Health += health;
 
 		if (Health > MaxHealth)
 		{
 			Health = MaxHealth;
-			HealthSlider.value = HealthSlider.maxValue;
 		}
-		else
-		{
-			HealthSlider.value += health;
-		}
-
 	}
 
 	void OnTriggerExit2D(Collider2D other)

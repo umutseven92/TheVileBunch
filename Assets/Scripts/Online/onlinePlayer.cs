@@ -7,6 +7,9 @@ using UnityEngine.UI;
 
 public class onlinePlayer : playerControl
 {
+	[SyncVar(hook = "OnChangeHealth")]
+	private int _health;
+
 	protected override void Update()
 	{
 		if(!isLocalPlayer)
@@ -27,6 +30,13 @@ public class onlinePlayer : playerControl
 		base.FixedUpdate();
 	}
 
+
+	public override int Health
+	{
+		get { return _health; }
+		set { _health = value; }
+	}
+
 	protected override void Awake()
 	{
 		base.Awake();
@@ -36,6 +46,29 @@ public class onlinePlayer : playerControl
 			Control = "j1";
 			this.Ammo = this.MaxAmmo = 99;
 		}
+	}
+
+	protected override void LowerHealth(int damage)
+	{
+		if (isServer)
+		{
+			return;
+		}
+		base.LowerHealth(damage);
+	}
+
+	protected override void GiveHealth(int health)
+	{
+		if (isServer)
+		{
+			return;
+		}
+		base.GiveHealth(health);
+	}
+
+	private void OnChangeHealth(int health)
+	{
+		base.UpdateHealthSlider(health);
 	}
 
 

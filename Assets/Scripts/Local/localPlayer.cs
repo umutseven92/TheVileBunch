@@ -8,6 +8,8 @@ public class localPlayer : playerControl
 {
 	private List<playerSelect.Player> _localPlayers;
 
+	public override int Health { get; set; }
+
 	protected override void Awake()
 	{
 		base.Awake();
@@ -25,6 +27,17 @@ public class localPlayer : playerControl
 		base.FixedUpdate();
 	}
 
+	protected override void LowerHealth(int damage)
+	{
+		base.LowerHealth(damage);
+		base.UpdateHealthSlider(Health);
+	}
+
+	protected override void GiveHealth(int health)
+	{
+		base.GiveHealth(health);
+		base.UpdateHealthSlider(Health);
+	}
 
 	void Pause()
 	{
