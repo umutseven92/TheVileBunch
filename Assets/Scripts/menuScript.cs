@@ -34,27 +34,21 @@ public class menuScript : MonoBehaviour
 	{
 		global.LogInfo(Log, "Checking player preferences..");
 
-		if (!PlayerPrefs.HasKey(global.FullScreen))
-		{
-			PlayerPrefs.SetInt(global.FullScreen, 1);
-		}
-		else
-		{
-			Screen.fullScreen = PlayerPrefs.GetInt(global.FullScreen) == 1;
-		}
-
 		if (!PlayerPrefs.HasKey(global.Resolution))
 		{
 			PlayerPrefs.SetInt(global.Resolution, (int)(global.Resolutions.r1920x1080));
 		}
-		else
+		var res = (global.Resolutions)PlayerPrefs.GetInt(global.Resolution);
+
+		var resArray = res.ToString().Substring(1, res.ToString().Length - 1).Split('x');
+
+		Screen.SetResolution(int.Parse(resArray[0]), int.Parse(resArray[1]),true);
+
+		if (!PlayerPrefs.HasKey(global.FullScreen))
 		{
-			var res = (global.Resolutions)PlayerPrefs.GetInt(global.Resolution);
-
-			var resArray = res.ToString().Substring(1, res.ToString().Length - 1).Split('x');
-
-			Screen.SetResolution(int.Parse(resArray[0]), int.Parse(resArray[1]), Screen.fullScreen);
+			PlayerPrefs.SetInt(global.FullScreen, 1);
 		}
+		Screen.fullScreen = PlayerPrefs.GetInt(global.FullScreen) == 1;
 
 		if (!PlayerPrefs.HasKey(global.Music))
 		{

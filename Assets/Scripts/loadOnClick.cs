@@ -41,10 +41,11 @@ public class loadOnClick : MonoBehaviour
 
 		PlayerPrefs.SetInt(global.Resolution, ResolutionDropdown.value);
 
-
 		var res = ResolutionDropdown.value;
 
-		var resArray = res.ToString().Substring(1, res.ToString().Length - 1).Split('x');
+		var resEnum = (global.Resolutions) res;
+
+		var resArray = resEnum.ToString().Substring(1, resEnum.ToString().Length - 1).Split('x');
 
 		Screen.SetResolution(int.Parse(resArray[0]), int.Parse(resArray[1]), Screen.fullScreen);
 	}
