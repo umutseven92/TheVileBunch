@@ -7,9 +7,8 @@ using UnityEngine.Networking;
 using UnityEngine.UI;
 using XInputDotNetPure;
 
-public abstract class playerControl : NetworkBehaviour
+public class playerControl : MonoBehaviour
 {
-
 	[HideInInspector]
 	public bool FacingRight = true;
 
@@ -32,7 +31,7 @@ public abstract class playerControl : NetworkBehaviour
 	public string _playerClass;
 
 	[HideInInspector]
-	public abstract int Health { get; set; }
+	public virtual int Health { get; set; }
 
 	[HideInInspector]
 	public int Ammo;
@@ -145,8 +144,8 @@ public abstract class playerControl : NetworkBehaviour
 	private double _spawnedCounter;
 	public double _spawnedMs = 2.000d;
 
-	private bool _bulletRight;
-	private bool _bulletLeft;
+	protected bool _bulletRight;
+	protected bool _bulletLeft;
 	protected bool _aiming;
 	protected bool _softAim;
 	private double _aimCounter;
@@ -229,6 +228,13 @@ public abstract class playerControl : NetworkBehaviour
 
 		JumpCount = MaxJumpCount;
 		_groundCheckCollider = GroundCheck.GetComponent<BoxCollider2D>();
+
+
+		if (string.IsNullOrEmpty(Control) && Debug.isDebugBuild)
+		{
+			Control = "j1";
+			this.Ammo = this.MaxAmmo = 99;
+		}
 	}
 
 	private bool tempGrounded = true;
@@ -249,6 +255,7 @@ public abstract class playerControl : NetworkBehaviour
 
 	protected virtual void Update()
 	{
+
 		AmmoText.text = Ammo.ToString();
 
 		SetGrounded();
@@ -384,6 +391,7 @@ public abstract class playerControl : NetworkBehaviour
 
 	protected virtual void FixedUpdate()
 	{
+
 		if (_spawned)
 		{
 			return;
@@ -459,6 +467,12 @@ public abstract class playerControl : NetworkBehaviour
 			}
 		}
 
+		CheckFlip();
+
+	}
+
+	private void CheckFlip()
+	{
 		if (_horizontal > 0 && !FacingRight)
 		{
 			Flip();
@@ -467,8 +481,8 @@ public abstract class playerControl : NetworkBehaviour
 		{
 			Flip();
 		}
-
 	}
+
 
 	void OnTriggerEnter2D(Collider2D other)
 	{
@@ -876,6 +890,7 @@ public abstract class playerControl : NetworkBehaviour
 		obj.localScale = scale;
 	}
 
+	[Command]
 	protected virtual void CmdShoot()
 	{
 		_shooting = true;
@@ -908,6 +923,7 @@ public abstract class playerControl : NetworkBehaviour
 		shotTransform.GetComponent<Rigidbody2D>().velocity = new Vector2(bXSpeed, bYSpeed);
 
 		NetworkServer.Spawn(shotTransform.gameObject);
+
 		bXPos = 0;
 		bYPos = 0;
 		bXSpeed = 0;

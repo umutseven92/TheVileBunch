@@ -71,6 +71,12 @@ public class menuScript : MonoBehaviour
 		PlayerPrefs.SetString(global.PlayerId, id.ToString());
 
 		global.LogInfo(Log, string.Format("Player ID for this session is {0}, machine name {1}", id, Environment.MachineName));
+
+		// For multiplayer testing
+		if (Debug.isDebugBuild)
+		{
+			Screen.SetResolution(640, 480, false);
+		}
 	}
 
 	private void SetMusic()

@@ -488,7 +488,6 @@ MonoBehaviour:
   Control: 
   playerNum: 0
   _playerClass: 
-  Health: 0
   Ammo: 0
   HealthSlider: {fileID: 0}
   OnlinebXSpeed: 0
@@ -532,8 +531,7 @@ MonoBehaviour:
   SecondJumpMultiplier: 1.2
   JumpDelayMs: 0.15
   GroundCheck: {fileID: 474538}
-  Bullet: {fileID: 456820, guid: 63fe6d9b80059a248b8c801944bb1866, type: 2}
-  Explosion: {fileID: 457782, guid: aae430be8c9c11347a4f22f5ddab16c3, type: 2}
+  Bullet: {fileID: 456820, guid: a895746ed7a472a4b989bb277877859c, type: 2}
   BloodSplatter: {fileID: 461058, guid: 56619b1abbf8cc0408a86f944e489a5b, type: 2}
   DeadPlayer: {fileID: 477012, guid: 38b7d1eef332b514badb4ccc6cdc055b, type: 2}
   SwordSlash: {fileID: 413908, guid: cf49b905a43eed54c99c4b9838f2b8a7, type: 2}
@@ -1447,8 +1445,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_TransformSyncMode: 2
-  m_SendInterval: 0.1
-  m_SyncRotationAxis: 1
+  m_SendInterval: 0.0625
+  m_SyncRotationAxis: 0
   m_RotationSyncCompression: 0
   m_SyncSpin: 0
   m_MovementTheshold: 0.001

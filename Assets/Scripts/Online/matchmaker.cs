@@ -77,7 +77,6 @@ public class matchmaker : NetworkBehaviour
 		multiCanvas.enabled = false;
 		scoreCanvas.enabled = false;
 		pauseCanvas.enabled = false;
-
 		return;
 		SetPlayerMenuValues();
 
