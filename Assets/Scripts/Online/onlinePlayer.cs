@@ -7,7 +7,7 @@ using UnityEngine.Networking;
 using UnityEngine.UI;
 using XInputDotNetPure;
 
-public class onlinePlayer :NetworkBehaviour 
+public class onlinePlayer : NetworkBehaviour
 {
 
 	[HideInInspector]
@@ -314,6 +314,93 @@ public class onlinePlayer :NetworkBehaviour
 		}
 	}
 
+	protected virtual void FixedUpdate()
+	{
+		if (_spawned)
+		{
+			return;
+		}
+
+		float h = Input.GetAxis(Control + "Horizontal");
+		float v = Input.GetAxis(Control + "Vertical");
+
+
+		// Stop movement if value is below movement lock
+		if ((h < MovementLock && h > 0) || (h > -MovementLock && h < 0))
+		{
+			h = 0;
+		}
+
+		_horizontal = h;
+		_vertical = v;
+
+		if (h > DirectionLock && h > 0)
+		{
+			_bulletRight = true;
+			_bulletLeft = false;
+		}
+		else if (h < -DirectionLock && h < 0)
+		{
+			_bulletRight = false;
+			_bulletLeft = true;
+		}
+
+		if (h < DirectionLock && h > -DirectionLock)
+		{
+			_bulletRight = false;
+			_bulletLeft = false;
+		}
+
+		if (!isLocalPlayer)
+		{
+			return;
+		}
+
+		CheckFlip();
+		if (_aiming)
+		{
+			_rb2D.velocity = new Vector2(0, _rb2D.velocity.y);
+		}
+
+		if (_inFrontOfLadder)
+		{
+			_rb2D.gravityScale = 0;
+			_rb2D.velocity = Vector3.zero;
+
+			if (!_aiming)
+			{
+				if (_vertical * _rb2D.velocity.y < MaxSpeed)
+				{
+					_rb2D.AddForce(Vector2.up * _vertical * MoveForce);
+				}
+
+				if (Mathf.Abs(_rb2D.velocity.y) > MaxSpeed)
+				{
+					_rb2D.velocity = new Vector2(_rb2D.velocity.x, Mathf.Sign(_rb2D.velocity.y) * MaxSpeed);
+				}
+			}
+		}
+		else
+		{
+			_rb2D.gravityScale = GravityScale;
+
+			if (!_aiming)
+			{
+				if (_horizontal * _rb2D.velocity.x < MaxSpeed)
+				{
+					_rb2D.AddForce(Vector2.right * _horizontal * MoveForce);
+				}
+
+				if (Mathf.Abs(_rb2D.velocity.x) > MaxSpeed)
+				{
+					_rb2D.velocity = new Vector2(Mathf.Sign(_rb2D.velocity.x) * MaxSpeed, _rb2D.velocity.y);
+				}
+			}
+		}
+
+
+	}
+
 	protected void Slash()
 	{
 		_slashing = true;
@@ -394,101 +481,19 @@ public class onlinePlayer :NetworkBehaviour
 	}
 
 
-	protected virtual void FixedUpdate()
-	{
-		if (!isLocalPlayer)
-		{
-			return;
-		}
-
-		if (_spawned)
-		{
-			return;
-		}
-
-		float h = Input.GetAxis(Control + "Horizontal");
-		float v = Input.GetAxis(Control + "Vertical");
-
-		// Stop movement if value is below movement lock
-		if ((h < MovementLock && h > 0) || (h > -MovementLock && h < 0))
-		{
-			h = 0;
-		}
-
-		_horizontal = h;
-		_vertical = v;
-
-		if (h > DirectionLock && h > 0)
-		{
-			_bulletRight = true;
-			_bulletLeft = false;
-		}
-		else if (h < -DirectionLock && h < 0)
-		{
-			_bulletRight = false;
-			_bulletLeft = true;
-		}
-
-		if (h < DirectionLock && h > -DirectionLock)
-		{
-			_bulletRight = false;
-			_bulletLeft = false;
-		}
-
-		if (_aiming)
-		{
-			_rb2D.velocity = new Vector2(0, _rb2D.velocity.y);
-		}
-
-		if (_inFrontOfLadder)
-		{
-			_rb2D.gravityScale = 0;
-			_rb2D.velocity = Vector3.zero;
-
-			if (!_aiming)
-			{
-				if (_vertical * _rb2D.velocity.y < MaxSpeed)
-				{
-					_rb2D.AddForce(Vector2.up * _vertical * MoveForce);
-				}
-
-				if (Mathf.Abs(_rb2D.velocity.y) > MaxSpeed)
-				{
-					_rb2D.velocity = new Vector2(_rb2D.velocity.x, Mathf.Sign(_rb2D.velocity.y) * MaxSpeed);
-				}
-			}
-		}
-		else
-		{
-			_rb2D.gravityScale = GravityScale;
-
-			if (!_aiming)
-			{
-				if (_horizontal * _rb2D.velocity.x < MaxSpeed)
-				{
-					_rb2D.AddForce(Vector2.right * _horizontal * MoveForce);
-				}
-
-				if (Mathf.Abs(_rb2D.velocity.x) > MaxSpeed)
-				{
-					_rb2D.velocity = new Vector2(Mathf.Sign(_rb2D.velocity.x) * MaxSpeed, _rb2D.velocity.y);
-				}
-			}
-		}
-
-		CheckFlip();
-
-	}
 
 	private void CheckFlip()
 	{
-		if (_horizontal > 0 && !FacingRight)
+		if ((_horizontal > 0 && !FacingRight) || (_horizontal < 0 && FacingRight))
 		{
-			Flip();
-		}
-		else if (_horizontal < 0 && FacingRight)
-		{
-			Flip();
+			if (isServer)
+			{
+				RpcFlip();
+			}
+			else
+			{
+				CmdFlip();
+			}
 		}
 	}
 
@@ -876,7 +881,14 @@ public class onlinePlayer :NetworkBehaviour
 
 	#endregion
 
-	public virtual void Flip()
+	[Command]
+	public virtual void CmdFlip()
+	{
+		RpcFlip();
+	}
+
+	[ClientRpc]
+	public virtual void RpcFlip()
 	{
 		FlipSliderLeftRight(HealthSlider);
 

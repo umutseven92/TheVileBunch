@@ -26,7 +26,7 @@ public class menuScript : MonoBehaviour
 
 		Version.text = "v" + global.GameVersion;
 		Time.timeScale = 1.0f;
-
+		Application.targetFrameRate = global.FrameRateLimit;
 		SetMusic();
 	}
 

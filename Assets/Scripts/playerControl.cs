@@ -890,7 +890,6 @@ public class playerControl : MonoBehaviour
 		obj.localScale = scale;
 	}
 
-	[Command]
 	protected virtual void CmdShoot()
 	{
 		_shooting = true;
