@@ -11,6 +11,12 @@ public class onlinePlayer : NetworkBehaviour
 {
 
 	[HideInInspector]
+	private float ScaleX;
+
+	[HideInInspector]
+	private float AmmoTextScaleX;
+
+	[HideInInspector]
 	public bool FacingRight = true;
 
 	[HideInInspector]
@@ -31,8 +37,8 @@ public class onlinePlayer : NetworkBehaviour
 	[HideInInspector]
 	public string _playerClass;
 
-	[HideInInspector]
-	public virtual int Health { get; set; }
+	[SyncVar]
+	public int Health;
 
 	[HideInInspector]
 	public int Ammo;
@@ -230,7 +236,8 @@ public class onlinePlayer : NetworkBehaviour
 		JumpCount = MaxJumpCount;
 		_groundCheckCollider = GroundCheck.GetComponent<BoxCollider2D>();
 
-
+		ScaleX = transform.localScale.x;
+		AmmoTextScaleX = AmmoText.transform.localScale.x;
 		if (string.IsNullOrEmpty(Control) && Debug.isDebugBuild)
 		{
 			Control = "j1";
@@ -321,6 +328,11 @@ public class onlinePlayer : NetworkBehaviour
 			return;
 		}
 
+		if (!isLocalPlayer)
+		{
+			return;
+		}
+
 		float h = Input.GetAxis(Control + "Horizontal");
 		float v = Input.GetAxis(Control + "Vertical");
 
@@ -351,12 +363,7 @@ public class onlinePlayer : NetworkBehaviour
 			_bulletLeft = false;
 		}
 
-		if (!isLocalPlayer)
-		{
-			return;
-		}
 
-		CheckFlip();
 		if (_aiming)
 		{
 			_rb2D.velocity = new Vector2(0, _rb2D.velocity.y);
@@ -398,6 +405,8 @@ public class onlinePlayer : NetworkBehaviour
 			}
 		}
 
+		CmdCheckFlip();
+		Flip(FacingRight);
 
 	}
 
@@ -480,20 +489,15 @@ public class onlinePlayer : NetworkBehaviour
 		}
 	}
 
-
-
-	private void CheckFlip()
+	private void CmdCheckFlip()
 	{
-		if ((_horizontal > 0 && !FacingRight) || (_horizontal < 0 && FacingRight))
+		if (_horizontal > 0 )
 		{
-			if (isServer)
-			{
-				RpcFlip();
-			}
-			else
-			{
-				CmdFlip();
-			}
+			FacingRight = true;
+		}
+		else if (_horizontal < 0 )
+		{
+			FacingRight = false;
 		}
 	}
 
@@ -507,7 +511,7 @@ public class onlinePlayer : NetworkBehaviour
 		}
 
 		// Bullet
-		if (other.name.StartsWith("Bullet"))
+		if (other.name.StartsWith("OnlineBullet"))
 		{
 			if (!_hit)
 			{
@@ -646,6 +650,12 @@ public class onlinePlayer : NetworkBehaviour
 	protected virtual void LowerHealth(int damage)
 	{
 		VibrateGamePad();
+
+		if (!isServer)
+		{
+			return;
+		}
+
 		Health -= damage;
 	}
 
@@ -881,34 +891,25 @@ public class onlinePlayer : NetworkBehaviour
 
 	#endregion
 
-	[Command]
-	public virtual void CmdFlip()
+
+	public void Flip(bool facingRight)
 	{
-		RpcFlip();
-	}
+		Debug.Log("FLIP");
+		if (facingRight)
+		{
+			HealthSlider.direction = Slider.Direction.RightToLeft;
+			transform.localScale = new Vector3(ScaleX, transform.localScale.y, transform.localScale.z);
+			AmmoText.transform.localScale = new Vector3(AmmoTextScaleX, AmmoText.transform.localScale.y, AmmoText.transform.localScale.z);
+			
+		}
+		else
+		{
+			HealthSlider.direction = Slider.Direction.LeftToRight;
+			transform.localScale = new Vector3(-ScaleX, transform.localScale.y, transform.localScale.z);
+			AmmoText.transform.localScale = new Vector3(-AmmoTextScaleX, AmmoText.transform.localScale.y, AmmoText.transform.localScale.z);
 
-	[ClientRpc]
-	public virtual void RpcFlip()
-	{
-		FlipSliderLeftRight(HealthSlider);
+		}
 
-		FacingRight = !FacingRight;
-
-		FlipLeftRight(transform);
-		FlipLeftRight(AmmoText.transform);
-	}
-
-	private void FlipSliderLeftRight(Slider slider)
-	{
-		slider.direction = FacingRight ? Slider.Direction.RightToLeft : Slider.Direction.LeftToRight;
-	}
-
-	protected void FlipLeftRight(Transform obj)
-	{
-		var scale = obj.localScale;
-		scale.x *= -1;
-
-		obj.localScale = scale;
 	}
 
 	[Command]

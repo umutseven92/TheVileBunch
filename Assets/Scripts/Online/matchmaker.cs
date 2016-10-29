@@ -77,6 +77,8 @@ public class matchmaker : NetworkBehaviour
 		multiCanvas.enabled = false;
 		scoreCanvas.enabled = false;
 		pauseCanvas.enabled = false;
+		CheckPlayerPrefs();
+
 		return;
 		SetPlayerMenuValues();
 
@@ -86,7 +88,6 @@ public class matchmaker : NetworkBehaviour
 
 		if (speaker != null) speaker.GetComponent<AudioSource>().Stop();
 
-		CheckPlayerPrefs();
 
 		playerSelect.PlayerList.ForEach(p =>
 		{
