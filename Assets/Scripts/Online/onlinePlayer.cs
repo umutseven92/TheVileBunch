@@ -17,6 +17,7 @@ public class onlinePlayer : NetworkBehaviour
 	private float AmmoTextScaleX;
 
 	[HideInInspector]
+	[SyncVar(hook = "FlipCallback")]
 	public bool FacingRight = true;
 
 	[HideInInspector]
@@ -405,9 +406,16 @@ public class onlinePlayer : NetworkBehaviour
 			}
 		}
 
-		CmdCheckFlip();
-		Flip(FacingRight);
-
+		if (_horizontal > 0 )
+		{
+			FacingRight = true;
+			CmdFlip(FacingRight);
+		}
+		else if (_horizontal < 0 )
+		{
+			FacingRight = false;
+			CmdFlip(FacingRight);
+		}
 	}
 
 	protected void Slash()
@@ -486,18 +494,6 @@ public class onlinePlayer : NetworkBehaviour
 		{
 			// Idle
 			_animator.SetInteger(ANIMATOR_PARAM, (int)Animations.Idle);
-		}
-	}
-
-	private void CmdCheckFlip()
-	{
-		if (_horizontal > 0 )
-		{
-			FacingRight = true;
-		}
-		else if (_horizontal < 0 )
-		{
-			FacingRight = false;
 		}
 	}
 
@@ -891,25 +887,44 @@ public class onlinePlayer : NetworkBehaviour
 
 	#endregion
 
-
-	public void Flip(bool facingRight)
+	[Command]
+	public void CmdFlip(bool facingRight)
 	{
-		Debug.Log("FLIP");
+		RpcClip(facingRight);
+	}
+
+	[ClientRpc]
+	public void RpcClip(bool facingRight)
+	{
 		if (facingRight)
 		{
 			HealthSlider.direction = Slider.Direction.RightToLeft;
 			transform.localScale = new Vector3(ScaleX, transform.localScale.y, transform.localScale.z);
 			AmmoText.transform.localScale = new Vector3(AmmoTextScaleX, AmmoText.transform.localScale.y, AmmoText.transform.localScale.z);
-			
 		}
 		else
 		{
 			HealthSlider.direction = Slider.Direction.LeftToRight;
 			transform.localScale = new Vector3(-ScaleX, transform.localScale.y, transform.localScale.z);
 			AmmoText.transform.localScale = new Vector3(-AmmoTextScaleX, AmmoText.transform.localScale.y, AmmoText.transform.localScale.z);
-
 		}
+	}
 
+	public void FlipCallback(bool facingRight)
+	{
+		FacingRight = facingRight;
+		if (facingRight)
+		{
+			HealthSlider.direction = Slider.Direction.RightToLeft;
+			transform.localScale = new Vector3(ScaleX, transform.localScale.y, transform.localScale.z);
+			AmmoText.transform.localScale = new Vector3(AmmoTextScaleX, AmmoText.transform.localScale.y, AmmoText.transform.localScale.z);
+		}
+		else
+		{
+			HealthSlider.direction = Slider.Direction.LeftToRight;
+			transform.localScale = new Vector3(-ScaleX, transform.localScale.y, transform.localScale.z);
+			AmmoText.transform.localScale = new Vector3(-AmmoTextScaleX, AmmoText.transform.localScale.y, AmmoText.transform.localScale.z);
+		}
 	}
 
 	[Command]
