@@ -9,16 +9,18 @@ using XInputDotNetPure;
 
 public class onlinePlayer : NetworkBehaviour
 {
+	[SyncVar(hook = "UpdateHealthSlider")]
+	public int Health;
+
+	[HideInInspector]
+	[SyncVar(hook = "FlipCallback")]
+	public bool FacingRight = true;
 
 	[HideInInspector]
 	private float ScaleX;
 
 	[HideInInspector]
 	private float AmmoTextScaleX;
-
-	[HideInInspector]
-	[SyncVar(hook = "FlipCallback")]
-	public bool FacingRight = true;
 
 	[HideInInspector]
 	public bool AbleToJump
@@ -37,9 +39,6 @@ public class onlinePlayer : NetworkBehaviour
 
 	[HideInInspector]
 	public string _playerClass;
-
-	[SyncVar]
-	public int Health;
 
 	[HideInInspector]
 	public int Ammo;
@@ -647,11 +646,6 @@ public class onlinePlayer : NetworkBehaviour
 	{
 		VibrateGamePad();
 
-		if (!isServer)
-		{
-			return;
-		}
-
 		Health -= damage;
 	}
 
@@ -689,7 +683,7 @@ public class onlinePlayer : NetworkBehaviour
 
 	private void CheckTimers()
 	{
-		CheckHealthBar();
+		//CheckHealthBar();
 		CheckSlashingTimer();
 		CheckSlashDelay();
 		CheckShootingTimer();
@@ -927,31 +921,26 @@ public class onlinePlayer : NetworkBehaviour
 		}
 	}
 
+	public void UpdateHealthBar(int health)
+	{
+		Health = health;
+	}
+
 	[Command]
 	protected virtual void CmdShoot()
 	{
 		_shooting = true;
-		if (!_bulletRight && !_bulletLeft)
-		{
-			if (FacingRight)
-			{
-				_bulletRight = true;
-			}
-			else
-			{
-				_bulletLeft = true;
-			}
-		}
 
-		if (_bulletRight)
-		{
-			bXSpeed = BulletSpeed;
-			bXPos = GunOffset;
-		}
-		else if (_bulletLeft)
+		if (transform.localScale.x < 0)
 		{
 			bXSpeed = -BulletSpeed;
 			bXPos = -GunOffset;
+		}
+		else
+		{
+			bXSpeed = BulletSpeed;
+			bXPos = GunOffset;
+			
 		}
 
 		var shotTransform = Instantiate(Bullet) as Transform;
@@ -960,11 +949,6 @@ public class onlinePlayer : NetworkBehaviour
 		shotTransform.GetComponent<Rigidbody2D>().velocity = new Vector2(bXSpeed, bYSpeed);
 
 		NetworkServer.Spawn(shotTransform.gameObject);
-
-		bXPos = 0;
-		bYPos = 0;
-		bXSpeed = 0;
-		bYSpeed = 0;
 
 		_audio.PlayOneShot(GunShot);
 		GunLight.enabled = true;
