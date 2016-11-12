@@ -483,6 +483,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f30534532d1f4e940888ed4b9ce29de3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Health: 0
   FacingRight: 1
   Run: 0
   Control: 
@@ -534,7 +535,7 @@ MonoBehaviour:
   Bullet: {fileID: 456820, guid: a895746ed7a472a4b989bb277877859c, type: 2}
   BloodSplatter: {fileID: 461058, guid: 56619b1abbf8cc0408a86f944e489a5b, type: 2}
   DeadPlayer: {fileID: 477012, guid: 38b7d1eef332b514badb4ccc6cdc055b, type: 2}
-  SwordSlash: {fileID: 413908, guid: cf49b905a43eed54c99c4b9838f2b8a7, type: 2}
+  SwordSlash: {fileID: 413908, guid: e115488fcd9633e489749e677bc64ed6, type: 2}
   Line: {fileID: 429834, guid: d6e30f6cbd2b0bd46bb6f73ecb3d786a, type: 2}
   GunShot: {fileID: 8300000, guid: 82543674d324cd449aaf9328d7647a71, type: 3}
   SlashClip: {fileID: 8300000, guid: 0c162dbb7458f0448ad52feb1406234e, type: 3}

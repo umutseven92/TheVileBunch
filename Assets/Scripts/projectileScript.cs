@@ -14,7 +14,7 @@ public class projectileScript: MonoBehaviour
     {
         var colName = other.name;
 
-        if (!colName.StartsWith("ropeAttached") && !colName.StartsWith("slash_0") && !colName.StartsWith("Pickup"))
+        if (!colName.StartsWith("ropeAttached") && !colName.StartsWith("slash") && !colName.StartsWith("Pickup"))
         {
             Destroy(gameObject);
         }

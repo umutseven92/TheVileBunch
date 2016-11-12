@@ -59,9 +59,6 @@ public class onlinePlayer : NetworkBehaviour
 	public float OnlinebYPos;
 
 	[HideInInspector]
-	public GameObject _slashCol;
-
-	[HideInInspector]
 	public int JumpCount;
 
 	private readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -215,11 +212,6 @@ public class onlinePlayer : NetworkBehaviour
 		_sRenderer = GetComponent<SpriteRenderer>();
 		HealthSlider = GetComponentInChildren<Slider>();
 
-		_slashCol = Instantiate(SwordSlash.gameObject,
-			FacingRight
-				? new Vector3(transform.position.x + SlashOffset, transform.position.y, transform.position.y)
-				: new Vector3(transform.position.x - SlashOffset, transform.position.y, transform.position.y),
-			transform.rotation) as GameObject;
 
 		HealthSlider.maxValue = MaxHealth;
 		HealthSlider.value = MaxHealth;
@@ -271,10 +263,7 @@ public class onlinePlayer : NetworkBehaviour
 		AmmoText.text = Ammo.ToString();
 
 		SetGrounded();
-
-		UpdateSlashColPos();
 		CheckTimers();
-
 
 		if (Input.GetButtonDown(Control + "Fire") && !_paused && Ammo > 0)
 		{
@@ -301,7 +290,7 @@ public class onlinePlayer : NetworkBehaviour
 
 		if (Input.GetButtonDown(Control + "Slash") && !_paused && !_slashing && !_aiming && !_slashDelay)
 		{
-			Slash();
+			CmdSlash();
 		}
 
 		if (Input.GetButtonDown(Control + "Slash") && !_paused && !_slashing && _aiming)
@@ -405,27 +394,20 @@ public class onlinePlayer : NetworkBehaviour
 			}
 		}
 
-		if (_horizontal > 0 )
+		if (_horizontal > 0)
 		{
 			FacingRight = true;
 			CmdFlip(FacingRight);
 		}
-		else if (_horizontal < 0 )
+		else if (_horizontal < 0)
 		{
 			FacingRight = false;
 			CmdFlip(FacingRight);
 		}
 	}
 
-	protected void Slash()
-	{
-		_slashing = true;
 
-		_slashCol.SendMessage("GetCol", _slashing);
-		_audio.PlayOneShot(SlashClip);
-	}
-
-	protected void Jump()
+	private void Jump()
 	{
 		if (AbleToJump)
 		{
@@ -565,9 +547,10 @@ public class onlinePlayer : NetworkBehaviour
 		}
 
 		// Sword slash
-		if (other.name.StartsWith("slash"))
+		if (other.name.StartsWith("OnlineSlash"))
 		{
-			if (other.GetComponent<slashScript>().num != playerNum && other.GetComponent<slashScript>().slashing)
+			var comp = other.GetComponentInParent<onlineSlash>();
+			if (comp.ShooterId != netId.Value)
 			{
 				if (!_hit)
 				{
@@ -578,21 +561,7 @@ public class onlinePlayer : NetworkBehaviour
 					{
 						float pX = 0f;
 
-						var go = GameObject.FindGameObjectsWithTag("Player");
-
-						var gList = new List<GameObject>(go);
-						gList.RemoveAt(0);
-						go = gList.ToArray();
-
-						foreach (
-							var g in
-								go.Where(
-									g =>
-										g.gameObject.GetComponent<playerControl>().playerNum ==
-										other.GetComponent<slashScript>().num))
-						{
-							pX = g.transform.position.x;
-						}
+						// TODO: Calculate jump
 
 						// Small push
 						_rb2D.AddForce(pX < transform.position.x
@@ -674,13 +643,6 @@ public class onlinePlayer : NetworkBehaviour
 		}
 	}
 
-	void UpdateSlashColPos()
-	{
-		_slashCol.transform.position = FacingRight
-			? new Vector3(transform.position.x + SlashOffset, transform.position.y, transform.position.z)
-			: new Vector3(transform.position.x - SlashOffset, transform.position.y, transform.position.z);
-	}
-
 	private void CheckTimers()
 	{
 		//CheckHealthBar();
@@ -720,7 +682,6 @@ public class onlinePlayer : NetworkBehaviour
 			{
 				_slashing = false;
 				_slashDelay = true;
-				_slashCol.SendMessage("GetCol", _slashing);
 				_slashingCounter = 0.000d;
 			}
 		}
@@ -927,7 +888,31 @@ public class onlinePlayer : NetworkBehaviour
 	}
 
 	[Command]
-	protected virtual void CmdShoot()
+	private void CmdSlash()
+	{
+		_slashing = true;
+
+		var facingRight = transform.localScale.x < 0;
+		var slash = Instantiate(SwordSlash.gameObject,
+			facingRight
+				? new Vector3(transform.position.x + SlashOffset, transform.position.y, transform.position.y)
+				: new Vector3(transform.position.x - SlashOffset, transform.position.y, transform.position.y),
+			transform.rotation) as GameObject;
+
+		NetworkServer.Spawn(slash);
+		RpcSlash(slash, netId.Value);
+		
+		_audio.PlayOneShot(SlashClip);
+	}
+
+	[ClientRpc]
+	private void RpcSlash(GameObject slash, uint id)
+	{
+		slash.GetComponent<onlineSlash>().ShooterId = id;
+	}
+
+	[Command]
+	private void CmdShoot()
 	{
 		_shooting = true;
 
@@ -940,13 +925,15 @@ public class onlinePlayer : NetworkBehaviour
 		{
 			bXSpeed = BulletSpeed;
 			bXPos = GunOffset;
-			
+
 		}
 
 		var shotTransform = Instantiate(Bullet) as Transform;
 		shotTransform.position = new Vector3(transform.position.x + bXPos, transform.position.y + bYPos, transform.position.z);
 
 		shotTransform.GetComponent<Rigidbody2D>().velocity = new Vector2(bXSpeed, bYSpeed);
+
+		shotTransform.GetComponent<onlineProjectile>().ShooterId = netId.Value;
 
 		NetworkServer.Spawn(shotTransform.gameObject);
 
