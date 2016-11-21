@@ -17,6 +17,14 @@ public class onlinePlayer : NetworkBehaviour
 	public bool FacingRight = true;
 
 	[HideInInspector]
+	[SyncVar(hook = "UpdateSlashing")]
+	public bool _slashing;
+
+	[HideInInspector]
+	[SyncVar(hook = "UpdateShooting")]
+	public bool _shooting;
+
+	[HideInInspector]
 	private float ScaleX;
 
 	[HideInInspector]
@@ -126,8 +134,6 @@ public class onlinePlayer : NetworkBehaviour
 	private Animator _animator;
 	private SpriteRenderer _sRenderer;
 	private List<playerSelect.Player> _localPlayers;
-	protected bool _slashing;
-	protected bool _shooting;
 	private double _shootingCounter;
 	private double _slashingCounter;
 	protected bool _hit;
@@ -332,6 +338,11 @@ public class onlinePlayer : NetworkBehaviour
 			h = 0;
 		}
 
+		if (_slashing)
+		{
+			h = 0;
+		}
+
 		_horizontal = h;
 		_vertical = v;
 
@@ -481,12 +492,6 @@ public class onlinePlayer : NetworkBehaviour
 
 	void OnTriggerEnter2D(Collider2D other)
 	{
-		// Rope
-		if (other.name.StartsWith("ropeAttached") && _up)
-		{
-			_inFrontOfLadder = true;
-		}
-
 		// Bullet
 		if (other.name.StartsWith("OnlineBullet"))
 		{
@@ -646,9 +651,9 @@ public class onlinePlayer : NetworkBehaviour
 	private void CheckTimers()
 	{
 		//CheckHealthBar();
-		CheckSlashingTimer();
+		CmdCheckSlashingTimer();
 		CheckSlashDelay();
-		CheckShootingTimer();
+		CmdCheckShootingTimer();
 		CheckHitTimer();
 		CheckGunLightTimer();
 		CheckHealedTimer();
@@ -673,7 +678,8 @@ public class onlinePlayer : NetworkBehaviour
 
 	#region Timers
 
-	private void CheckSlashingTimer()
+	[Command]
+	private void CmdCheckSlashingTimer()
 	{
 		if (_slashing)
 		{
@@ -687,7 +693,8 @@ public class onlinePlayer : NetworkBehaviour
 		}
 	}
 
-	private void CheckShootingTimer()
+	[Command]
+	private void CmdCheckShootingTimer()
 	{
 		if (_shooting)
 		{
@@ -882,6 +889,16 @@ public class onlinePlayer : NetworkBehaviour
 		}
 	}
 
+	public void UpdateSlashing(bool slashing)
+	{
+		_slashing = slashing;
+	}
+
+	public void UpdateShooting(bool shooting)
+	{
+		_shooting = shooting;
+	}
+
 	public void UpdateHealthBar(int health)
 	{
 		Health = health;
@@ -892,7 +909,7 @@ public class onlinePlayer : NetworkBehaviour
 	{
 		_slashing = true;
 
-		var facingRight = transform.localScale.x < 0;
+		var facingRight = transform.localScale.x > 0;
 		var slash = Instantiate(SwordSlash.gameObject,
 			facingRight
 				? new Vector3(transform.position.x + SlashOffset, transform.position.y, transform.position.y)
