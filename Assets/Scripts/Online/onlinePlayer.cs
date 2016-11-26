@@ -25,6 +25,9 @@ public class onlinePlayer : NetworkBehaviour
 	public bool _shooting;
 
 	[HideInInspector]
+	public double _slashingCounter;
+
+	[HideInInspector]
 	private float ScaleX;
 
 	[HideInInspector]
@@ -135,7 +138,6 @@ public class onlinePlayer : NetworkBehaviour
 	private SpriteRenderer _sRenderer;
 	private List<playerSelect.Player> _localPlayers;
 	private double _shootingCounter;
-	private double _slashingCounter;
 	protected bool _hit;
 	protected bool _hitByMelee;
 	protected bool _hitByBullet;
@@ -181,8 +183,10 @@ public class onlinePlayer : NetworkBehaviour
 
 	private const string ANIMATOR_PARAM = "anim";
 
-
 	protected bool _paused;
+	private bool tempGrounded = true;
+	private double lastNetworkTime;
+
 	private enum Animations
 	{
 		Idle = 0,
@@ -243,7 +247,6 @@ public class onlinePlayer : NetworkBehaviour
 		}
 	}
 
-	private bool tempGrounded = true;
 
 	private void SetGrounded()
 	{
@@ -269,7 +272,6 @@ public class onlinePlayer : NetworkBehaviour
 		AmmoText.text = Ammo.ToString();
 
 		SetGrounded();
-		CheckTimers();
 
 		if (Input.GetButtonDown(Control + "Fire") && !_paused && Ammo > 0)
 		{
@@ -415,6 +417,10 @@ public class onlinePlayer : NetworkBehaviour
 			FacingRight = false;
 			CmdFlip(FacingRight);
 		}
+
+		lastNetworkTime = Network.time;
+		CheckTimers();
+
 	}
 
 
@@ -683,7 +689,7 @@ public class onlinePlayer : NetworkBehaviour
 	{
 		if (_slashing)
 		{
-			_slashingCounter += 1 * Time.deltaTime;
+			_slashingCounter += 1*Time.fixedDeltaTime;
 			if (_slashingCounter >= SlashingMs)
 			{
 				_slashing = false;
@@ -698,7 +704,7 @@ public class onlinePlayer : NetworkBehaviour
 	{
 		if (_shooting)
 		{
-			_shootingCounter += 1 * Time.deltaTime;
+			_shootingCounter += 1 * Time.fixedDeltaTime;
 			if (_shootingCounter >= ShootingMs)
 			{
 				_shooting = false;
@@ -710,7 +716,7 @@ public class onlinePlayer : NetworkBehaviour
 	{
 		if (_slashDelay)
 		{
-			_slashDelayCounter += 1 * Time.deltaTime;
+			_slashDelayCounter += 1 * Time.fixedDeltaTime;
 			if (_slashDelayCounter >= SlashDelayMs)
 			{
 				_slashDelayCounter = 0.000d;
@@ -723,7 +729,7 @@ public class onlinePlayer : NetworkBehaviour
 	{
 		if (_jumped)
 		{
-			jumpDelayCounter += 1 * Time.deltaTime;
+			jumpDelayCounter += 1 * Time.fixedDeltaTime;
 
 			if (jumpDelayCounter >= JumpDelayMs)
 			{
@@ -737,7 +743,7 @@ public class onlinePlayer : NetworkBehaviour
 	{
 		if (_gunLight)
 		{
-			_gunLightCounter += 1 * Time.deltaTime;
+			_gunLightCounter += 1 * Time.fixedDeltaTime;
 
 			if (_gunLightCounter >= GunLightMs / 2)
 			{
@@ -761,7 +767,7 @@ public class onlinePlayer : NetworkBehaviour
 	{
 		if (_hit)
 		{
-			_hitCounter += 1 * Time.deltaTime;
+			_hitCounter += 1 * Time.fixedDeltaTime;
 
 			if (_hitCounter >= _flashTimer)
 			{
@@ -785,7 +791,7 @@ public class onlinePlayer : NetworkBehaviour
 	{
 		if (_spawned)
 		{
-			_spawnedCounter += 1 * Time.deltaTime;
+			_spawnedCounter += 1 * Time.fixedDeltaTime;
 
 			if (_spawnedCounter >= _spawnedMs)
 			{
@@ -800,7 +806,7 @@ public class onlinePlayer : NetworkBehaviour
 	{
 		if (_healed)
 		{
-			_healedCounter += 1 * Time.deltaTime;
+			_healedCounter += 1 * Time.fixedDeltaTime;
 
 			if (_healedCounter >= HealedMs)
 			{
@@ -815,7 +821,7 @@ public class onlinePlayer : NetworkBehaviour
 	{
 		if (_ammoChanged)
 		{
-			_ammoCounter += 1 * Time.deltaTime;
+			_ammoCounter += 1 * Time.fixedDeltaTime;
 
 			if (_ammoCounter >= AmmoMs)
 			{
@@ -830,7 +836,7 @@ public class onlinePlayer : NetworkBehaviour
 	{
 		if (_softAim)
 		{
-			_aimCounter += 1 * Time.deltaTime;
+			_aimCounter += 1 * Time.fixedDeltaTime;
 
 			if (_aimCounter >= AimMs)
 			{
@@ -894,6 +900,11 @@ public class onlinePlayer : NetworkBehaviour
 		_slashing = slashing;
 	}
 
+	public void UpdateSlashingCounter(double slashingCounter)
+	{
+		_slashingCounter = slashingCounter;
+	}
+
 	public void UpdateShooting(bool shooting)
 	{
 		_shooting = shooting;
@@ -918,7 +929,7 @@ public class onlinePlayer : NetworkBehaviour
 
 		NetworkServer.Spawn(slash);
 		RpcSlash(slash, netId.Value);
-		
+
 		_audio.PlayOneShot(SlashClip);
 	}
 
@@ -993,7 +1004,7 @@ public class onlinePlayer : NetworkBehaviour
 	{
 		if (vibrating)
 		{
-			vibrationCounter += 1 * Time.deltaTime;
+			vibrationCounter += 1 * Time.fixedDeltaTime;
 
 			if (vibrationCounter >= VibrationMs)
 			{

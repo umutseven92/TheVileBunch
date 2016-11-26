@@ -485,6 +485,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Health: 0
   FacingRight: 1
+  _slashing: 0
+  _shooting: 0
+  _slashingCounter: 0
   Run: 0
   Control: 
   playerNum: 0
@@ -495,7 +498,6 @@ MonoBehaviour:
   OnlinebYSpeed: 0
   OnlinebXPos: 0
   OnlinebYPos: 0
-  _slashCol: {fileID: 0}
   JumpCount: 0
   Spawn: 3
   StartingAmmo: 3

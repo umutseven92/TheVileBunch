@@ -301,7 +301,6 @@ public class playerControl : MonoBehaviour
 
 		_up = Input.GetAxis(Control + "Vertical") > 0.3f;
 
-		HandleAnimations();
 
 		if (_aiming)
 		{
@@ -469,6 +468,7 @@ public class playerControl : MonoBehaviour
 
 		CheckFlip();
 
+		HandleAnimations();
 	}
 
 	private void CheckFlip()
@@ -701,7 +701,7 @@ public class playerControl : MonoBehaviour
 	{
 		if (_slashing)
 		{
-			_slashingCounter += 1 * Time.deltaTime;
+			_slashingCounter += 1 * Time.fixedDeltaTime;
 			if (_slashingCounter >= SlashingMs)
 			{
 				_slashing = false;
@@ -716,7 +716,7 @@ public class playerControl : MonoBehaviour
 	{
 		if (_shooting)
 		{
-			_shootingCounter += 1 * Time.deltaTime;
+			_shootingCounter += 1 * Time.fixedDeltaTime;
 			if (_shootingCounter >= ShootingMs)
 			{
 				_shooting = false;
@@ -728,7 +728,7 @@ public class playerControl : MonoBehaviour
 	{
 		if (_slashDelay)
 		{
-			_slashDelayCounter += 1 * Time.deltaTime;
+			_slashDelayCounter += 1 * Time.fixedDeltaTime;
 			if (_slashDelayCounter >= SlashDelayMs)
 			{
 				_slashDelayCounter = 0.000d;
@@ -741,7 +741,7 @@ public class playerControl : MonoBehaviour
 	{
 		if (_jumped)
 		{
-			jumpDelayCounter += 1 * Time.deltaTime;
+			jumpDelayCounter += 1 * Time.fixedDeltaTime;
 
 			if (jumpDelayCounter >= JumpDelayMs)
 			{
@@ -755,7 +755,7 @@ public class playerControl : MonoBehaviour
 	{
 		if (_gunLight)
 		{
-			_gunLightCounter += 1 * Time.deltaTime;
+			_gunLightCounter += 1 * Time.fixedDeltaTime;
 
 			if (_gunLightCounter >= GunLightMs / 2)
 			{
@@ -779,7 +779,7 @@ public class playerControl : MonoBehaviour
 	{
 		if (_hit)
 		{
-			_hitCounter += 1 * Time.deltaTime;
+			_hitCounter += 1 * Time.fixedDeltaTime;
 
 			if (_hitCounter >= _flashTimer)
 			{
@@ -803,7 +803,7 @@ public class playerControl : MonoBehaviour
 	{
 		if (_spawned)
 		{
-			_spawnedCounter += 1 * Time.deltaTime;
+			_spawnedCounter += 1 * Time.fixedDeltaTime;
 
 			if (_spawnedCounter >= _spawnedMs)
 			{
@@ -818,7 +818,7 @@ public class playerControl : MonoBehaviour
 	{
 		if (_healed)
 		{
-			_healedCounter += 1 * Time.deltaTime;
+			_healedCounter += 1 * Time.fixedDeltaTime;
 
 			if (_healedCounter >= HealedMs)
 			{
@@ -833,7 +833,7 @@ public class playerControl : MonoBehaviour
 	{
 		if (_ammoChanged)
 		{
-			_ammoCounter += 1 * Time.deltaTime;
+			_ammoCounter += 1 * Time.fixedDeltaTime;
 
 			if (_ammoCounter >= AmmoMs)
 			{
@@ -848,7 +848,7 @@ public class playerControl : MonoBehaviour
 	{
 		if (_softAim)
 		{
-			_aimCounter += 1 * Time.deltaTime;
+			_aimCounter += 1 * Time.fixedDeltaTime;
 
 			if (_aimCounter >= AimMs)
 			{
@@ -967,7 +967,7 @@ public class playerControl : MonoBehaviour
 	{
 		if (vibrating)
 		{
-			vibrationCounter += 1 * Time.deltaTime;
+			vibrationCounter += 1 * Time.fixedDeltaTime;
 
 			if (vibrationCounter >= VibrationMs)
 			{
