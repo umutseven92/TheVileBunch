@@ -4,7 +4,6 @@ using UnityEngine.Networking;
 
 public class onlineSlash : NetworkBehaviour
 {
-
 	[HideInInspector]
 	public uint ShooterId { get; set; }
 
@@ -23,5 +22,7 @@ public class onlineSlash : NetworkBehaviour
 		}
 
 		Destroy(gameObject, 0.4f);
+
 	}
+
 }

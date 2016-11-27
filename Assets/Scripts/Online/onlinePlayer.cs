@@ -185,7 +185,8 @@ public class onlinePlayer : NetworkBehaviour
 
 	protected bool _paused;
 	private bool tempGrounded = true;
-	private double lastNetworkTime;
+
+	private bool first = true;
 
 	private enum Animations
 	{
@@ -221,7 +222,6 @@ public class onlinePlayer : NetworkBehaviour
 		_audio = GetComponent<AudioSource>();
 		_sRenderer = GetComponent<SpriteRenderer>();
 		HealthSlider = GetComponentInChildren<Slider>();
-
 
 		HealthSlider.maxValue = MaxHealth;
 		HealthSlider.value = MaxHealth;
@@ -311,6 +311,12 @@ public class onlinePlayer : NetworkBehaviour
 		_up = Input.GetAxis(Control + "Vertical") > 0.3f;
 
 		HandleAnimations();
+
+		var facingRight = transform.localScale.x > 0;
+
+		var pos = facingRight
+			? new Vector3(transform.position.x + SlashOffset, transform.position.y, transform.position.y)
+			: new Vector3(transform.position.x - SlashOffset, transform.position.y, transform.position.y);
 
 		if (_aiming)
 		{
@@ -418,9 +424,7 @@ public class onlinePlayer : NetworkBehaviour
 			CmdFlip(FacingRight);
 		}
 
-		lastNetworkTime = Network.time;
 		CheckTimers();
-
 	}
 
 
@@ -689,7 +693,7 @@ public class onlinePlayer : NetworkBehaviour
 	{
 		if (_slashing)
 		{
-			_slashingCounter += 1*Time.fixedDeltaTime;
+			_slashingCounter += 1 * Time.fixedDeltaTime;
 			if (_slashingCounter >= SlashingMs)
 			{
 				_slashing = false;
@@ -923,8 +927,8 @@ public class onlinePlayer : NetworkBehaviour
 		var facingRight = transform.localScale.x > 0;
 		var slash = Instantiate(SwordSlash.gameObject,
 			facingRight
-				? new Vector3(transform.position.x + SlashOffset, transform.position.y, transform.position.y)
-				: new Vector3(transform.position.x - SlashOffset, transform.position.y, transform.position.y),
+				? new Vector3(transform.position.x + SlashOffset + _horizontal / 4, transform.position.y + _vertical / 4, transform.position.z)
+				: new Vector3(transform.position.x - SlashOffset + _horizontal / 4, transform.position.y + _vertical / 4, transform.position.z),
 			transform.rotation) as GameObject;
 
 		NetworkServer.Spawn(slash);
