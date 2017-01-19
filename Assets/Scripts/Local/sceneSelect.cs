@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class sceneSelect : Photon.PunBehaviour
+public class sceneSelect: MonoBehaviour
 {
     public Button BackButton;
 

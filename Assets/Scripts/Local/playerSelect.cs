@@ -6,7 +6,7 @@ using log4net;
 using UnityEngine.UI;
 using XInputDotNetPure;
 
-public class playerSelect : Photon.PunBehaviour
+public class playerSelect :MonoBehaviour
 {
     public AudioClip Clip;
     public AudioClip DirClip;
@@ -19,6 +19,12 @@ public class playerSelect : Photon.PunBehaviour
     public Text P2Text;
     public Text P3Text;
     public Text P4Text;
+
+    public Text P1TextShadow;
+    public Text P2TextShadow;
+    public Text P3TextShadow;
+    public Text P4TextShadow;
+
     public Image p1Image;
     public Image p2Image;
     public Image p3Image;
@@ -47,6 +53,8 @@ public class playerSelect : Photon.PunBehaviour
     private Sprite dancerImage;
     private Sprite prospectorImage;
     private Sprite freemanImage;
+
+    private Sprite backgroundImage;
 
     public Image NextButton;
     public Image BackButton;
@@ -110,6 +118,8 @@ public class playerSelect : Photon.PunBehaviour
     public List<Image> playerButtons = new List<Image>();
 
     private List<Text> playerTexts = new List<Text>();
+    private List<Text> playerTextShadows = new List<Text>();
+
     private List<List<Button>> playerHorizontals = new List<List<Button>>();
 
     protected List<string> pickedClasses = new List<string>();
@@ -125,6 +135,7 @@ public class playerSelect : Photon.PunBehaviour
         dancerImage = Resources.Load<Sprite>("dancer");
         prospectorImage = Resources.Load<Sprite>("prospector");
         freemanImage = Resources.Load<Sprite>("freeman");
+        backgroundImage = Resources.Load<Sprite>("selectBG");
 
         aButton = Resources.Load<Sprite>("abutton");
         bButton = Resources.Load<Sprite>("bbutton");
@@ -168,6 +179,11 @@ public class playerSelect : Photon.PunBehaviour
         playerTexts.Add(P2Text);
         playerTexts.Add(P3Text);
         playerTexts.Add(P4Text);
+
+        playerTextShadows.Add(P1TextShadow);
+        playerTextShadows.Add(P2TextShadow);
+        playerTextShadows.Add(P3TextShadow);
+        playerTextShadows.Add(P4TextShadow);
 
         p1Button.sprite = startButton;
         p2Button.sprite = startButton;
@@ -526,15 +542,10 @@ public class playerSelect : Photon.PunBehaviour
 
     protected void UpdateSelect(List<Player> players)
     {
-        P1Text.text = SelectText;
-        P2Text.text = SelectText;
-        P3Text.text = SelectText;
-        P4Text.text = SelectText;
+        P1Text.text = P2Text.text = P3Text.text = P4Text.text = SelectText;
+        P1TextShadow.text = P2TextShadow.text = P3TextShadow.text = P4TextShadow.text = SelectText;
 
-        p1Image.sprite = null;
-        p2Image.sprite = null;
-        p3Image.sprite = null;
-        p4Image.sprite = null;
+        p1Image.sprite = p2Image.sprite = p3Image.sprite = p4Image.sprite = backgroundImage;
 
 
         for (int i = 0; i < PlayerList.Count; i++)
@@ -546,10 +557,13 @@ public class playerSelect : Photon.PunBehaviour
             if (string.IsNullOrEmpty(player.OnlinePlayerName))
             {
                 playerTexts[i].text = player.Class;
+                playerTextShadows[i].text = player.Class;
             }
             else
             {
                 playerTexts[i].text = string.Format("{0}\n{1}", player.Class, player.OnlinePlayerName);
+                playerTextShadows[i].text = string.Format("{0}\n{1}", player.Class, player.OnlinePlayerName);
+
             }
 
             if (player.Set)
@@ -736,7 +750,7 @@ public class playerSelect : Photon.PunBehaviour
         /// On single player, this is k for keyboard, or j1 through j4 for controller.
         /// On online play, this is players ID.
         /// </summary>
-        public string Control { get; set; } 
+        public string Control { get; set; }
         public string Class { get; set; }
         public int Num { get; set; }
         public bool Set { get; set; }

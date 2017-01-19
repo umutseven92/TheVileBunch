@@ -31,7 +31,7 @@ public class levelSelect : MonoBehaviour
             return;
         }
 
-        PhotonNetwork.LoadLevel(level);
+     //   PhotonNetwork.LoadLevel(level);
     }
    
 }

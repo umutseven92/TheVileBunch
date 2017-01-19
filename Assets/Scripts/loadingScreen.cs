@@ -6,7 +6,7 @@ using System.Xml;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class loadingScreen : Photon.PunBehaviour
+public class loadingScreen :MonoBehaviour
 {
     public Text LoadingText;
     public Text DiaryText;

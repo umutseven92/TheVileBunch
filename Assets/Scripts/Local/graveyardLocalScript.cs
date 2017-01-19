@@ -11,6 +11,8 @@ public class graveyardLocalScript : graveyardScript {
 	{
 		base.Start();
 		WinnerText.text = WinnerText.text.Replace("{class}", localSceneHelper.Winner);
+		WinnerTextShadow.text = WinnerTextShadow.text.Replace("{class}", localSceneHelper.Winner);
+
 		var remaining = playerSelect.PlayerList;
 
 		remaining.Remove(remaining.Find(p=>p.Class.Equals(localSceneHelper.Winner)));
