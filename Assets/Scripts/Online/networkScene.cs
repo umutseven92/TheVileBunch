@@ -1,25 +1,20 @@
 ﻿
-public class networkScene : Photon.PunBehaviour {
+public class networkScene   {
 
-    [PunRPC]
     public void IncreaseVoteRPC(int map, int pId)
     {
-        var pView = PhotonView.Find(pId);
-        var level = (onlineSceneSelect.OnlineLevel) map;
+        //var pView = PhotonView.Find(pId);
+        //var level = (onlineSceneSelect.OnlineLevel) map;
 
-        pView.GetComponentInParent<onlineSceneSelect>().IncreaseVote(level);
+        //pView.GetComponentInParent<onlineSceneSelect>().IncreaseVote(level);
     }
 
-    [PunRPC]
     public void DecreaseVoteRPC(int map, int pId)
     {
-        var pView = PhotonView.Find(pId);
-        var level = (onlineSceneSelect.OnlineLevel) map;
+       //var pView = PhotonView.Find(pId);
+       // var level = (onlineSceneSelect.OnlineLevel) map;
 
-        pView.GetComponentInParent<onlineSceneSelect>().DecreaseVote(level);
+       // pView.GetComponentInParent<onlineSceneSelect>().DecreaseVote(level);
     }
 
-    void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-    {
-    }
 }

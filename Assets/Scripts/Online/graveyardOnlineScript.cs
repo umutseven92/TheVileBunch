@@ -85,7 +85,7 @@ public class graveyardOnlineScript : graveyardScript
             {
                 playerSelect.PlayerList = new List<playerSelect.Player>();
                 Time.timeScale = 1;
-                PhotonNetwork.LoadLevel("OnlineLoading");
+                //PhotonNetwork.LoadLevel("OnlineLoading");
             }
             else
             {
@@ -97,9 +97,9 @@ public class graveyardOnlineScript : graveyardScript
     private static void GetBackToMenu()
     {
         playerSelect.PlayerList = new List<playerSelect.Player>();
-        PhotonNetwork.automaticallySyncScene = false;
+        //PhotonNetwork.automaticallySyncScene = false;
         Time.timeScale = 1;
-        PhotonNetwork.Disconnect();
+        //PhotonNetwork.Disconnect();
         SceneManager.LoadScene("Menu");
     }
 

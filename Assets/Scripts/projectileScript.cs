@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class projectileScript : Photon.PunBehaviour 
+public class projectileScript: MonoBehaviour
 {
 
     // Use this for initialization
@@ -14,7 +14,7 @@ public class projectileScript : Photon.PunBehaviour
     {
         var colName = other.name;
 
-        if (!colName.StartsWith("ropeAttached") && !colName.StartsWith("slash_0") && !colName.StartsWith("Pickup"))
+        if (!colName.StartsWith("ropeAttached") && !colName.StartsWith("slash") && !colName.StartsWith("Pickup"))
         {
             Destroy(gameObject);
         }
